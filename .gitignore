@@ -1,0 +1,25 @@
+# Local inputs and outputs never belong in source history.
+.env
+.env.*
+*.xlsm
+*.xlsx
+*.xls
+*.sqlite*
+*.db
+*.pdf
+*.pptx
+*.zip
+*.png
+*.jpg
+*.log
+__pycache__/
+*.pyc
+.venv/
+node_modules/
+uploads/
+local-data/
+exports/
+cache/
+work/
+outputs/
+.DS_Store

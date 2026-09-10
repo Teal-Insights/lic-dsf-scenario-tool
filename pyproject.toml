@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lic-dsf-scenario-tool"
+version = "0.1.0"
+description = "Local customized scenario analysis for LIC-DSF IDA21 workbooks"
+requires-python = ">=3.11"
+license = {file = "LICENSE"}
+dependencies = [
+  "excel-grapher @ git+https://github.com/Teal-Insights/excel-grapher@15c51591b73b1dfb97088d46c6c0741bc59769b4",
+  "openpyxl==3.1.5",
+  "numpy==2.4.6",
+  "PyYAML==6.0.3",
+  "matplotlib==3.11.1",
+  "fastpyxl==1.0.12",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[project.scripts]
+lic-dsf-scenario-tool = "lic_dsf.app:main"
+
+[tool.setuptools.package-data]
+lic_dsf = ["web.html"]
