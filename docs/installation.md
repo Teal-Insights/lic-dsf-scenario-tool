@@ -6,13 +6,32 @@ You need Python 3.11 or later, Git for the pinned evaluator dependency, and a mo
 
 ## Install
 
-Obtain a reviewed source distribution and open a terminal in its root, where `pyproject.toml` and LICENSE are located. Create an isolated environment:
+Obtain a reviewed source distribution and open a terminal in its root, where `pyproject.toml` and LICENSE are located. Before creating an environment, select an installed Python interpreter. Python 3.11 is the currently exercised version family; other declared-compatible versions still need their own dependency and platform checks.
+
+On macOS or Linux, check the available interpreter:
 
 ```sh
-python -m venv .venv
+python3 --version
 ```
 
-On macOS or Linux, activate it with `source .venv/bin/activate`. On Windows Command Prompt, use `.venv\Scripts\activate.bat`. These are source-install instructions, not a claim of tested Windows operation.
+If it reports the version you intend to test, create the environment with the same command:
+
+```sh
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+If your Python 3.11 installation instead uses `python3.11` or a full executable path, use that command in both the version check and environment creation. If no suitable interpreter is installed, install Python first; do not assume the unversioned `python` command exists before activation.
+
+On Windows Command Prompt, select an installed Python 3.11 with the Python launcher:
+
+```bat
+py -3.11 --version
+py -3.11 -m venv .venv
+.venv\Scripts\activate.bat
+```
+
+If `py` is unavailable, use the full path to the intended Python executable instead, quoting a path that contains spaces. These are source-install instructions, not a claim of tested Windows operation. After activation, `python --version` should identify the selected environment; the commands below use that environment's `python`.
 
 Install the distribution without editable mode:
 

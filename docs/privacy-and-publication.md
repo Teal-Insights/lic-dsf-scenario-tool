@@ -2,7 +2,7 @@
 
 The public software repository and users' analytical work are separate. Completed workbooks, analyst names and notes, saved collections, calculation caches, exports, logs and screenshots are local working material unless their owner deliberately reviews and shares a copy.
 
-Do not attach workbooks or analytical records to public issues. A diagnostic should reveal only the minimum technical information needed, after review. The product's internal export and shareable export have different content; neither makes economic data anonymous by itself.
+Do not attach workbooks or analytical records to public issues. A diagnostic should reveal only the minimum technical information needed, after review. A private full-workspace backup and a shareable chart/data export have different content. Backups include workbooks and private saved records; this preview has no internal-export button. Follow the [backup and recovery instructions](privacy-recovery.md). Neither a backup nor a shareable export makes economic data anonymous by itself.
 
 Public releases are assembled from an explicit reviewed inventory, not a recursive copy of a working directory. File contents, names, symlinks, binary/embedded material, generated distributions and Git history must be checked. A deletion from the current tree does not remove historical disclosure. `.gitignore` is useful housekeeping but is not a publication security boundary.
 
