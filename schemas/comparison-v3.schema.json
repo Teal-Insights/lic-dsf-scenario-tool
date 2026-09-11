@@ -1,0 +1,362 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "LIC-DSF comparison export version 3",
+  "type": "object",
+  "required": [
+    "format",
+    "workbook_sha256",
+    "comparator_id",
+    "runs",
+    "chart_context"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "format": {
+      "const": "lic-dsf-comparison-v3"
+    },
+    "workbook_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "comparator_id": {
+      "type": "string"
+    },
+    "workbook_provenance": {
+      "type": "object",
+      "required": [
+        "source",
+        "illustrative",
+        "disclosure"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "type": "string"
+        },
+        "illustrative": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "disclosure": {
+          "type": "string"
+        },
+        "source_url": {
+          "type": "string",
+          "format": "uri"
+        }
+      }
+    },
+    "runs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "scenario_id",
+          "share_label",
+          "revision",
+          "result_hash",
+          "result",
+          "shared_rationale"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "scenario_id": {
+            "type": "string"
+          },
+          "share_label": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 40
+          },
+          "revision": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "result_hash": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "result": {
+            "type": "object",
+            "required": [
+              "workbook_sha256",
+              "contract_version",
+              "engine_identity",
+              "scenario",
+              "scenario_hash",
+              "first_projection_year",
+              "input_years",
+              "points",
+              "thresholds",
+              "evidence",
+              "warnings"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "workbook_sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              },
+              "contract_version": {
+                "const": "ida21-local-v1"
+              },
+              "engine_identity": {
+                "type": "object"
+              },
+              "scenario": {
+                "$ref": "scenario-v1.schema.json"
+              },
+              "scenario_hash": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              },
+              "first_projection_year": {
+                "type": "integer"
+              },
+              "input_years": {
+                "type": "array",
+                "minItems": 21,
+                "maxItems": 21,
+                "items": {
+                  "type": "integer"
+                }
+              },
+              "points": {
+                "type": "array",
+                "minItems": 36,
+                "maxItems": 36,
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "metric",
+                    "year",
+                    "units",
+                    "reference_baseline",
+                    "as_supplied_customized",
+                    "scenario",
+                    "source_cells"
+                  ],
+                  "properties": {
+                    "metric": {
+                      "enum": [
+                        "ext_pv_gdp",
+                        "ext_pv_exports",
+                        "ext_ds_exports",
+                        "ext_ds_revenue",
+                        "public_pv_gdp",
+                        "public_pv_revenue"
+                      ]
+                    },
+                    "year": {
+                      "type": "integer"
+                    },
+                    "units": {
+                      "type": "string"
+                    },
+                    "reference_baseline": {
+                      "oneOf": [
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "null"
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^#"
+                        }
+                      ]
+                    },
+                    "as_supplied_customized": {
+                      "oneOf": [
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "null"
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^#"
+                        }
+                      ]
+                    },
+                    "scenario": {
+                      "oneOf": [
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "null"
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^#"
+                        }
+                      ]
+                    },
+                    "source_cells": {
+                      "type": "object"
+                    }
+                  }
+                }
+              },
+              "thresholds": {
+                "type": "object"
+              },
+              "evidence": {
+                "type": "object",
+                "required": [
+                  "calculation",
+                  "exact_excel",
+                  "saved_cache"
+                ],
+                "properties": {
+                  "calculation": {
+                    "const": "computed_unverified"
+                  },
+                  "exact_excel": {
+                    "type": "string"
+                  },
+                  "saved_cache": {
+                    "const": "matched"
+                  }
+                }
+              },
+              "warnings": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "shared_rationale": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "11": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1500
+              },
+              "13": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1500
+              },
+              "15": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1500
+              },
+              "17": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1500
+              },
+              "20": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1500
+              },
+              "22": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1500
+              },
+              "24": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1500
+              },
+              "28": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1500
+              },
+              "30": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1500
+              },
+              "32": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1500
+              },
+              "34": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1500
+              },
+              "36": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1500
+              },
+              "38": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1500
+              },
+              "financing": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1500
+              }
+            }
+          }
+        }
+      }
+    },
+    "chart_context": {
+      "type": "object",
+      "required": [
+        "workbook_sha256",
+        "label",
+        "revision"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "workbook_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "label": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "revision": {
+                "const": 0
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "label": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

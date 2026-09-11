@@ -7,7 +7,7 @@ The application reads an uploaded workbook and keeps a separate copy in the chos
 | Location | Contents |
 | --- | --- |
 | `workbooks/` in your data directory | Copies of accepted workbooks, named by content hash |
-| `scenarios.sqlite3` | Workbook labels, outward chart context, scenario revisions, results and private reasoning |
+| `scenarios.sqlite3` | Workbook labels, outward chart context, scenario revisions, deliberately shared explanations, results and private reasoning |
 | `jobs/` | Calculation requests, outputs and diagnostic logs |
 | Browser and download folder | Unsaved drafts, previews and files you download |
 
@@ -26,9 +26,9 @@ Do not attach analytical data, journals, logs or screenshots to public support i
 1. Save scenario edits and journal entries separately. Wait until calculations finish.
 2. Stop the application. Copy the **entire data directory** to a new private backup location, without overwriting an older backup.
 3. To restore, keep the current directory intact. Copy the backup to a new directory and start the same application version with `--data-dir` pointing there.
-4. Reopen the workbook and inspect saved revisions and journal entries. Recalculate if the runtime changed. Compare any important restored export with the retained original.
+4. Reopen the workbook and inspect the current saved revision and the journal history. Recalculate if the runtime changed. Compare any important restored export with the retained original.
 
-Copying only the database omits uploaded workbooks and job artifacts. The store has a database-backup API, but the browser does not expose a complete workspace backup/restore control. Recovery acceptance remains tied to the released package and actual platform. Before upgrading a workspace from schema 1 to schema 2, keep a stopped copy: the new context table is additive, but the older application cannot open the upgraded version. Roll back using the preserved copy and compatible application, not by editing the version number.
+Copying only the database omits uploaded workbooks and job artifacts. The store has a database-backup API, but the browser does not expose a complete workspace backup/restore control. Recovery acceptance remains tied to the released package and actual platform. Before upgrading a workspace from schema 1 or 2 to schema 3, keep a stopped copy: shared-explanation metadata is added without rewriting historical scenario, result or private-journal rows, but older applications cannot open the upgraded version. Historical revisions receive empty shared explanations. Roll back using the preserved copy and compatible application, not by editing the version number.
 
 ## If something stops working
 
@@ -40,7 +40,15 @@ Copying only the database omits uploaded workbooks and job artifacts. The store 
 | Application restarted during calculation | Reopen the saved scenario and calculate again. A missing job status does not prove a result completed. |
 | Result stale | Save and calculate the current revision with the current runtime before export. Older records are retained separately. |
 | Local workbook missing or changed | Re-upload the original exact file. Do not silently substitute a re-saved or edited copy. |
-| Workspace schema version rejected | Keep an untouched backup and use the compatible application version. The supported migration is schema 1 to 2; unknown versions are not rewritten. |
+| Workspace schema version rejected | Keep an untouched backup and use the compatible application version. Supported migrations are schemas 1 and 2 to schema 3; unknown versions are not rewritten. |
 | Port already in use | Start with another unused `--port`; use its printed loopback address. |
 
 Closing the browser can lose unsaved drafts. A saved journal entry is durable; text still in its editor is not. The preview has no deletion interface or retention scheduler. To remove a workspace, stop the application and deliberately delete its data directory and relevant backups/downloads under your organisation's retention policy. Ordinary deletion does not guarantee forensic erasure.
+
+Shared per-input explanations are intentionally included in PDF annexes and comparison-v3 JSON. They are separate from the private journal, which remains excluded. Review those explanations and assumptions before sending them; an export can be sensitive even though workbook contents and private journals are absent.
+
+## Network and future hosted use
+
+The inspected local server uses a local HTML interface and loopback requests. Dependency installation and obtaining the official template can require external network access. No complete measured offline/network audit is claimed. Cloud-sync software, browser extensions and operating-system backups can create additional copies outside the application's control.
+
+A future online calculator will process visitor assumptions on its server. Its retention period, deletion behavior, operator access, infrastructure logs and privacy notice must be specified and tested before launch. Local storage assurances do not describe a hosted deployment. Keep confidential workbooks and assumptions out of an unreviewed online service.

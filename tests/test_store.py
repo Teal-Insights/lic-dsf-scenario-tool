@@ -102,6 +102,51 @@ class StoreTests(unittest.TestCase):
         with self.assertRaises(store.StaleResult):
             self.s.record_run(self.case["id"], self.result(scenario_hash="incorrect"), expected_revision=1)
 
+    def test_label_only_revision_keeps_current_result(self):
+        result = self.result()
+        self.s.record_run(self.case["id"], result, expected_revision=1)
+        saved = self.s.save_scenario(self.sha, "Renamed draft", self.definition, scenario_id=self.case["id"],
+                                     expected_revision=1, share_label="Lower growth")
+        self.assertEqual(saved["revision"], 2)
+        current = self.current()
+        self.assertEqual(current["result"], result)
+        self.assertEqual(current["revision"], 2)
+        self.assertEqual(current["share_label"], "Lower growth")
+
+    def test_explanation_only_revision_keeps_current_result(self):
+        self.s.record_run(self.case["id"], self.result(), expected_revision=1)
+        self.s.save_scenario(self.sha, "Internal draft name", self.definition, scenario_id=self.case["id"],
+                             expected_revision=1, share_label="Growth scenario", shared_rationale={"11": "Revenue effort."})
+        current = self.current()
+        self.assertEqual(current["revision"], 2)
+        self.assertEqual(current["shared_rationale"], {"11": "Revenue effort."})
+        self.assertEqual(current["result"], self.result())
+
+    def test_numerical_change_after_label_revision_still_needs_calculation(self):
+        self.s.record_run(self.case["id"], self.result(), expected_revision=1)
+        self.s.save_scenario(self.sha, "Renamed", self.definition, scenario_id=self.case["id"], expected_revision=1, share_label="Case")
+        edited = {"delta_paths": {"11": [0, 2]}, "terms": None}
+        self.s.save_scenario(self.sha, "Edited", edited, scenario_id=self.case["id"], expected_revision=2, share_label="Case")
+        with self.assertRaises(store.StaleResult):
+            self.current()
+        self.s.save_scenario(self.sha, "Restored", self.definition, scenario_id=self.case["id"], expected_revision=3, share_label="Case")
+        with self.assertRaises(store.StaleResult):
+            self.current()
+        self.s.record_run(self.case["id"], self.result(), expected_revision=4)
+        self.assertEqual(self.current()["revision"], 4)
+        self.s.save_scenario(self.sha, "Restored and renamed", self.definition, scenario_id=self.case["id"], expected_revision=4, share_label="Case B")
+        self.assertEqual(self.current()["revision"], 5)
+        self.assertEqual(self.current()["share_label"], "Case B")
+
+    def test_comparison_after_label_revision_reports_current_label_and_revision(self):
+        self.s.record_run(self.case["id"], self.result(), expected_revision=1)
+        self.s.save_scenario(self.sha, "Renamed", self.definition, scenario_id=self.case["id"], expected_revision=1, share_label="Control")
+        comparison = self.s.comparison([self.case["id"]], self.case["id"], engine_identity=self.identity, contract_version="test-1")
+        run = comparison["runs"][0]
+        self.assertEqual((run["revision"], run["share_label"]), (2, "Control"))
+        self.assertEqual(run["result"], self.result())
+
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -14,7 +14,7 @@ The suite includes components loaded directly from this source tree. It does not
 
 A change should include the reason, actual behaviour, relevant validation and remaining limitations. Update the README or reference documentation when the public contract changes. Preserve full precision, comparison tolerance and spreadsheet error classes. Never change a tolerance simply to obtain a pass.
 
-The optional synthetic browser suite is `tests/presets.js`. It requires Node.js, Playwright available to Node, and a local Chrome executable selected with `CHROME_EXECUTABLE`. Run `node tests/presets.js`; use `QA_OUTPUT` to choose a private results directory. It uses neutral API fixtures and a separate browser profile, preserves the browser sandbox, and does not calculate or verify a real workbook.
+The synthetic handler checks are in `tests/presets.js`. Run `node tests/presets.js` with Node.js; the script uses Node built-ins and prints its results to standard output. It uses neutral synthetic objects and does not start a browser, API server or workbook calculation. Real browser interaction, layout and download checks are separate.
 
 Export changes need tests for intended content and excluded private fields, plus inspection of actual PDF/PNG files. Interface changes need real browser checks, including unsaved edits and delayed requests. Packaging changes need clean installation, exact resource inventory, dependency notices and platform-specific testing.
 

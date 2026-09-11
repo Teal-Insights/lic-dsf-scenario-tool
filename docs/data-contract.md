@@ -1,18 +1,18 @@
 # Saved scenarios and comparison JSON
 
-The JSON Schema files in `schemas/` describe the portable scenario definition, historical v1 comparison and current v2 shareable comparison. They use JSON Schema draft 2020-12. Resolve the comparison schema's relative reference to `scenario-v1.schema.json` from the same directory; validation needs no network schema fetch.
+The [JSON Schema files](../schemas/comparison-v3.schema.json) in `schemas/` describe the portable scenario definition, historical v1/v2 comparisons and current v3 shareable comparison. They use JSON Schema draft 2020-12. Resolve the comparison schema's relative reference to `scenario-v1.schema.json` from the same directory; validation needs no network schema fetch.
 
 These schemas document shape. They are not an import feature, privacy filter, numerical verification receipt or publication approval. Reject non-standard JSON values such as NaN and Infinity before validation. Application checks add finite-number and relational constraints that JSON Schema does not express here.
 
 ## Scenario definitions
 
-`delta_paths` contains exactly 13 workbook row identifiers, each with 21 explicit numeric entries. The matching `input_years` array in a run supplies the year labels; offset zero is the first projection year. The row identifiers and units are described in the methodology. A numeric zero is an explicit adjustment; a blank editor field is invalid.
+`delta_paths` contains exactly 13 workbook row identifiers, each with 21 explicit numeric entries. The matching `input_years` array in a run supplies the year labels; offset zero is the first projection year. The [input reference](workbooks-inputs-outputs.md#enter-annual-adjustments) maps every row identifier to its name and units. A numeric zero is an explicit adjustment; a blank editor field is invalid.
 
 `terms: null` preserves supplied financing values and formulas. An object replaces all three financing terms. Interest rate is a decimal; grace and maturity are whole years. In addition to the schema, the application requires maturity to exceed grace. A scenario definition is not meaningful without its workbook identity and year mapping.
 
 ## Comparison records
 
-`format` is `lic-dsf-comparison-v2` for new exports. A record carries one workbook SHA-256, a selected comparator ID, an explicit `chart_context` and saved runs. Each run includes its intentionally shareable label, saved revision, scenario definition, numerical results, runtime identity and evidence. Private names and journal text are excluded by the application's explicit export selection.
+`format` is `lic-dsf-comparison-v3` for new exports. A record carries one workbook SHA-256, a selected comparator ID, an explicit `chart_context` and saved runs. Each run includes its intentionally shareable label, saved revision, scenario definition, numerical results, runtime identity and evidence. Private names and journal text are excluded by the application's explicit export selection.
 
 Every result has 36 observations: six supported indicators at projection offsets 0, 2, 5, 10, 15 and 20. Each observation retains reference baseline, as-supplied customized and selected scenario values, along with source cells and units. Missing/error observations must not be converted to zero. A consumer must check that metric/year pairs are unique and complete, years and units agree across runs, all workbook identities match the enclosing record, the comparator belongs to the runs and reference-baseline channels agree.
 
@@ -30,8 +30,26 @@ A run's exported `result_hash` identifies the original complete saved result, be
 
 `chart_context` contains exactly `workbook_sha256`, `label` and `revision`. Its full source hash must equal the enclosing comparison and every run. A never-set context is null with revision zero; clearing an existing label retains a positive revision. Labels are deliberately outward text, not uploaded filenames, internal names or journal excerpts. Runtime validation checks canonical text, supported fiscal-year notation, source equality and revision consistency; schema validation alone does not establish all of these relations.
 
-The context revision is independent of numerical scenario revisions. Editing a saved label changes neither the saved calculation nor its result hash. HTTP compare/export requests supply the full workbook hash and expected context revision, so another tab’s changed label cannot silently enter an export. The label and numerical runs are read from one storage snapshot. Downloaded JSON is a snapshot, not a live link to future label edits.
+Legend labels and the heading can be applied together through one atomic operation (`/api/chart-text`), which validates every value before writing, checks each case's expected revision and the context revision in one transaction, refuses a final label set with duplicates or the reserved “Reference baseline”, and rolls back completely on any refusal. The context revision is independent of numerical scenario revisions. Editing a saved label changes neither the saved calculation nor its result hash. HTTP compare/export requests supply the full workbook hash and expected context revision, so another tab’s changed label cannot silently enter an export. The label and numerical runs are read from one storage snapshot. Downloaded JSON is a snapshot, not a live link to future label edits.
 
-The renderer still reads old `lic-dsf-comparison-v1` records without a label and displays their workbook identifier. The historical v1 schema remains unchanged; strict downstream validators must select the v2 schema for new files. A supplied malformed context or unknown comparison version is rejected. The numerical `ida21-local-v1` contract and scenario-v1 definition remain unchanged.
+The renderer still reads old `lic-dsf-comparison-v1` records without a label and displays their workbook identifier. The historical v1 schema remains unchanged; strict downstream validators must select the v3 schema for new files. A supplied malformed context or unknown comparison version is rejected. The numerical `ida21-local-v1` contract and scenario-v1 definition remain unchanged.
 
-Workspace schema 1 migrates additively to schema 2 for the per-workbook context table. Existing scenario, result and journal records are not rewritten. Unsupported versions or malformed schemas are rejected before mutation. Preserve a stopped workspace backup before upgrading; the older application cannot open schema 2. There is still no comparison-JSON re-import interface.
+Workspace schemas 1 and 2 migrate additively to schema 3: the context table is retained or created, and a shared-explanation table is added. Existing scenario, result and journal records are not rewritten. Unsupported versions or malformed schemas are rejected before mutation. Preserve a stopped workspace backup before upgrading; older application versions cannot open schema 3. There is still no comparison-JSON re-import interface.
+
+## Shared explanations in version 3
+
+Each run has `shared_rationale`, a map of supported input row identifiers or `financing` to intentionally shared text (at most 1,500 characters per entry). These are scenario-revision metadata, separate from numerical `scenario` definitions and private journals. Unicode is normalized to NFC, outer whitespace removed, empty entries omitted, and hidden controls other than line breaks refused. Text is rendered literally. A PDF with unsupported font characters is refused with an explanation; JSON preserves valid Unicode.
+
+During workspace migration every historical scenario revision gets an empty map. No private journal is promoted to a shared note. Shared notes have their own stored integrity hash; missing or corrupted metadata blocks loading. Scenario saves record notes atomically with the revision. Omission by an older API caller preserves existing notes; an explicit empty map clears them on the new revision. A revision that changes the numerical definition requires calculation before comparison/export. A revision that changes only the name, the legend label or the shared explanations keeps the calculation of the revision it was saved from, because the numerical `definition_hash` is unchanged; a restored definition after an intervening numerical change still needs its own calculation. The exported `revision` is the current saved revision and `result_hash` identifies the unchanged saved result. Historical numerical results and their hashes are not rewritten.
+
+The PDF annex identifies adjusted drivers without notes as **No explanation provided**. PNGs contain charts only. Comparison JSON remains an export record, not an importable scenario file; scenario exchange is forthcoming.
+
+## Read a numerical definition
+
+For the tutorial's lower-growth case, key `"20"` contains `[-1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]`. All 12 other required row keys contain 21 zeros. `terms` is `null`. The run's `input_years` labels these entries 2024 through 2044 for the exact official example. This excerpt illustrates fields; it is not a complete importable file.
+
+An explicit financing override has the form `{"rate": 0.04, "grace_years": 5, "maturity_years": 20}`. The browser displays its rate as 4 percent. Preserve that unit conversion when reading JSON; storing 4 in the rate field means 400 percent.
+
+Consumers should preserve the original file and validate using the declared comparison version and the accompanying [scenario schema](../schemas/scenario-v1.schema.json). Use `points` and their explicit year/unit/source cells rather than relying on chart rounding or fixed array positions. Check application-level relations described above after shape validation.
+
+For sharing and continued editing, see [exchange and recovery](exchange-recovery.md). [Documentation index](README.md).

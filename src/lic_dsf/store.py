@@ -10,9 +10,11 @@ from pathlib import Path
 import re
 import sqlite3
 import tempfile
+import unicodedata
 import uuid
 
 from .chart_context import normalize_context_label, validate_chart_context
+from .rationale import normalize_rationale
 
 
 _BASE_SCHEMA = (
@@ -42,9 +44,30 @@ _CONTEXT_SCHEMA = """CREATE TABLE chart_context (
     workbook_sha TEXT PRIMARY KEY REFERENCES workbooks(sha), label TEXT,
     revision INTEGER NOT NULL CHECK (revision >= 1), updated TEXT NOT NULL
 )"""
+_RATIONALE_SCHEMA = """CREATE TABLE shared_rationale (
+    scenario_id TEXT NOT NULL, revision INTEGER NOT NULL,
+    notes TEXT NOT NULL, notes_hash TEXT NOT NULL,
+    PRIMARY KEY (scenario_id, revision),
+    FOREIGN KEY (scenario_id, revision) REFERENCES revisions(scenario_id, revision)
+)"""
 _BASE_TABLES = {"metadata", "workbooks", "scenarios", "revisions", "runs", "reasoning"}
 _SCHEMA_ERROR = "This saved workspace requires a different application version or a valid workspace backup."
 _CONTEXT_CONFLICT = "The chart context changed. Reload it before saving or exporting."
+_LABEL_CONFLICT = "A case was changed in another tab. Nothing was applied; choose Discard edits and keep saved text to reload, then apply again."
+_SHARE_LABEL_ERROR = "Use a legend label of 1 to 40 characters without paths, links or control characters."
+_SHARE_LABEL_PATTERN = re.compile(r"[\x00-\x1f/\\]|https?:|file:|[A-Za-z]:")
+
+
+def normalize_share_label(value):
+    """Return a legend label the chart renderer accepts, or refuse it."""
+    if not isinstance(value, str):
+        raise ValueError(_SHARE_LABEL_ERROR)
+    label = unicodedata.normalize("NFC", value).strip()
+    if not 1 <= len(label) <= 40 or _SHARE_LABEL_PATTERN.search(label):
+        raise ValueError(_SHARE_LABEL_ERROR)
+    if label.casefold() == "reference baseline":
+        raise ValueError("“Reference baseline” names the workbook baseline on every chart. Choose a different legend label.")
+    return label
 
 
 def canonical(value):
@@ -84,7 +107,11 @@ class ScenarioStore:
                         db.execute(statement)
                 if version < 2:
                     db.execute(_CONTEXT_SCHEMA)
-                    db.execute("INSERT OR REPLACE INTO metadata VALUES ('schema_version','2')")
+                if version < 3:
+                    db.execute(_RATIONALE_SCHEMA)
+                    db.execute("INSERT INTO shared_rationale SELECT scenario_id,revision,?,? FROM revisions",
+                               (canonical({}), digest({})))
+                    db.execute("INSERT OR REPLACE INTO metadata VALUES ('schema_version','3')")
         except sqlite3.DatabaseError as exc:
             raise ValueError(_SCHEMA_ERROR) from exc
         self.database.chmod(0o600)
@@ -99,16 +126,16 @@ class ScenarioStore:
         if ("table", "metadata") not in objects:
             raise ValueError(_SCHEMA_ERROR)
         versions = list(db.execute("SELECT value FROM metadata WHERE key='schema_version'"))
-        if len(versions) != 1 or versions[0][0] not in ("1", "2"):
+        if len(versions) != 1 or versions[0][0] not in ("1", "2", "3"):
             raise ValueError(_SCHEMA_ERROR)
         version = int(versions[0][0])
-        tables = _BASE_TABLES | ({"chart_context"} if version == 2 else set())
+        tables = _BASE_TABLES | ({"chart_context"} if version >= 2 else set()) | ({"shared_rationale"} if version >= 3 else set())
         if objects != {("table", name) for name in tables}:
             raise ValueError(_SCHEMA_ERROR)
         # Compare the known structural layout in memory; no DDL touches the caller's
         # file until its version and base tables have passed inspection.
         with closing(sqlite3.connect(":memory:")) as reference:
-            for statement in _BASE_SCHEMA + ((_CONTEXT_SCHEMA,) if version == 2 else ()):
+            for statement in _BASE_SCHEMA + ((_CONTEXT_SCHEMA,) if version >= 2 else ()) + ((_RATIONALE_SCHEMA,) if version >= 3 else ()):
                 reference.execute(statement)
             for name in tables:
                 for pragma in ("table_xinfo", "foreign_key_list"):
@@ -194,17 +221,87 @@ class ScenarioStore:
             db.execute("INSERT INTO chart_context VALUES (?,?,1,?)", (workbook_sha, label, now()))
             return self._chart_context(db, workbook_sha)
 
-    def save_scenario(self, workbook_sha, name, definition, *, scenario_id=None, expected_revision=None, share_label="Scenario"):
+    def save_chart_text(self, workbook_sha, labels, heading=None, *, expected_context_revision):
+        """Apply legend-label revisions and an optional heading together or not at all.
+
+        Every value is validated before any write, every expected revision is
+        compared inside one BEGIN IMMEDIATE transaction, and any refusal rolls
+        the whole operation back, so partially applied chart text cannot exist.
+        `labels` holds {scenario_id, expected_revision, share_label} items;
+        `heading` is None (unchanged) or {"label": text or None}. A label-only
+        revision keeps the case's name, inputs, explanations and calculation.
+        """
+        if not isinstance(workbook_sha, str) or not re.fullmatch(r"[0-9a-f]{64}", workbook_sha):
+            raise ValueError("A valid workbook SHA-256 is required.")
+        if type(expected_context_revision) is not int or expected_context_revision < 0:
+            raise ValueError("A valid chart context revision is required.")
+        if not isinstance(labels, list) or len(labels) > 50:
+            raise ValueError("Provide the legend labels to apply as a list.")
+        updates = {}
+        for item in labels:
+            if (not isinstance(item, dict) or set(item) != {"scenario_id", "expected_revision", "share_label"}
+                    or not isinstance(item["scenario_id"], str) or type(item["expected_revision"]) is not int
+                    or item["scenario_id"] in updates):
+                raise ValueError("Provide each legend label with its scenario and expected revision once.")
+            updates[item["scenario_id"]] = (item["expected_revision"], normalize_share_label(item["share_label"]))
+        heading_label = None
+        if heading is not None:
+            if not isinstance(heading, dict) or set(heading) != {"label"}:
+                raise ValueError("Provide the heading as a label.")
+            heading_label = normalize_context_label(heading["label"])
+        with self._connection() as db:
+            db.execute("BEGIN IMMEDIATE")
+            context = self._chart_context(db, workbook_sha)
+            if context["revision"] != expected_context_revision:
+                raise StaleResult(_CONTEXT_CONFLICT)
+            rows = {r["id"]: r for r in db.execute("""SELECT s.id, r.revision, r.name, r.share_label, r.definition, r.definition_hash
+                FROM scenarios s JOIN revisions r ON s.id=r.scenario_id AND s.current_revision=r.revision
+                WHERE s.workbook_sha=?""", (workbook_sha,))}
+            for sid, (expected, label) in updates.items():
+                if sid not in rows:
+                    raise ValueError("The scenario does not belong to this workbook.")
+                if rows[sid]["revision"] != expected:
+                    raise StaleResult(_LABEL_CONFLICT)
+            final = {sid: (updates[sid][1] if sid in updates else row["share_label"]) for sid, row in rows.items()}
+            for sid in updates:
+                key = unicodedata.normalize("NFC", final[sid]).strip().casefold()
+                for other, label in final.items():
+                    if other != sid and unicodedata.normalize("NFC", label).strip().casefold() == key:
+                        raise ValueError("Two cases would share the legend label “" + final[sid] + "”. Choose distinct labels so both can appear on one chart.")
+            stamp = now()
+            for sid, (expected, label) in updates.items():
+                row = rows[sid]
+                if label == row["share_label"]:
+                    continue
+                note = db.execute("SELECT notes,notes_hash FROM shared_rationale WHERE scenario_id=? AND revision=?", (sid, row["revision"])).fetchone()
+                if note is None:
+                    raise StaleResult("The saved shared explanations failed their integrity check.")
+                revision = row["revision"] + 1
+                db.execute("UPDATE scenarios SET current_revision=? WHERE id=?", (revision, sid))
+                db.execute("INSERT INTO revisions VALUES (?,?,?,?,?,?,?)",
+                           (sid, revision, row["name"], label, row["definition"], row["definition_hash"], stamp))
+                db.execute("INSERT INTO shared_rationale VALUES (?,?,?,?)", (sid, revision, note["notes"], note["notes_hash"]))
+            if heading is not None and not (context["revision"] > 0 and context["label"] == heading_label):
+                db.execute("""INSERT INTO chart_context VALUES (?,?,?,?)
+                    ON CONFLICT(workbook_sha) DO UPDATE SET label=excluded.label,
+                    revision=excluded.revision,updated=excluded.updated""", (workbook_sha, heading_label, context["revision"] + 1, stamp))
+            return {"chart_context": self._chart_context(db, workbook_sha),
+                    "scenarios": [self._scenario(db, sid) for sid in updates]}
+
+    def save_scenario(self, workbook_sha, name, definition, *, scenario_id=None, expected_revision=None, share_label="Scenario", shared_rationale=None):
         if not isinstance(name, str) or not name.strip() or len(name) > 160:
             raise ValueError("Name the scenario using at most 160 characters.")
         if not isinstance(share_label, str) or not share_label.strip() or len(share_label) > 100:
             raise ValueError("A short label for shared charts is required.")
+        notes = None if shared_rationale is None else normalize_rationale(shared_rationale)
         encoded = canonical(definition)
         identity = digest(definition)
         with self._connection() as db:
             db.execute("BEGIN IMMEDIATE")
             if db.execute("SELECT 1 FROM workbooks WHERE sha=?", (workbook_sha,)).fetchone() is None:
                 raise ValueError("Register the workbook before saving its scenarios.")
+            if notes is None:
+                notes = {} if scenario_id is None else self._scenario(db, scenario_id)["shared_rationale"]
             if scenario_id is None:
                 scenario_id, revision = uuid.uuid4().hex, 1
                 db.execute("INSERT INTO scenarios VALUES (?,?,?)", (scenario_id, workbook_sha, revision))
@@ -218,6 +315,8 @@ class ScenarioStore:
                 db.execute("UPDATE scenarios SET current_revision=? WHERE id=?", (revision, scenario_id))
             db.execute("INSERT INTO revisions VALUES (?,?,?,?,?,?,?)",
                        (scenario_id, revision, name.strip(), share_label.strip(), encoded, identity, now()))
+            db.execute("INSERT INTO shared_rationale VALUES (?,?,?,?)",
+                       (scenario_id, revision, canonical(notes), digest(notes)))
             snapshot = self._scenario(db, scenario_id)
         return snapshot
 
@@ -234,6 +333,14 @@ class ScenarioStore:
         result["definition"] = json.loads(result["definition"])
         if digest(result["definition"]) != result["definition_hash"]:
             raise StaleResult("The saved scenario failed its integrity check.")
+        note = db.execute("SELECT notes,notes_hash FROM shared_rationale WHERE scenario_id=? AND revision=?",
+                          (scenario_id, result['revision'])).fetchone()
+        if note is None:
+            raise StaleResult("The saved shared explanations failed their integrity check.")
+        notes = json.loads(note['notes'])
+        if digest(notes) != note['notes_hash'] or normalize_rationale(notes) != notes:
+            raise StaleResult("The saved shared explanations failed their integrity check.")
+        result['shared_rationale'] = notes
         return result
 
     def list_scenarios(self, workbook_sha):
@@ -285,11 +392,29 @@ class ScenarioStore:
             db.execute("BEGIN")
             return self._current_run(db, scenario_id, engine_identity=engine_identity, contract_version=contract_version)
 
+    @staticmethod
+    def _numerical_base_revision(db, scenario_id, revision, definition_hash):
+        """Earliest revision from which every later revision kept this exact definition.
+
+        Name, share-label and shared-explanation edits create revisions without
+        changing the numerical definition; their calculation stays current. Any
+        intervening numerical change breaks the chain, so a restored definition
+        still needs its own calculation.
+        """
+        base = revision
+        for row in db.execute("SELECT revision,definition_hash FROM revisions WHERE scenario_id=? AND revision<=? ORDER BY revision DESC",
+                              (scenario_id, revision)):
+            if row["definition_hash"] != definition_hash or row["revision"] != base:
+                break
+            base = row["revision"] - 1
+        return base + 1
+
     def _current_run(self, db, scenario_id, *, engine_identity, contract_version):
         scenario = self._scenario(db, scenario_id)
-        row = db.execute("""SELECT * FROM runs WHERE scenario_id=? AND revision=? AND definition_hash=?
-            AND engine_identity=? AND contract_version=? ORDER BY rowid DESC LIMIT 1""",
-            (scenario_id, scenario["revision"], scenario["definition_hash"], canonical(engine_identity), str(contract_version))).fetchone()
+        base = self._numerical_base_revision(db, scenario_id, scenario["revision"], scenario["definition_hash"])
+        row = db.execute("""SELECT * FROM runs WHERE scenario_id=? AND revision BETWEEN ? AND ? AND definition_hash=?
+            AND engine_identity=? AND contract_version=? ORDER BY revision DESC, rowid DESC LIMIT 1""",
+            (scenario_id, base, scenario["revision"], scenario["definition_hash"], canonical(engine_identity), str(contract_version))).fetchone()
         if row is None:
             raise StaleResult("Calculate this saved scenario with the current engine before viewing or exporting its results.")
         result = json.loads(row["result"])
@@ -302,7 +427,8 @@ class ScenarioStore:
                 or str(result.get("contract_version")) != str(contract_version)):
             raise StaleResult("The saved result's identities do not match this scenario and runtime.")
         return {"id": row["id"], "result_hash": row["result_hash"], "result": result,
-                "scenario_id": scenario_id, "revision": scenario["revision"], "share_label": scenario["share_label"]}
+                "scenario_id": scenario_id, "revision": scenario["revision"], "share_label": scenario["share_label"],
+                "shared_rationale": scenario["shared_rationale"]}
 
     def comparison(self, scenario_ids, comparator_id, *, engine_identity, contract_version,
                    workbook_sha=None, expected_chart_context_revision=None):

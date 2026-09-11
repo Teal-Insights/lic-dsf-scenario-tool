@@ -18,4 +18,4 @@ Use explicit view names: **Standard LIC-DSF** and **Policy briefing**. Both must
 
 Acceptance requires: traceability to the same full-precision values; inspection against actual standard-template chart references; independent review of the policy view's interpretation and visual design; readable actual PDF/PNG outputs without clipped labels; and verification that switching views or exporting cannot alter the scenario, comparator, numbers or verification status.
 
-The two views must be documented with examples and guidance on audience and use. The existence of this requirement does not mean either new view has been implemented or accepted in this repository.
+The two views must be documented with examples and guidance on audience and use. The current local application implements both views. This page records their design and acceptance requirements; [the chart guide](charts.md) describes the actual output and its limits. Version-specific test evidence remains separate from this requirement.

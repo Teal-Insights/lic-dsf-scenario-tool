@@ -22,6 +22,7 @@ from urllib.parse import parse_qs, urlsplit, unquote
 from . import CONTRACT_VERSION, calculate, engine_identity, inspect_workbook, imported_scenario, zero_scenario, normalize_scenario
 from .store import ScenarioStore, StaleResult, canonical
 from .chart_context import validate_chart_context
+from .rationale import normalize_rationale
 
 MAX_UPLOAD = 25 * 1024 * 1024
 OFFICIAL_EXAMPLE_SHA = "3a0a0b80c7cbc95ac953f25ecae0b437129d669ceb8aeefb54ab86dc8727ea86"
@@ -60,7 +61,7 @@ def calculation_lease(path):
 def shareable(comparison):
     """Explicit export fields; internal workbook names and reasoning never enter."""
     context = validate_chart_context(comparison.get("chart_context"), comparison["workbook_sha256"])
-    output = {"format": "lic-dsf-comparison-v2", "workbook_sha256": comparison["workbook_sha256"],
+    output = {"format": "lic-dsf-comparison-v3", "workbook_sha256": comparison["workbook_sha256"],
               "chart_context": context, "comparator_id": comparison["comparator_id"], "runs": []}
     if comparison["workbook_sha256"] == OFFICIAL_EXAMPLE_SHA:
         output["workbook_provenance"] = {
@@ -78,6 +79,7 @@ def shareable(comparison):
             raise ValueError("Resolve the calculation findings before exporting this result.")
         output["runs"].append({"scenario_id": run["scenario_id"], "share_label": run["share_label"],
             "revision": run["revision"], "result_hash": run["result_hash"],
+            "shared_rationale": normalize_rationale(run.get("shared_rationale", {})),
             "result": {key: r[key] for key in ("workbook_sha256", "contract_version", "engine_identity",
                 "scenario", "scenario_hash", "first_projection_year", "input_years", "points", "thresholds", "evidence", "warnings")}})
     return output
@@ -320,7 +322,8 @@ def handler_for(workspace):
                     info = inspect_workbook(workspace.path(data["workbook_sha"]))
                     definition = normalize_scenario(data["definition"], info["input_years"])
                     return self.send(200, workspace.store.save_scenario(data["workbook_sha"], data["name"], definition,
-                        scenario_id=data.get("scenario_id"), expected_revision=data.get("expected_revision"), share_label=data.get("share_label", "Scenario")))
+                        scenario_id=data.get("scenario_id"), expected_revision=data.get("expected_revision"), share_label=data.get("share_label", "Scenario"),
+                        shared_rationale=data.get("shared_rationale")))
                 if self.path == "/api/reasoning":
                     return self.send(200, {"id": workspace.store.add_reasoning(data["scenario_id"], data["text"])})
                 if self.path == "/api/chart-context":
@@ -328,6 +331,11 @@ def handler_for(workspace):
                         raise ValueError("Provide a workbook, chart label and its expected revision.")
                     return self.send(200, workspace.store.save_chart_context(data["workbook_sha"], data["label"],
                         expected_revision=data["expected_revision"]))
+                if self.path == "/api/chart-text":
+                    if set(data) != {"workbook_sha", "labels", "heading", "expected_context_revision"}:
+                        raise ValueError("Provide the workbook, legend labels, heading and expected context revision.")
+                    return self.send(200, workspace.store.save_chart_text(data["workbook_sha"], data["labels"], data["heading"],
+                        expected_context_revision=data["expected_context_revision"]))
                 if self.path == "/api/calculate":
                     return self.send(202, workspace.start_calculation(data["scenario_id"]))
                 if self.path == "/api/compare":

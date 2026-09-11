@@ -2,6 +2,8 @@
 
 The tool exposes a bounded part of the English LIC-DSF IDA21 workbook. It evaluates workbook formulas with a pinned Python evaluator and a version-specific semantic adapter. It does not introduce a separately calibrated economic model, run VBA, refresh external links or use Excel as its calculation runtime.
 
+[Documentation index](README.md) · [Full input/output reference](workbooks-inputs-outputs.md) · [Worked exercise](tutorial.md)
+
 ## Inputs and signs
 
 All 13 paths contain 21 explicit finite numeric adjustments. Their labels and workbook-year mapping are checked at intake. Period entry fills the chosen inclusive range; year-by-year entry exposes the complete horizon.
@@ -15,9 +17,9 @@ All 13 paths contain 21 explicit finite numeric adjustments. Their labels and wo
 | Official current transfers; private current transfers; net foreign direct investment | Percentage points of GDP |
 | GDP deflator in US dollars | Percentage points |
 
-Enter additions to the workbook's customized levels, not replacement levels. Transfers and FDI use the template's negative-inflow convention; inspect the intended sign. A UI blank is invalid, while explicit zero is no adjustment. At intake only, recognised literal empty delta cells may become zero where their level formula directly adds that cell. Formula inputs without saved values are not literal blanks and are not silently zeroed.
+The saved delta paths replace the workbook's delta-cell entries for the selected scenario. The template's level formulas then add those adjustments to their underlying assumptions. They do not stack an additional delta on top of a previously supplied delta. Transfers and FDI use the template's negative-inflow convention; inspect the intended sign. A UI blank is invalid, while explicit zero is no adjustment. At intake only, recognised literal empty delta cells may become zero where their level formula directly adds that cell. Formula inputs without saved values are not literal blanks and are not silently zeroed.
 
-An unchecked financing override retains the workbook's supplied financing values and formulas. An override requires all three terms: interest rate as a decimal, whole-year grace, and whole-year maturity greater than grace. Rate and grace must be nonnegative. These are external financing assumptions, not the framework discount rate.
+An unchecked financing override retains the workbook's supplied financing values and formulas. An override requires all three terms: interest rate entered as a percent in the interface (4 means 4%, stored as decimal 0.04), whole-year grace, and whole-year maturity greater than grace. Rate and grace must be nonnegative. These are external financing assumptions, not the framework discount rate.
 
 ## Three different numerical channels
 
@@ -53,6 +55,8 @@ Fresh Excel acceptance is not established for this preview. Hash and sentinel ch
 
 ## Saved records and portability
 
-Revisions bind the workbook, full scenario definition and definition hash. Runs retain their original result, engine identity, contract version and result hash. Current-result retrieval rejects a different revision, definition or runtime. A later calculation cannot attach itself to inputs edited while it ran.
+Revisions bind the workbook, full scenario definition and definition hash. Runs retain their original result, engine identity, contract version and result hash. A saved revision that changes only the name, legend label or shared explanations can reuse an already-current calculation from the uninterrupted sequence of revisions with the same numerical definition. The exported revision and shared text reflect the current saved revision; the original numerical result and result hash remain unchanged. Changed inputs, financing terms, workbook or runtime identity require a matching calculation. Returning to an earlier definition after an intervening numerical edit still requires calculation. A text-only save cannot make an absent or stale result current, and a calculation cannot be presented as the result of different numerical inputs.
 
-New JSON exports use `lic-dsf-comparison-v2`: workbook identity, selected comparator, labelled runs, revisions, hashes, scenario inputs, year mapping, source-cell points, thresholds, evidence and the explicit chart-context label/revision. The version-1 schema remains available for historical exports. Private reasoning is excluded. JSON is a portable record; this preview does not provide a JSON re-import workflow or guarantee schema migration across future versions.
+New JSON exports use `lic-dsf-comparison-v3`: workbook identity, selected comparator, labelled runs, revisions, hashes, scenario inputs, year mapping, source-cell points, thresholds, evidence and the explicit chart-context label/revision. The version-1 schema remains available for historical exports. Deliberately shared per-input explanations are included; private journals are excluded. JSON is a portable record; this preview does not provide a JSON re-import workflow or guarantee schema migration across future versions.
+
+The learning examples supply assumptions, not estimated policy effects: growth ±1 percentage point in years 1–3, funding rate ±1 percentage point around a matched supplied-rate control, and investment spending +1 point of GDP in years 1–3 with an optional assumed growth benefit of +0.25 points in years 4–8. Compare with the indicated control; funding may show no effect without relevant new financing needs.

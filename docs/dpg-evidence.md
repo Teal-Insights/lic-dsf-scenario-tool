@@ -1,20 +1,55 @@
-# Digital Public Goods: evidence and gaps
+# Digital Public Goods: evidence and remaining work
 
-This is an evidence plan, not a certification or recognition claim. The [Digital Public Goods Standard](https://www.digitalpublicgoods.net/standard) defines the review indicators; recognition follows successful external review and registry listing. The table below records this project's own candidate evidence and unresolved work, rather than reproducing the standard or asserting compliance.
+The application has useful evidence for a Digital Public Goods (DPG) assessment, with release and governance work still open. This register is a project self-assessment as of 11 September 2026. It does not claim DPGA recognition, certification, legal compliance or permission to distribute external assets.
 
-| Area | Candidate evidence | Unresolved acceptance work |
+The [current official DPG Standard](https://www.digitalpublicgoods.net/standard) lists nine indicators, including three parts of indicator 9. Its assessment concerns the core solution. Read the [maintained standard](https://github.com/DPGAlliance/DPG-Standard/blob/main/standard.md), [assessment questions](https://github.com/DPGAlliance/DPG-Standard/blob/main/standard-questions.md) and [review policy](https://github.com/DPGAlliance/dpg-resources/blob/main/docs/dpg-review-policy.md) before an application. The repository standard file still displays version 1.1.4; the release list has later maintenance entries. This record therefore identifies the pages and access date rather than declaring a new standard version.
+
+The assessed scope is the local single-user application, comparison-v3 JSON and PDF/PNG outputs. Scenario-file re-import, integrated annual outputs and a hosted calculator are outside this baseline. Package version `0.1.0` alone cannot identify the reviewed build because several different builds use it. Release evidence must bind the source manifest, runtime identity, exact Git commit and each distributed archive. An updated candidate needs its own acceptance.
+
+In this document:
+
+- [Evidence by indicator](#evidence-by-indicator): what exists and what remains.
+- [Design requirements for new features](#design-requirements-for-new-features): preserve privacy as capabilities expand.
+- [Release and recognition decisions](#release-and-recognition-decisions): who closes each remaining step.
+
+## How this register guides development
+
+We use the DPG Standard as a design guide. Formal nomination is optional and is not a promised deliverable. An open row in this register is not automatically a release blocker. Keep three decisions separate:
+
+- Make low-cost improvements that help users routinely: clear documentation and notices, accessible controls, portable outputs, deliberate sharing and accurate evidence labels.
+- Assess material trade-offs: local installation versus hosted storage, offline support, managed collaboration, third-party dependencies and bundled assets. Record the user benefit, operating cost, privacy implications and chosen limitation.
+- Defer recognition-specific evidence and declarations until the project chooses to apply. Unassessed conformity is different from a demonstrated failure.
+
+Actual confidentiality defects, unsupported rights claims and misleading analytical results still require correction for the offered scope. A disclaimer cannot substitute for those safeguards. Proportionate reporting arrangements serve users; this register does not mandate an automated moderation system for private local analysis or a particular cloud provider, programming language or certification programme.
+
+## Evidence by indicator
+
+Statuses describe project evidence, not DPGA decisions. “Demonstrated” means the named narrow behavior has evidence. “Partial” means a requirement retains open work. Role owners below are proposed working responsibilities; the project owner must confirm named people before external submission.
+
+| Indicator | Existing evidence and assessment | Next action and owner |
 | --- | --- | --- |
-| Development relevance | Public-debt scenario analysis supports discussion of fiscal choices | Document intended users, development relevance and actual use without overstating policy impact |
-| Open licensing | MIT application source | Verify exact distributed source, evaluator/dependency notices and asset rights; the external template has separate terms |
-| Ownership | Teal Insights identified as software owner | Complete maintainer, governance and contribution records |
-| Platform independence | Python calculation route does not invoke Excel | Test fresh installation, open dependencies, portability and actual target platforms |
-| Documentation | Installation, tutorial, methods, privacy, charts and limitations | Independent technical installation and analyst walkthrough; versioned schemas and contribution/security guidance |
-| Data extraction | Portable JSON assumptions, results and evidence | Independently test exclusion of private fields and document interoperability/re-import limits |
-| Privacy and applicable obligations | Local storage design and explicit sharing distinction | Review actual deployment responsibilities, retention and applicable obligations; this document is not legal advice |
-| Standards and practices | JSON records, explicit hashes, source-cell provenance, saved revisions | Dependency provenance, release reproducibility, accessible outputs and independent security review |
-| Privacy/security safeguards | Loopback binding, request token and origin checks, bounded uploads | Adversarial review, measured network behaviour, backup/restore tests and private vulnerability reporting |
-| Content and user protection | Local single-user analytical workflow; no public user-content service | Document applicability and proportionate handling before adding collaboration or hosted features |
+| 1. SDG relevance | Documented rationale: analysts compare fiscal, growth and financing assumptions with source references and retained reasoning. Our assessment connects this to [SDG target 17.4](https://sdgs.un.org/goals/goal17), concerning debt sustainability. This is relevance, without a claim of measured development impact. | Product owner: approve this use-case statement and add a public-safe demonstration and evidence of use when available. |
+| 2. Open licensing | Partial. Application [LICENSE](../LICENSE) is MIT. The pinned evaluator has an MIT notice in the inspected installation. [THIRD_PARTY.md](../THIRD_PARTY.md) separates dependencies, fonts and the external workbook. | Release maintainer: verify every shipped component's exact license text, attribution, source and hash. Project owner: resolve external template rights for each intended distribution/use. |
+| 3. Clear ownership | Partial. Application copyright identifies Teal Insights. External workbook and dependency ownership remain separate. | Project owner: confirm authority to license all admitted code and documentation, name maintainers and publish contribution/governance responsibilities. No license file alone establishes the entire chain of title. |
+| 4. Platform independence | Partial. `src/lic_dsf/engine.py` uses the Python evaluator without invoking Excel. Python, SQLite and browser-based operation are documented. Fresh Excel remains a separate verification activity. | Engineering and release maintainers: reproduce a clean install with public dependencies, document any restricted mandatory component and demonstrate an open alternative where needed. Actual Windows operation and complete offline/network evidence remain separate. |
+| 5. Documentation | Partial. Installation, tutorial, methods, architecture, input contracts, schemas, chart guidance and recovery instructions exist. | Documentation owner and independent tester: run the final release's cold-start tutorial with public inputs, verify commands and links, and record platform, commit and dependency versions. Instructions requiring private maintainer files fail this criterion. |
+| 6. Non-PII data extraction | Demonstrated mechanism, partial assessment. Comparison-v3 JSON exports assumptions, years, results and evidence in a non-proprietary format. `schemas/comparison-v3.schema.json` defines its structure. Shared text can contain personally identifiable information (PII), so the export is not automatically non-PII. | Engineering and independent tester: validate representative exports against the schema and test private-field exclusions. Scenario-file import remains a product requirement; the existing extraction mechanism is not proof that import exists. |
+| 7. Privacy and applicable laws | Partial. [Privacy and recovery](privacy-recovery.md) states retention, sharing and device responsibilities. No jurisdiction-specific compliance determination or approved legal declaration is recorded. | Project owner with appropriate legal support: identify relevant laws for the actual scope, users and locations, record design measures and approve the evidence. Avoid an unsupported global-compliance list. |
+| 8. Open standards and best practices | Partial. JSON schemas, explicit units, content hashes, revision binding and comparison tolerances are inspectable. The source has tests for stale results and selected export fields. Accessibility improvements have bounded checks. | Engineering/release owners: publish reproducible safe tests, dependency/notice closure and final accessibility/platform evidence. JSON syntax alone does not prove schema validation; a few keyboard checks do not establish full accessibility conformance. |
+| 9A. Data privacy and security | Partial and applicable. Workbooks, journals, labels and explanations can contain sensitive information or PII. Local host/token checks, bounded archive intake, no-store responses and field-selected exports are implemented in `app.py`, `workbooks.py` and the export path. Workspace encryption is not supplied by the app. | Security owner: independently test the actual build's request boundaries, export exclusions, recovery, network behavior and dependency risks. Establish a monitored private reporting route and supported-version policy before general release. |
+| 9B. Inappropriate and illegal content | Open. Local text/workbook storage and user-controlled downloads are content features. The application has no public feed, automated moderation service or established removal process. Evidence labels reduce misleading analytical claims but do not constitute content moderation. | Project/security owners: document permitted use, handling of reported illegal or misleading content, reporting/removal responsibilities and realistic response arrangements. Keep data local during investigation. Reassess before adding hosted text or a shared gallery. |
+| 9C. Protection from harassment | Open for contributor interaction. The local app has no chat or user directory, but public contribution/support channels involve people. | Project/community owner: establish conduct, private escalation, moderation and age-appropriate safeguards for contributor/support surfaces. Document the local app's limited interaction scope without claiming that the whole project is exempt. |
 
-Evidence must identify the exact release and test scope. Numerical correctness, installation, accessibility, privacy and platform operation require distinct checks. A passed structural intake, a hash match or successful development-machine run cannot close all of them.
+The [assessment questions](https://github.com/DPGAlliance/DPG-Standard/blob/main/standard-questions.md) make collection, storage and distribution relevant even where data entry is optional. Treat free-text labels and explanations accordingly. Formal statements about indicators 7–9 require a person authorized to represent the project, as stated in the [standard](https://github.com/DPGAlliance/DPG-Standard/blob/main/standard.md).
 
-The official IDA21 workbook is a separately downloaded asset. Neither a public download link nor the application's MIT license authorises bundling every workbook or other third-party asset into a release. Retain a reviewed distribution inventory and rights record. Submit no private workbook or analytical record as public evidence.
+## Design requirements for new features
+
+Scenario exchange should export only intentionally shared fields, carry format version, years, units and source identity, and refuse unsupported fields or versions. Exact-workbook replay and applying assumptions to a different workbook require different user choices. Imported labels and explanations are untrusted text. Never import a claimed “verified” status as proof of a new calculation, or move historical private journals into shared fields.
+
+A hosted illustrative calculator needs server-enforced rejection of workbook uploads and arbitrary file/URL input, visitor-specific state and authorization, bounded work queues, expiry/deletion, reviewed logs and a clear notice that custom assumptions are processed by the server. Verify that one visitor cannot list, calculate, export or retrieve another visitor's content, including after restart or expiry. Keep the supplied official workbook immutable and separately rights-reviewed. These are requirements for a future release, not claims about this local build.
+
+## Release and recognition decisions
+
+The release maintainer assembles exact source, history, documentation, dependencies and artifacts. A different reviewer evaluates them and any control changes. The project owner decides whether to authorize publication of that exact payload. [Release controls](release-controls.md) explains the sequence and the limits of clone-local and hosted checks.
+
+A separate DPGA application follows only when public evidence and authorized declarations are ready. Keep confidential inputs, local paths, internal receipts and private test fixtures out of the application. Public-safe reproducible summaries should support claims without exposing analytical work.

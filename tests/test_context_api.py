@@ -72,7 +72,7 @@ class ContextApiTests(unittest.TestCase):
         request = dict(self.request, expected_chart_context_revision=1)
         status, comparison = self.post("/api/compare", request)
         self.assertEqual(status, 200)
-        self.assertEqual(comparison["format"], "lic-dsf-comparison-v2")
+        self.assertEqual(comparison["format"], "lic-dsf-comparison-v3")
         self.assertEqual(comparison["chart_context"], context)
         self.assertEqual(comparison["runs"], old["runs"])
         exported = self.post("/api/export", dict(request, format="json"))
@@ -124,10 +124,47 @@ class ContextApiTests(unittest.TestCase):
         self.assertEqual(self.post("/api/chart-context", {"workbook_sha": self.sha, "label": "Valid", "expected_revision": 0, "extra": True})[0], 400)
         self.assertEqual(self.post("/api/chart-context", ["bad"])[0], 400)
 
-    def test_context_does_not_make_stale_numerical_results_current(self):
+    def get(self, route):
+        handler = object.__new__(app.handler_for(self.workspace))
+        handler.path = route
+        handler.headers = {"Host": "127.0.0.1:12345", "X-DSF-Token": self.workspace.token}
+        handler.server = SimpleNamespace(server_port=12345)
+        answers = []
+        handler.send = lambda *args: answers.append(args)
+        handler.do_GET()
+        self.assertEqual(len(answers), 1)
+        return answers[0]
+
+    def test_label_only_revision_keeps_results_current_for_compare_and_export(self):
         case = self.workspace.store.get_scenario(self.sid)
-        self.workspace.store.save_scenario(self.sha, "Revision", case["definition"], scenario_id=self.sid,
-                                           expected_revision=1, share_label="Revised")
+        before = self.post("/api/compare", self.request)[1]
+        with patch.object(self.workspace, "path", return_value=Path("synthetic.xlsx")), \
+             patch.object(app, "inspect_workbook", return_value={"input_years": [2030, 2031]}), \
+             patch.object(app, "normalize_scenario", side_effect=lambda definition, years: definition):
+            status, saved = self.post("/api/save", {"workbook_sha": self.sha, "name": "INTERNAL_RENAMED_SENTINEL",
+                "share_label": "Revised", "definition": case["definition"], "scenario_id": self.sid, "expected_revision": 1,
+                "shared_rationale": {"11": "Revenue effort assumed."}})
+        self.assertEqual(status, 200)
+        self.assertEqual(saved["revision"], 2)
+        status, loaded = self.get("/api/scenario?id=" + self.sid)
+        self.assertEqual(status, 200)
+        self.assertEqual(loaded["run"]["revision"], 2)
+        self.assertEqual(loaded["run"]["result"]["evidence"]["calculation"], "computed_unverified")
+        status, comparison = self.post("/api/compare", self.request)
+        self.assertEqual(status, 200)
+        run = comparison["runs"][0]
+        self.assertEqual((run["revision"], run["share_label"]), (2, "Revised"))
+        self.assertEqual(run["shared_rationale"], {"11": "Revenue effort assumed."})
+        self.assertEqual(run["result"], before["runs"][0]["result"])
+        self.assertEqual(run["result_hash"], before["runs"][0]["result_hash"])
+        exported = self.post("/api/export", dict(self.request, format="json"))
+        self.assertEqual(exported[0], 200)
+        self.assertNotIn("INTERNAL_", exported[1].decode())
+
+    def test_context_does_not_make_stale_numerical_results_current(self):
+        # A numerical change (not a label-only revision) makes the saved result stale.
+        self.workspace.store.save_scenario(self.sha, "Revision", {"delta_paths": {"11": [0.0, 2.0]}, "terms": None},
+                                           scenario_id=self.sid, expected_revision=1, share_label="Revised")
         self.workspace.store.seed_chart_context(self.sha, "New label")
         for route in ("/api/compare", "/api/export"):
             self.assertEqual(self.post(route, dict(self.request, expected_chart_context_revision=1))[0], 400)

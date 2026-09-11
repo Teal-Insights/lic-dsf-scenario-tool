@@ -42,7 +42,7 @@ class ChartsTest(unittest.TestCase):
             if version:c['format']=version
             if version=='lic-dsf-comparison-v2':c['chart_context']={'workbook_sha256':'a'*64,'label':None,'revision':0}
             self.assertEqual(charts.comparison_summary(c)['chart_context'],{'workbook_sha256':'a'*64,'label':None,'revision':0})
-        invalid=[{'format':'lic-dsf-comparison-v3'},{'format':None},{'format':'lic-dsf-comparison-v2'},
+        invalid=[{'format':'lic-dsf-comparison-v4'},{'format':None},{'format':'lic-dsf-comparison-v2'},
                  {'chart_context':{'workbook_sha256':'b'*64,'label':'Budget','revision':1}},
                  {'format':'lic-dsf-comparison-v1','chart_context':{'workbook_sha256':'a'*64,'label':' Budget ','revision':1}},
                  {'chart_context':{'workbook_sha256':'a'*64,'label':'Budget','revision':0}},
@@ -73,7 +73,7 @@ class ChartsTest(unittest.TestCase):
             artist=next(t for t in fig.texts if t.get_gid()=='chart-context-label')
             self.assertEqual(artist.get_text().replace('\n',''),label)
             self.assertFalse(artist.get_parse_math());self.assertFalse(artist.get_usetex())
-            self.assertLessEqual(artist.get_text().count('\n'),1)
+            self.assertLessEqual(artist.get_text().count('\n'),2)  # the heading is now the page title (larger type)
             texts=[t.get_text() for t in fig.texts]
             self.assertIn('Workbook SHA-256: '+sha[:12]+'…',texts)
             self.assertIn(charts.ILLUSTRATIVE_DISCLOSURE,texts)
@@ -143,7 +143,13 @@ class ChartsTest(unittest.TestCase):
             with self.assertRaises(ValueError):charts.comparison_summary(c)
     def test_takeaway_uses_observed_comparator_and_neutral_review(self):
         c=fixture();s=charts.comparison_summary(c)
-        self.assertEqual(charts._title(s,'ext_pv_gdp',True),'Scenario A is 3.0 pp lower in 2044')
+        self.assertEqual(charts._title(s,'ext_pv_gdp',True),'Scenario A is 3.0 pp of GDP below Scenario B in 2044')
+        # The same wording for every indicator is asserted by tests/presets.js against the app's text takeaways.
+        self.assertEqual([charts._title(s,m[0],True) for m in charts.METRICS],
+                         ['Scenario A is 3.0 pp of GDP below Scenario B in 2044','Scenario A is 3.0 pp of exports below Scenario B in 2044',
+                          'Scenario A is 3.0 pp of exports below Scenario B in 2044','Scenario A is 3.0 pp of revenue below Scenario B in 2044',
+                          'Scenario A is 3.0 pp of GDP below Scenario B in 2044','Scenario A is 3.0 pp of revenue below Scenario B in 2044'])
+        self.assertEqual((charts._tenths(0.25),charts._tenths(0.15),charts._tenths(1.05),charts._tenths(2.949)),('0.3','0.1','1.1','2.9'))
         c['runs'][0]['result']['evidence']['calculation']='review_required'
         self.assertEqual(charts._title(charts.comparison_summary(c),'ext_pv_gdp',True),'This comparison needs numerical review')
     def test_both_formats_views_use_same_record(self):
@@ -174,7 +180,7 @@ class ChartsTest(unittest.TestCase):
         positions=[p.get_offsets().tolist() for p in ax.collections]
         texts=[t.get_text() for t in ax.texts]
         self.assertIn(f'{row["reference_baseline"]:.2f}',texts)
-        self.assertIn(f'{row["differences"]["Scenario A"]:+.2f}',texts)
+        self.assertIn(f'{row["differences"]["Scenario A"]:+.2f}'.replace('-','\u2212'),texts)
         plt.close(fig)
         for r in summary['rows']:
             if r['metric']=='ext_pv_gdp':r['threshold']=10000

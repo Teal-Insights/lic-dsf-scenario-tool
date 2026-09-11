@@ -41,6 +41,7 @@ class ContextStoreTests(unittest.TestCase):
     def make_version1(self):
         # The base tables remain exactly the original version1 layout.
         with sqlite3.connect(self.s.database) as db:
+            db.execute("DROP TABLE shared_rationale")
             db.execute("DROP TABLE chart_context")
             db.execute("UPDATE metadata SET value='1' WHERE key='schema_version'")
 
@@ -52,7 +53,7 @@ class ContextStoreTests(unittest.TestCase):
         self.assertEqual(self.s.get_chart_context(self.sha),
                          {"workbook_sha256": self.sha, "label": None, "revision": 0})
         with sqlite3.connect(self.s.database) as db:
-            self.assertEqual(db.execute("SELECT value FROM metadata WHERE key='schema_version'").fetchone()[0], "2")
+            self.assertEqual(db.execute("SELECT value FROM metadata WHERE key='schema_version'").fetchone()[0], "3")
 
     def test_unknown_future_and_malformed_schemas_preserve_bytes(self):
         for name, statements in (
@@ -107,6 +108,7 @@ class ContextStoreTests(unittest.TestCase):
             candidate = store.ScenarioStore(directory)
             with sqlite3.connect(candidate.database) as db:
                 if case == "generated_column":
+                    db.execute("DROP TABLE shared_rationale")
                     db.execute("DROP TABLE chart_context")
                     db.execute("UPDATE metadata SET value='1' WHERE key='schema_version'")
                     db.execute("ALTER TABLE workbooks ADD COLUMN unexpected TEXT GENERATED ALWAYS AS ('unexpected') VIRTUAL")
