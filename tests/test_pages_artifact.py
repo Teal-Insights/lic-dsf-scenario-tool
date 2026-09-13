@@ -53,6 +53,8 @@ class PagesArtifactTests(unittest.TestCase):
                 member = zipfile.ZipInfo(name)
                 member.external_attr = (kind | 0o644) << 16
                 archive.writestr(member, data)
+        with zipfile.ZipFile(self.archive) as archive:
+            self.assertEqual(archive.namelist(), list(entries))
         self.digest = hashlib.sha256(self.archive.read_bytes()).hexdigest()
 
     def mock_serializer(self, command, **kwargs):
@@ -118,6 +120,9 @@ class PagesArtifactTests(unittest.TestCase):
             self.package(self.archive, self.digest, self.destination)
         self.assertEqual(self.destination.read_bytes(), b'preserve')
 
+    # The production packager runs on Linux. Preserve malformed ZIP names
+    # during both fixture writing and parsing, including on Windows hosts.
+    @patch('zipfile.os.sep', '/')
     def test_prior_malicious_archives(self):
         cases = [('wrong_hash', self.entries, stat.S_IFREG),
                  ('single_backslash', dict(self.entries, **{r'folder\name': b'x'}), stat.S_IFREG),
