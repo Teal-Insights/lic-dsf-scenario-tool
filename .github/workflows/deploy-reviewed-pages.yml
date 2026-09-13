@@ -1,0 +1,133 @@
+name: Deploy reviewed documentation archive
+
+on:
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: reviewed-github-pages
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    if: github.repository == 'Teal-Insights/lic-dsf-scenario-tool' && github.repository_id == '1366690131' && github.event.repository.private == false && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions: {}
+    env:
+      # Exact reviewed source-v6 site ZIP. Changing this pin requires new asset/source review.
+      REVIEWED_SHA256: 889eb9c441960bf3311adfa5c2823a5cba066c1db728b7b5385fb44f228ba8d6
+      ASSET_URL: https://github.com/Teal-Insights/lic-dsf-scenario-tool/releases/download/v0.1.0-alpha.1/LIC-DSF-documentation-0.1.0-alpha.1.zip
+    steps:
+      - name: Require final reviewed binding
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$REVIEWED_SHA256" =~ ^[0-9a-f]{64}$ ]]
+      - name: Download the fixed public release asset
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --location --proto '=https' --proto-redir '=https' \
+            --connect-timeout 20 --max-time 300 --max-filesize 536870912 \
+            --output "$RUNNER_TEMP/reviewed-site.zip" "$ASSET_URL"
+      - name: Verify and package exact site bytes without executing them
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path, PurePosixPath
+          import hashlib, io, os, stat, tarfile, zipfile
+
+          def package_site(archive, expected_sha, destination):
+              raw = archive.read_bytes()
+              if len(raw) > 536870912 or hashlib.sha256(raw).hexdigest() != expected_sha:
+                  raise ValueError('Reviewed site archive hash/size differs.')
+              with zipfile.ZipFile(io.BytesIO(raw)) as z:
+                  infos = z.infolist()
+                  if not infos or len(infos) > 10000:
+                      raise ValueError('Unexpected archive entry count.')
+                  names = set()
+                  files = {}
+                  total = 0
+                  for item in infos:
+                      name = item.filename
+                      path = PurePosixPath(name)
+                      if (not name or path.is_absolute() or '..' in path.parts
+                              or '\\' in name or ':' in name
+                              or any(ord(c) < 32 for c in name)
+                              or name.rstrip('/') != path.as_posix()
+                              or any(p in ('.git', '.github') for p in path.parts)):
+                          raise ValueError('Unsafe or excluded archive path.')
+                      key = name.rstrip('/').casefold()
+                      if key in names:
+                          raise ValueError('Duplicate archive path.')
+                      names.add(key)
+                      mode = item.external_attr >> 16
+                      kind = stat.S_IFMT(mode)
+                      if item.flag_bits & 1 or kind not in (0, stat.S_IFREG, stat.S_IFDIR):
+                          raise ValueError('Encrypted or non-regular archive member.')
+                      if item.is_dir():
+                          if item.file_size or kind not in (0, stat.S_IFDIR):
+                              raise ValueError('Invalid directory entry.')
+                          continue
+                      if kind not in (0, stat.S_IFREG):
+                          raise ValueError('Invalid file entry.')
+                      total += item.file_size
+                      if item.file_size > 134217728 or total > 1073741824:
+                          raise ValueError('Site exceeds reviewed deployment size limits.')
+                      files[name] = z.read(item)
+                  if 'index.html' not in files:
+                      raise ValueError('ZIP must contain site files at its root.')
+                  for name in files:
+                      if any(str(p) in files for p in PurePosixPath(name).parents):
+                          raise ValueError('File/directory collision.')
+              # One ordinary tar member set, uploaded using the same official
+              # upload-artifact primitive as upload-pages-artifact. No dotfile filter.
+              with tarfile.open(destination, 'x', format=tarfile.USTAR_FORMAT) as t:
+                  for name, data in sorted(files.items()):
+                      info = tarfile.TarInfo('./' + name)
+                      info.size = len(data)
+                      info.mode = 0o644
+                      info.uid = info.gid = 0
+                      info.uname = info.gname = ''
+                      info.mtime = 0
+                      t.addfile(info, io.BytesIO(data))
+              with tarfile.open(destination) as t:
+                  extracted = {m.name.removeprefix('./'): t.extractfile(m).read() for m in t}
+                  if extracted != files:
+                      raise ValueError('Pages payload differs from reviewed site files.')
+              print('Verified', len(files), 'site files; all bytes preserved.')
+
+          temporary = Path(os.environ['RUNNER_TEMP'])
+          package_site(temporary / 'reviewed-site.zip', os.environ['REVIEWED_SHA256'],
+                       temporary / 'artifact.tar')
+          PY
+      - name: Upload the verified Pages artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: github-pages
+          path: ${{ runner.temp }}/artifact.tar
+          if-no-files-found: error
+          retention-days: 1
+          overwrite: false
+
+  deploy:
+    needs: prepare
+    if: github.repository == 'Teal-Insights/lic-dsf-scenario-tool' && github.repository_id == '1366690131' && github.event.repository.private == false && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      actions: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy this run's verified artifact
+        id: deployment
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4.0.5
+        with:
+          artifact_name: github-pages
