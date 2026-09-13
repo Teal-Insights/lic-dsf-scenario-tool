@@ -12,7 +12,7 @@ Explore how alternative macroeconomic and financing assumptions change debt indi
 - [Information you can forward to IT](docs/it-review.md)
 - [Methods and limits](docs/methodology.md), [verification and reproducible checks](docs/verification.md)
 
-The website and alpha assets are being prepared; their links become available on publication. Desktop packages include Python and dependencies. Windows x64 and Apple Silicon/macOS14+ are the initial packaging targets. The Mac wrapper is unsigned and unnotarized. See [platform evidence](docs/accessibility-platforms.md) for the distinction between earlier tests and final-package acceptance. Technical users can also [install from source](docs/source-installation.md).
+Use the assets attached to the alpha release page; if no downloads are listed, the preview is not yet available. Desktop packages include Python and dependencies. The initial packages target Windows x64 and Apple Silicon/macOS 14+. The Mac wrapper is unsigned and unnotarized. See [platform evidence](docs/accessibility-platforms.md) for the distinction between earlier tests and final-package acceptance. Technical users can also [install from source](docs/source-installation.md).
 
 ## From workbook to briefing
 

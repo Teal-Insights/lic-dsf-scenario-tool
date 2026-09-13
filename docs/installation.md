@@ -2,12 +2,12 @@
 
 **Experimental preview: 0.1.0-alpha.1.** Start with the official illustrative workbook and the [walkthrough](tutorial.md). The application is developed iteratively with stakeholder feedback; it is not an official IMF or World Bank product.
 
-Use the files attached to the [GitHub alpha release](https://github.com/Teal-Insights/lic-dsf-scenario-tool/releases/tag/v0.1.0-alpha.1). These instructions describe the alpha packages being prepared; the download is available only when that release is published. Do not use an unrelated repository's files or the GitHub **Code → Download ZIP** button as a desktop installer.
+Use the files attached to the [GitHub alpha release](https://github.com/Teal-Insights/lic-dsf-scenario-tool/releases/tag/v0.1.0-alpha.1). Use only the assets attached to that release. If no downloads are listed, the preview is not yet available. Do not use an unrelated repository's files or the GitHub **Code → Download ZIP** button as a desktop installer.
 
 | Your computer | Package | Limits |
 | --- | --- | --- |
 | Windows with an Intel or AMD 64-bit processor | Windows x64 ZIP | Windows Server 2022 was tested with an earlier build. Final alpha execution and managed Windows 11 laptop testing remain pending. Windows on Arm is not covered. |
-| Mac with Apple Silicon (M1 or later), macOS 14 or later | Mac arm64 ZIP | Unsigned and not notarized by Apple. Final Finder/download launch checks remain pending. Intel Macs and older macOS are not covered by this package. |
+| Mac with Apple Silicon (M1 or later), macOS 14 or later | Mac arm64 ZIP | Unsigned and not notarized by Apple. Local application startup was observed on Apple Silicon; downloaded/quarantined launch and a complete final-package browser walkthrough remain unverified. Intel Macs and older macOS are not covered by this package. |
 | Technical users on other configurations | [Source installation](source-installation.md) | Requires Python, Git and dependency installation; no additional platform acceptance is implied. |
 
 Python and the calculation dependencies are included in the desktop ZIPs. You do not need to install Excel to calculate scenarios. You do need a browser and a separately obtained supported workbook. Downloading the package and official template requires internet access. Read the [IT information page](it-review.md) if you need technical details for institutional review.

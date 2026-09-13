@@ -56,7 +56,7 @@ python -m ruff check src tests scripts
 
 The Python tests cover component behavior, including validation, saved-state and export contracts. The JavaScript suites check interface handlers with neutral synthetic data. They do not launch a browser or calculate a real workbook. The initial lint gate targets implementation errors. Installation, actual browser interaction, package downloads and independent numerical checks remain separate evidence.
 
-The staged CI workflow runs these checks on Linux, Windows and Mac hosted runners. A workflow file is not proof that a run passed. Release notes must link the actual runs for the published candidate and distinguish source checks from downloadable desktop-package acceptance.
+The [CI workflow](https://github.com/Teal-Insights/lic-dsf-scenario-tool/actions/workflows/checks.yml) runs these checks on Linux, Windows and Mac hosted runners. A workflow file is not proof that a run passed. Release notes must link the actual runs for the published candidate and distinguish source checks from downloadable desktop-package acceptance.
 
 ## Compare a scenario with Excel
 

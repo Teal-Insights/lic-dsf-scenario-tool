@@ -2,7 +2,7 @@
 
 The LIC-DSF Scenario Analysis Tool is an MIT-licensed local application for comparing alternative macroeconomic and financing assumptions in a supported debt-sustainability workbook. It saves scenarios and produces charts, reports and underlying data. It does not use AI inference or send workbooks to a hosted calculator.
 
-**Release scope: experimental alpha `0.1.0-alpha.1`.** This is information for an institution's assessment, not a security certification or a claim of universal policy compliance. The first downloadable packages are being assembled and checked. Final asset fingerprints and execution evidence must accompany publication.
+**Release scope: experimental alpha `0.1.0-alpha.1`.** This is information for an institution's assessment, not a security certification or a claim of universal policy compliance. Consult the release's asset fingerprints and evidence before evaluating a download. Source checks, package inspection and actual desktop execution are distinct evidence; the limitations below remain relevant.
 
 [Download the two-page IT summary](https://github.com/Teal-Insights/lic-dsf-scenario-tool/releases/download/v0.1.0-alpha.1/LIC-DSF-IT-review-alpha1.pdf) once the alpha release is published. This page provides the fuller technical detail.
 

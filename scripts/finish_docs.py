@@ -32,9 +32,74 @@ def local_tooltips(site):
     path.write_text(marker + text, encoding='utf-8')
 
 
+def truthful_generated_skill(site):
+    """Keep generated skills usable without advertising an unpublished package."""
+    import html
+    import json
+
+    base = 'https://teal-insights.github.io/lic-dsf-scenario-tool/'
+    copies = ('skill.md', '.well-known/skills/default/SKILL.md',
+              '.well-known/agent-skills/lic-dsf-scenario-tool/SKILL.md')
+    originals = [(site / name).read_text(encoding='utf-8') for name in copies]
+    if len(set(originals)) != 1:
+        raise SystemExit('Generated skill copies differ; review the build output.')
+    original = originals[0]
+    old_install = '```bash\npip install lic-dsf-scenario-tool\n```'
+    new_install = ('Use the [source installation guide](' + base +
+                   'user-guide/source-installation.html).\n'
+                   'No PyPI installation is currently offered.\n')
+    replacements = [(old_install, new_install),
+                    ('[llms.txt](llms.txt)', '[llms.txt](' + base + 'llms.txt)'),
+                    ('[llms-full.txt](llms-full.txt)',
+                     '[llms-full.txt](' + base + 'llms-full.txt)')]
+    already_finished = new_install in original
+    if not already_finished and original.count(old_install) != 1:
+        raise SystemExit('Generated skill installation changed; review the build output.')
+    corrected = original
+    for old, new in replacements:
+        corrected = corrected.replace(old, new)
+    if 'pip install lic-dsf-scenario-tool' in corrected:
+        raise SystemExit('Unreviewed package installation remains in the generated skill.')
+
+    page = site / 'skills.html'
+    page_text = page.read_text(encoding='utf-8')
+    pattern = r'<code class="sourceCode markdown">(.*?)</code>'
+    matches = list(re.finditer(pattern, page_text, re.DOTALL))
+    matching = [m for m in matches if html.unescape(re.sub(r'<[^>]*>', '', m.group(1))).strip()
+                == original.strip()]
+    if len(matching) != 1:
+        raise SystemExit('Generated skill HTML differs from its text; review the build output.')
+    match = matching[0]
+    # Preserve numbered self-link anchors, avoiding stale syntax-highlighted text.
+    lines = corrected.rstrip('\n').split('\n')
+    code = '<code class="sourceCode markdown">' + '\n'.join(
+        f'<span id="cb1-{n}"><a href="#cb1-{n}" aria-hidden="true" tabindex="-1"></a>'
+        + html.escape(line) + '</span>' for n, line in enumerate(lines, 1)) + '</code>'
+    page_text = page_text[:match.start()] + code + page_text[match.end():]
+
+    search_path = site / 'search.json'
+    search = json.loads(search_path.read_text(encoding='utf-8'))
+    entries = [entry for entry in search if entry.get('href') == 'skills.html']
+    if len(entries) != 1:
+        raise SystemExit('Expected one generated skill search record.')
+    entry = entries[0]
+    if not already_finished and entry.get('text', '').count(old_install) != 1:
+        raise SystemExit('Generated skill search text changed; review the build output.')
+    for old, new in replacements:
+        entry['text'] = entry['text'].replace(old, new)
+    if 'pip install lic-dsf-scenario-tool' in entry['text']:
+        raise SystemExit('Unreviewed package installation remains in search.')
+    # Validate every representation before writing any corrected file.
+    for name in copies:
+        (site / name).write_text(corrected, encoding='utf-8')
+    page.write_text(page_text, encoding='utf-8')
+    search_path.write_text(json.dumps(search, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+
+
 def main():
     site = ROOT / 'great-docs/_site'
     local_tooltips(site)
+    truthful_generated_skill(site)
     resources = {
         'schemas/scenario-file-v1.schema.json': 'schemas/scenario-file-v1.schema.json',
         'schemas/scenario-v1.schema.json': 'schemas/scenario-v1.schema.json',
