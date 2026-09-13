@@ -1,0 +1,15 @@
+@font-face{font-family:Inter;src:url("assets/fonts/Inter-Regular.otf") format("opentype");font-weight:400;font-display:swap}
+@font-face{font-family:Inter;src:url("assets/fonts/Inter-SemiBold.otf") format("opentype");font-weight:600 800;font-display:swap}
+@font-face{font-family:"IBM Plex Serif";src:url("assets/fonts/IBMPlexSerif-SemiBold.otf") format("opentype");font-weight:500 800;font-display:swap}
+:root{--bs-body-font-family:Inter,system-ui,sans-serif;--bs-body-color:#2A2A2A;--bs-link-color:#143E5A;--bs-body-bg:#FAFAF7}
+body{font-family:Inter,system-ui,sans-serif;line-height:1.65}
+h1,h2,h3{font-family:"IBM Plex Serif",Georgia,serif;color:#143E5A;line-height:1.24}
+a{text-underline-offset:.15em}
+main a{font-weight:500}
+.navbar{background:#143E5A!important}
+.navbar .navbar-brand,.navbar .nav-link{color:#fff!important}
+#quarto-document-content{max-width:850px}
+.quarto-title-block .title{font-size:clamp(2rem,4vw,3rem)}
+.quarto-figure img{max-width:100%;height:auto}
+:focus-visible{outline:3px solid #0094BC;outline-offset:3px}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}

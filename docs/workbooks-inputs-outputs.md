@@ -77,10 +77,10 @@ The tool does not deliver the complete official stress-test suite, public debt s
 
 | Output | Contains | Use |
 | --- | --- | --- |
-| Standard PNG | Six-panel overview | Quick review of sampled debt paths and thresholds |
-| Policy PNG | Six-panel comparison overview | Explain levels and differences at labelled sampled years |
+| Standard PNG/SVG | Selected individual indicator | Quick review of sampled debt paths and thresholds |
+| Policy PNG/SVG | Selected indicator with policy headline | Explain levels and differences at labelled sampled years |
 | Either PDF | Overview, six indicator pages, shared-explanation annex | Readable briefing with the assumptions' rationale |
 | Comparison JSON v3 | Definitions, years, full-precision results, identities, evidence and shared explanations | Inspect or process the numerical record |
 | Stopped workspace backup | Workbook copies, saved revisions, journals, results and jobs | Private recovery, using a compatible runtime |
 
-There is no spreadsheet-export control or scenario-file re-import workflow in this version. JSON and chart exports are distinct from full workspace recovery. See [exchange and recovery](exchange-recovery.md).
+Download Excel tables provides results, annual macro adjustments, financing, shared explanations and evidence. The complete ZIP also contains the same tables as CSV, all individual charts and both reports. A separate scenario-file download/import workflow carries one case’s complete inputs and shared explanations for the exact same workbook; import opens a new unsaved draft requiring review, save and calculation. It does not translate assumptions between workbooks. Scenario files, comparison results and chart exports are distinct from full workspace recovery. See [exchange and recovery](exchange-recovery.md).

@@ -1,6 +1,14 @@
-include LICENSE README.md CONTRIBUTING.md SECURITY.md THIRD_PARTY.md
+include LICENSE README.md CONTRIBUTING.md CODE_OF_CONDUCT.md SECURITY.md THIRD_PARTY.md
+include AGENTS.md .gitignore great-docs.yml requirements-docs.txt site.css index.qmd
+include .github/CODEOWNERS
+recursive-include .github *.yml *.md
+recursive-include assets *.svg *.otf *.txt *.md
 recursive-include docs *.md
 recursive-include schemas *.json
 include src/lic_dsf/web.html
-include docs/template-source.json
+include docs/template-source.json docs/dependency-audit.json
 recursive-include tests *.py *.js
+recursive-include tests/fixtures *.json
+recursive-include scripts *.py
+recursive-include src/lic_dsf/fonts *.otf *.txt *.md
+recursive-include licenses *.txt

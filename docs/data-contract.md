@@ -1,14 +1,35 @@
-# Saved scenarios and comparison JSON
+# Scenario files, saved definitions and comparison JSON
 
-The [JSON Schema files](../schemas/comparison-v3.schema.json) in `schemas/` describe the portable scenario definition, historical v1/v2 comparisons and current v3 shareable comparison. They use JSON Schema draft 2020-12. Resolve the comparison schema's relative reference to `scenario-v1.schema.json` from the same directory; validation needs no network schema fetch.
+The JSON Schema files in `schemas/` describe the [scenario-file envelope](../schemas/scenario-file-v1.schema.json), [numerical definition](../schemas/scenario-v1.schema.json), historical v1/v2 comparisons and [current v3 comparison](../schemas/comparison-v3.schema.json). They use JSON Schema draft 2020-12. Resolve relative references to `scenario-v1.schema.json` from the same directory; validation needs no network schema fetch.
 
-These schemas document shape. They are not an import feature, privacy filter, numerical verification receipt or publication approval. Reject non-standard JSON values such as NaN and Infinity before validation. Application checks add finite-number and relational constraints that JSON Schema does not express here.
+These schemas document shape. The browser imports only the scenario-file envelope described below. Schema validation alone is not a privacy filter, numerical verification receipt or publication approval. Reject non-standard JSON values such as NaN and Infinity before validation. Application checks add finite-number and relational constraints that JSON Schema does not express here.
 
 ## Scenario definitions
 
 `delta_paths` contains exactly 13 workbook row identifiers, each with 21 explicit numeric entries. The matching `input_years` array in a run supplies the year labels; offset zero is the first projection year. The [input reference](workbooks-inputs-outputs.md#enter-annual-adjustments) maps every row identifier to its name and units. A numeric zero is an explicit adjustment; a blank editor field is invalid.
 
 `terms: null` preserves supplied financing values and formulas. An object replaces all three financing terms. Interest rate is a decimal; grace and maturity are whole years. In addition to the schema, the application requires maturity to exceed grace. A scenario definition is not meaningful without its workbook identity and year mapping.
+
+## Scenario files
+
+The envelope has exactly these six required fields:
+
+| Field | Meaning |
+| --- | --- |
+| `format` | The literal `lic-dsf-scenario-v1` |
+| `workbook_sha256` | Full lowercase 64-character SHA-256 of the exact original workbook |
+| `input_years` | All 21 projection years in order, exactly matching the loaded workbook |
+| `definition` | Complete `delta_paths` and `terms`, using the numerical definition above |
+| `share_label` | Deliberately shared chart label, 1–40 characters |
+| `shared_rationale` | Object mapping supported row identifiers or `financing` to shared explanations, at most 1,500 characters each; `{}` is valid |
+
+The maximum file size is 131,072 bytes. All 13 paths must contain finite numbers for every year. Unknown fields are rejected at the envelope, definition, path-key and financing levels; shared-explanation keys must be supported inputs. Labels cannot be blank, path/link-like or the reserved “Reference baseline”. Explanations allow line breaks but not tabs, carriage returns or hidden control characters. Normal saved-text validation still applies when the draft is saved, including distinct chart labels within the workbook.
+
+The [scenario-file schema](../schemas/scenario-file-v1.schema.json) describes structural and length limits. Application checks additionally enforce exact loaded-workbook/year equality, finite numbers, maturity greater than grace, text restrictions and saved-label uniqueness. A consumer must enforce these relations as well as the byte limit; schema validity alone does not prove that a file can be saved.
+
+Download rereads the current saved scenario revision and refuses a stale revision from another tab. It selects only the six fields above, excluding the workbook, internal name, private journal, chart heading, calculation results and evidence. Import opens a new unsaved draft, using `share_label` as both initial workspace name and chart label. It cannot overwrite an existing case or import a verified result. Review, save and calculate it through the normal workflow.
+
+Only exact-workbook, single-case exchange is supported. There is no cross-workbook/year remapping, upstream-model translation, bulk case-set import or comparison-JSON import. See the [exchange steps](exchange-recovery.md#share-or-reuse-one-scenario).
 
 ## Comparison records
 
@@ -42,7 +63,7 @@ Each run has `shared_rationale`, a map of supported input row identifiers or `fi
 
 During workspace migration every historical scenario revision gets an empty map. No private journal is promoted to a shared note. Shared notes have their own stored integrity hash; missing or corrupted metadata blocks loading. Scenario saves record notes atomically with the revision. Omission by an older API caller preserves existing notes; an explicit empty map clears them on the new revision. A revision that changes the numerical definition requires calculation before comparison/export. A revision that changes only the name, the legend label or the shared explanations keeps the calculation of the revision it was saved from, because the numerical `definition_hash` is unchanged; a restored definition after an intervening numerical change still needs its own calculation. The exported `revision` is the current saved revision and `result_hash` identifies the unchanged saved result. Historical numerical results and their hashes are not rewritten.
 
-The PDF annex identifies adjusted drivers without notes as **No explanation provided**. PNGs contain charts only. Comparison JSON remains an export record, not an importable scenario file; scenario exchange is forthcoming.
+The PDF annex identifies adjusted drivers without notes as **No explanation provided**. PNGs contain charts only. Comparison JSON remains a results export. Only the separate `lic-dsf-scenario-v1` envelope can be imported as editable assumptions.
 
 ## Read a numerical definition
 

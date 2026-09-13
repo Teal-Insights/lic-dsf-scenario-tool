@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "LIC-DSF single-scenario input file, version 1",
+  "description": "Input-only envelope. Applications additionally enforce the 131072-byte limit, exact loaded workbook and year equality, finite numbers, maturity greater than grace, text restrictions and saved-label uniqueness.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "workbook_sha256",
+    "input_years",
+    "definition",
+    "share_label",
+    "shared_rationale"
+  ],
+  "properties": {
+    "format": {
+      "const": "lic-dsf-scenario-v1"
+    },
+    "workbook_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$",
+      "minLength": 64,
+      "maxLength": 64
+    },
+    "input_years": {
+      "type": "array",
+      "minItems": 21,
+      "maxItems": 21,
+      "uniqueItems": true,
+      "items": {
+        "type": "integer"
+      }
+    },
+    "definition": {
+      "$ref": "scenario-v1.schema.json"
+    },
+    "share_label": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 40
+    },
+    "shared_rationale": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "11": {
+          "type": "string",
+          "maxLength": 1500
+        },
+        "13": {
+          "type": "string",
+          "maxLength": 1500
+        },
+        "15": {
+          "type": "string",
+          "maxLength": 1500
+        },
+        "17": {
+          "type": "string",
+          "maxLength": 1500
+        },
+        "20": {
+          "type": "string",
+          "maxLength": 1500
+        },
+        "22": {
+          "type": "string",
+          "maxLength": 1500
+        },
+        "24": {
+          "type": "string",
+          "maxLength": 1500
+        },
+        "28": {
+          "type": "string",
+          "maxLength": 1500
+        },
+        "30": {
+          "type": "string",
+          "maxLength": 1500
+        },
+        "32": {
+          "type": "string",
+          "maxLength": 1500
+        },
+        "34": {
+          "type": "string",
+          "maxLength": 1500
+        },
+        "36": {
+          "type": "string",
+          "maxLength": 1500
+        },
+        "38": {
+          "type": "string",
+          "maxLength": 1500
+        },
+        "financing": {
+          "type": "string",
+          "maxLength": 1500
+        }
+      }
+    }
+  }
+}

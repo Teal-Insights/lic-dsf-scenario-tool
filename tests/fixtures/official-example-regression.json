@@ -1,0 +1,1619 @@
+{
+  "format": "lic-dsf-official-example-regression-v1",
+  "provenance": "Recorded application calculations on the exact official World Bank illustrative workbook. This is a software regression reference, not fresh Microsoft Excel verification.",
+  "reference_engine_identity": {
+    "contract_version": "ida21-local-v1",
+    "core_sha256": "3c82baa7b20cb2bbf6fc4aadad4e42683de08b86a8e27b6f80ea33aa424a3d6f",
+    "dynamic_references": "cached_geometry_with_sentinel_checks",
+    "engine_revision": "15c51591b73b1dfb97088d46c6c0741bc59769b4",
+    "implementation": "CPython",
+    "machine": "arm64",
+    "platform": "Darwin",
+    "python": "3.11.15",
+    "versions": {
+      "PyYAML": "6.0.3",
+      "excel-grapher": "3.7.0",
+      "fastpyxl": "1.0.12",
+      "numpy": "2.4.6",
+      "openpyxl": "3.1.5"
+    }
+  },
+  "workbook_sha256": "3a0a0b80c7cbc95ac953f25ecae0b437129d669ceb8aeefb54ab86dc8727ea86",
+  "atol": 1e-06,
+  "cases": [
+    {
+      "case": "control",
+      "expected": {
+        "contract_version": "ida21-local-v1",
+        "workbook_sha256": "3a0a0b80c7cbc95ac953f25ecae0b437129d669ceb8aeefb54ab86dc8727ea86",
+        "first_projection_year": 2024,
+        "input_years": [
+          2024,
+          2025,
+          2026,
+          2027,
+          2028,
+          2029,
+          2030,
+          2031,
+          2032,
+          2033,
+          2034,
+          2035,
+          2036,
+          2037,
+          2038,
+          2039,
+          2040,
+          2041,
+          2042,
+          2043,
+          2044
+        ],
+        "scenario": {
+          "delta_paths": {
+            "11": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "13": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "15": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "17": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "20": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "22": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "24": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "28": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "30": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "32": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "34": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "36": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "38": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "terms": null
+        },
+        "scenario_hash": "815654a5176e3612b34ba82362ea90581a4454377c87da28a132566484095cf7",
+        "points": [
+          {
+            "as_supplied_customized": 44.88462374681341,
+            "metric": "ext_pv_gdp",
+            "reference_baseline": 44.88462374681342,
+            "scenario": 44.88462374681341,
+            "source_cells": {
+              "customized": "Output 3-1 Stress-external!C15",
+              "reference_baseline": "Output 3-1 Stress-external!C11"
+            },
+            "units": "percent of GDP",
+            "year": 2024
+          },
+          {
+            "as_supplied_customized": 41.226496964495915,
+            "metric": "ext_pv_gdp",
+            "reference_baseline": 41.226496964495894,
+            "scenario": 41.226496964495915,
+            "source_cells": {
+              "customized": "Output 3-1 Stress-external!E15",
+              "reference_baseline": "Output 3-1 Stress-external!E11"
+            },
+            "units": "percent of GDP",
+            "year": 2026
+          },
+          {
+            "as_supplied_customized": 37.69515784975717,
+            "metric": "ext_pv_gdp",
+            "reference_baseline": 37.69515784975715,
+            "scenario": 37.69515784975717,
+            "source_cells": {
+              "customized": "Output 3-1 Stress-external!H15",
+              "reference_baseline": "Output 3-1 Stress-external!H11"
+            },
+            "units": "percent of GDP",
+            "year": 2029
+          },
+          {
+            "as_supplied_customized": 31.20777849586985,
+            "metric": "ext_pv_gdp",
+            "reference_baseline": 31.207778495869835,
+            "scenario": 31.20777849586985,
+            "source_cells": {
+              "customized": "Output 3-1 Stress-external!M15",
+              "reference_baseline": "Output 3-1 Stress-external!M11"
+            },
+            "units": "percent of GDP",
+            "year": 2034
+          },
+          {
+            "as_supplied_customized": 30.27626060921542,
+            "metric": "ext_pv_gdp",
+            "reference_baseline": 30.276260609215427,
+            "scenario": 30.27626060921542,
+            "source_cells": {
+              "customized": "Output 3-1 Stress-external!R15",
+              "reference_baseline": "Output 3-1 Stress-external!R11"
+            },
+            "units": "percent of GDP",
+            "year": 2039
+          },
+          {
+            "as_supplied_customized": 27.576148902935653,
+            "metric": "ext_pv_gdp",
+            "reference_baseline": 27.57614890293564,
+            "scenario": 27.576148902935653,
+            "source_cells": {
+              "customized": "Output 3-1 Stress-external!W15",
+              "reference_baseline": "Output 3-1 Stress-external!W11"
+            },
+            "units": "percent of GDP",
+            "year": 2044
+          },
+          {
+            "as_supplied_customized": 109.06466686131708,
+            "metric": "ext_pv_exports",
+            "reference_baseline": 109.06466686131711,
+            "scenario": 109.06466686131708,
+            "source_cells": {
+              "customized": "Output 3-1 Stress-external!C39",
+              "reference_baseline": "Output 3-1 Stress-external!C35"
+            },
+            "units": "percent of exports",
+            "year": 2024
+          },
+          {
+            "as_supplied_customized": 99.55623134304112,
+            "metric": "ext_pv_exports",
+            "reference_baseline": 99.55623134304108,
+            "scenario": 99.55623134304112,
+            "source_cells": {
+              "customized": "Output 3-1 Stress-external!E39",
+              "reference_baseline": "Output 3-1 Stress-external!E35"
+            },
+            "units": "percent of exports",
+            "year": 2026
+          },
+          {
+            "as_supplied_customized": 93.70930948475188,
+            "metric": "ext_pv_exports",
+            "reference_baseline": 93.70930948475188,
+            "scenario": 93.70930948475188,
+            "source_cells": {
+              "customized": "Output 3-1 Stress-external!H39",
+              "reference_baseline": "Output 3-1 Stress-external!H35"
+            },
+            "units": "percent of exports",
+            "year": 2029
+          },
+          {
+            "as_supplied_customized": 83.65374794444863,
+            "metric": "ext_pv_exports",
+            "reference_baseline": 83.65374794444864,
+            "scenario": 83.65374794444863,
+            "source_cells": {
+              "customized": "Output 3-1 Stress-external!M39",
+              "reference_baseline": "Output 3-1 Stress-external!M35"
+            },
+            "units": "percent of exports",
+            "year": 2034
+          },
+          {
+            "as_supplied_customized": 83.32378011757065,
+            "metric": "ext_pv_exports",
+            "reference_baseline": 83.32378011757075,
+            "scenario": 83.32378011757065,
+            "source_cells": {
+              "customized": "Output 3-1 Stress-external!R39",
+              "reference_baseline": "Output 3-1 Stress-external!R35"
+            },
+            "units": "percent of exports",
+            "year": 2039
+          },
+          {
+            "as_supplied_customized": 78.54394783711997,
+            "metric": "ext_pv_exports",
+            "reference_baseline": 78.54394783712,
+            "scenario": 78.54394783711997,
+            "source_cells": {
+              "customized": "Output 3-1 Stress-external!W39",
+              "reference_baseline": "Output 3-1 Stress-external!W35"
+            },
+            "units": "percent of exports",
+            "year": 2044
+          },
+          {
+            "as_supplied_customized": 17.16811742810344,
+            "metric": "ext_ds_exports",
+            "reference_baseline": 17.168117428103436,
+            "scenario": 17.16811742810344,
+            "source_cells": {
+              "customized": "Output 3-1 Stress-external!C63",
+              "reference_baseline": "Output 3-1 Stress-external!C59"
+            },
+            "units": "percent of exports",
+            "year": 2024
+          },
+          {
+            "as_supplied_customized": 15.170490840774175,
+            "metric": "ext_ds_exports",
+            "reference_baseline": 15.170490840774168,
+            "scenario": 15.170490840774175,
+            "source_cells": {
+              "customized": "Output 3-1 Stress-external!E63",
+              "reference_baseline": "Output 3-1 Stress-external!E59"
+            },
+            "units": "percent of exports",
+            "year": 2026
+          },
+          {
+            "as_supplied_customized": 15.892193499237061,
+            "metric": "ext_ds_exports",
+            "reference_baseline": 15.892193499237058,
+            "scenario": 15.892193499237061,
+            "source_cells": {
+              "customized": "Output 3-1 Stress-external!H63",
+              "reference_baseline": "Output 3-1 Stress-external!H59"
+            },
+            "units": "percent of exports",
+            "year": 2029
+          },
+          {
+            "as_supplied_customized": 13.31944731409288,
+            "metric": "ext_ds_exports",
+            "reference_baseline": 13.319447314092885,
+            "scenario": 13.31944731409288,
+            "source_cells": {
+              "customized": "Output 3-1 Stress-external!M63",
+              "reference_baseline": "Output 3-1 Stress-external!M59"
+            },
+            "units": "percent of exports",
+            "year": 2034
+          },
+          {
+            "as_supplied_customized": 13.687222643483278,
+            "metric": "ext_ds_exports",
+            "reference_baseline": 13.687222643483288,
+            "scenario": 13.687222643483278,
+            "source_cells": {
+              "customized": "Output 3-1 Stress-external!R63",
+              "reference_baseline": "Output 3-1 Stress-external!R59"
+            },
+            "units": "percent of exports",
+            "year": 2039
+          },
+          {
+            "as_supplied_customized": 13.488655379547126,
+            "metric": "ext_ds_exports",
+            "reference_baseline": 13.48865537954713,
+            "scenario": 13.488655379547126,
+            "source_cells": {
+              "customized": "Output 3-1 Stress-external!W63",
+              "reference_baseline": "Output 3-1 Stress-external!W59"
+            },
+            "units": "percent of exports",
+            "year": 2044
+          },
+          {
+            "as_supplied_customized": 39.00150259737198,
+            "metric": "ext_ds_revenue",
+            "reference_baseline": 39.00150259737196,
+            "scenario": 39.00150259737198,
+            "source_cells": {
+              "customized": "Output 3-1 Stress-external!C87",
+              "reference_baseline": "Output 3-1 Stress-external!C83"
+            },
+            "units": "percent of revenue",
+            "year": 2024
+          },
+          {
+            "as_supplied_customized": 33.70220801442355,
+            "metric": "ext_ds_revenue",
+            "reference_baseline": 33.70220801442353,
+            "scenario": 33.70220801442355,
+            "source_cells": {
+              "customized": "Output 3-1 Stress-external!E87",
+              "reference_baseline": "Output 3-1 Stress-external!E83"
+            },
+            "units": "percent of revenue",
+            "year": 2026
+          },
+          {
+            "as_supplied_customized": 34.35365566847189,
+            "metric": "ext_ds_revenue",
+            "reference_baseline": 34.35365566847187,
+            "scenario": 34.35365566847189,
+            "source_cells": {
+              "customized": "Output 3-1 Stress-external!H87",
+              "reference_baseline": "Output 3-1 Stress-external!H83"
+            },
+            "units": "percent of revenue",
+            "year": 2029
+          },
+          {
+            "as_supplied_customized": 27.982939226947533,
+            "metric": "ext_ds_revenue",
+            "reference_baseline": 27.98293922694753,
+            "scenario": 27.982939226947533,
+            "source_cells": {
+              "customized": "Output 3-1 Stress-external!M87",
+              "reference_baseline": "Output 3-1 Stress-external!M83"
+            },
+            "units": "percent of revenue",
+            "year": 2034
+          },
+          {
+            "as_supplied_customized": 28.4743309891688,
+            "metric": "ext_ds_revenue",
+            "reference_baseline": 28.4743309891688,
+            "scenario": 28.4743309891688,
+            "source_cells": {
+              "customized": "Output 3-1 Stress-external!R87",
+              "reference_baseline": "Output 3-1 Stress-external!R83"
+            },
+            "units": "percent of revenue",
+            "year": 2039
+          },
+          {
+            "as_supplied_customized": 27.466053850470896,
+            "metric": "ext_ds_revenue",
+            "reference_baseline": 27.46605385047088,
+            "scenario": 27.466053850470896,
+            "source_cells": {
+              "customized": "Output 3-1 Stress-external!W87",
+              "reference_baseline": "Output 3-1 Stress-external!W83"
+            },
+            "units": "percent of revenue",
+            "year": 2044
+          },
+          {
+            "as_supplied_customized": 67.21815163198976,
+            "metric": "public_pv_gdp",
+            "reference_baseline": 67.16672649784864,
+            "scenario": 67.21815163198976,
+            "source_cells": {
+              "customized": "Output 3-2 Stress-public!D16",
+              "reference_baseline": "Output 3-2 Stress-public!D12"
+            },
+            "units": "percent of GDP",
+            "year": 2024
+          },
+          {
+            "as_supplied_customized": 57.92293003026573,
+            "metric": "public_pv_gdp",
+            "reference_baseline": 58.64753275306902,
+            "scenario": 57.92293003026573,
+            "source_cells": {
+              "customized": "Output 3-2 Stress-public!F16",
+              "reference_baseline": "Output 3-2 Stress-public!F12"
+            },
+            "units": "percent of GDP",
+            "year": 2026
+          },
+          {
+            "as_supplied_customized": 49.174429601832706,
+            "metric": "public_pv_gdp",
+            "reference_baseline": 51.41361618155978,
+            "scenario": 49.174429601832706,
+            "source_cells": {
+              "customized": "Output 3-2 Stress-public!I16",
+              "reference_baseline": "Output 3-2 Stress-public!I12"
+            },
+            "units": "percent of GDP",
+            "year": 2029
+          },
+          {
+            "as_supplied_customized": 42.92293683635118,
+            "metric": "public_pv_gdp",
+            "reference_baseline": 45.34552213563537,
+            "scenario": 42.92293683635118,
+            "source_cells": {
+              "customized": "Output 3-2 Stress-public!N16",
+              "reference_baseline": "Output 3-2 Stress-public!N12"
+            },
+            "units": "percent of GDP",
+            "year": 2034
+          },
+          {
+            "as_supplied_customized": 39.67017986971067,
+            "metric": "public_pv_gdp",
+            "reference_baseline": 41.36040042435846,
+            "scenario": 39.67017986971067,
+            "source_cells": {
+              "customized": "Output 3-2 Stress-public!S16",
+              "reference_baseline": "Output 3-2 Stress-public!S12"
+            },
+            "units": "percent of GDP",
+            "year": 2039
+          },
+          {
+            "as_supplied_customized": 36.330537063902455,
+            "metric": "public_pv_gdp",
+            "reference_baseline": 37.21939669319727,
+            "scenario": 36.330537063902455,
+            "source_cells": {
+              "customized": "Output 3-2 Stress-public!X16",
+              "reference_baseline": "Output 3-2 Stress-public!X12"
+            },
+            "units": "percent of GDP",
+            "year": 2044
+          },
+          {
+            "as_supplied_customized": 356.5274839588164,
+            "metric": "public_pv_revenue",
+            "reference_baseline": 356.2547232053229,
+            "scenario": 356.5274839588164,
+            "source_cells": {
+              "customized": "Output 3-2 Stress-public!D40",
+              "reference_baseline": "Output 3-2 Stress-public!D36"
+            },
+            "units": "percent of revenue",
+            "year": 2024
+          },
+          {
+            "as_supplied_customized": 305.3222461631856,
+            "metric": "public_pv_revenue",
+            "reference_baseline": 309.14175824219575,
+            "scenario": 305.3222461631856,
+            "source_cells": {
+              "customized": "Output 3-2 Stress-public!F40",
+              "reference_baseline": "Output 3-2 Stress-public!F36"
+            },
+            "units": "percent of revenue",
+            "year": 2026
+          },
+          {
+            "as_supplied_customized": 262.31770347904956,
+            "metric": "public_pv_revenue",
+            "reference_baseline": 274.2624944204217,
+            "scenario": 262.31770347904956,
+            "source_cells": {
+              "customized": "Output 3-2 Stress-public!I40",
+              "reference_baseline": "Output 3-2 Stress-public!I36"
+            },
+            "units": "percent of revenue",
+            "year": 2029
+          },
+          {
+            "as_supplied_customized": 241.2905765067958,
+            "metric": "public_pv_revenue",
+            "reference_baseline": 254.90909952934254,
+            "scenario": 241.2905765067958,
+            "source_cells": {
+              "customized": "Output 3-2 Stress-public!N40",
+              "reference_baseline": "Output 3-2 Stress-public!N36"
+            },
+            "units": "percent of revenue",
+            "year": 2034
+          },
+          {
+            "as_supplied_customized": 227.03011566992407,
+            "metric": "public_pv_revenue",
+            "reference_baseline": 236.7031488976448,
+            "scenario": 227.03011566992407,
+            "source_cells": {
+              "customized": "Output 3-2 Stress-public!S40",
+              "reference_baseline": "Output 3-2 Stress-public!S36"
+            },
+            "units": "percent of revenue",
+            "year": 2039
+          },
+          {
+            "as_supplied_customized": 210.68539505635968,
+            "metric": "public_pv_revenue",
+            "reference_baseline": 215.8400048497199,
+            "scenario": 210.68539505635968,
+            "source_cells": {
+              "customized": "Output 3-2 Stress-public!X40",
+              "reference_baseline": "Output 3-2 Stress-public!X36"
+            },
+            "units": "percent of revenue",
+            "year": 2044
+          }
+        ],
+        "thresholds": {
+          "ext_ds_exports": 15.0,
+          "ext_ds_revenue": 18.0,
+          "ext_pv_exports": 180.0,
+          "ext_pv_gdp": 40.0,
+          "public_pv_gdp": 55.0
+        },
+        "evidence": {
+          "cache_mismatch_probes": [],
+          "cache_passed": 76,
+          "cache_total": 76,
+          "calculation": "computed_unverified",
+          "dynamic_reference_check": "no_trigger_observed",
+          "exact_excel": "pending",
+          "formula_profile": "not_verified",
+          "review_probes": [],
+          "saved_cache": "matched",
+          "structural": "passed"
+        },
+        "warnings": [
+          "exact_excel_comparison_pending",
+          "external_links_present_not_refreshed",
+          "formula_changes_not_certified_by_structure",
+          "macros_present_not_executed",
+          "public_debt_service_revenue_not_included",
+          "sampled_years_only"
+        ]
+      }
+    },
+    {
+      "case": "lower-growth",
+      "expected": {
+        "contract_version": "ida21-local-v1",
+        "workbook_sha256": "3a0a0b80c7cbc95ac953f25ecae0b437129d669ceb8aeefb54ab86dc8727ea86",
+        "first_projection_year": 2024,
+        "input_years": [
+          2024,
+          2025,
+          2026,
+          2027,
+          2028,
+          2029,
+          2030,
+          2031,
+          2032,
+          2033,
+          2034,
+          2035,
+          2036,
+          2037,
+          2038,
+          2039,
+          2040,
+          2041,
+          2042,
+          2043,
+          2044
+        ],
+        "scenario": {
+          "delta_paths": {
+            "11": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "13": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "15": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "17": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "20": [
+              -1.0,
+              -1.0,
+              -1.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "22": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "24": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "28": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "30": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "32": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "34": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "36": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "38": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "terms": null
+        },
+        "scenario_hash": "78fd6d657bf8056b29b825bec911043c4f923605c40f498d11fb4da0ef9c9866",
+        "points": [
+          {
+            "as_supplied_customized": 44.88462374681341,
+            "metric": "ext_pv_gdp",
+            "reference_baseline": 44.88462374681342,
+            "scenario": 45.313326734790586,
+            "source_cells": {
+              "customized": "Output 3-1 Stress-external!C15",
+              "reference_baseline": "Output 3-1 Stress-external!C11"
+            },
+            "units": "percent of GDP",
+            "year": 2024
+          },
+          {
+            "as_supplied_customized": 41.226496964495915,
+            "metric": "ext_pv_gdp",
+            "reference_baseline": 41.226496964495894,
+            "scenario": 42.45938132341318,
+            "source_cells": {
+              "customized": "Output 3-1 Stress-external!E15",
+              "reference_baseline": "Output 3-1 Stress-external!E11"
+            },
+            "units": "percent of GDP",
+            "year": 2026
+          },
+          {
+            "as_supplied_customized": 37.69515784975717,
+            "metric": "ext_pv_gdp",
+            "reference_baseline": 37.69515784975715,
+            "scenario": 38.93774187193962,
+            "source_cells": {
+              "customized": "Output 3-1 Stress-external!H15",
+              "reference_baseline": "Output 3-1 Stress-external!H11"
+            },
+            "units": "percent of GDP",
+            "year": 2029
+          },
+          {
+            "as_supplied_customized": 31.20777849586985,
+            "metric": "ext_pv_gdp",
+            "reference_baseline": 31.207778495869835,
+            "scenario": 32.36028513390865,
+            "source_cells": {
+              "customized": "Output 3-1 Stress-external!M15",
+              "reference_baseline": "Output 3-1 Stress-external!M11"
+            },
+            "units": "percent of GDP",
+            "year": 2034
+          },
+          {
+            "as_supplied_customized": 30.27626060921542,
+            "metric": "ext_pv_gdp",
+            "reference_baseline": 30.276260609215427,
+            "scenario": 31.418831288116344,
+            "source_cells": {
+              "customized": "Output 3-1 Stress-external!R15",
+              "reference_baseline": "Output 3-1 Stress-external!R11"
+            },
+            "units": "percent of GDP",
+            "year": 2039
+          },
+          {
+            "as_supplied_customized": 27.576148902935653,
+            "metric": "ext_pv_gdp",
+            "reference_baseline": 27.57614890293564,
+            "scenario": 28.666251969909762,
+            "source_cells": {
+              "customized": "Output 3-1 Stress-external!W15",
+              "reference_baseline": "Output 3-1 Stress-external!W11"
+            },
+            "units": "percent of GDP",
+            "year": 2044
+          },
+          {
+            "as_supplied_customized": 109.06466686131708,
+            "metric": "ext_pv_exports",
+            "reference_baseline": 109.06466686131711,
+            "scenario": 110.10636766357682,
+            "source_cells": {
+              "customized": "Output 3-1 Stress-external!C39",
+              "reference_baseline": "Output 3-1 Stress-external!C35"
+            },
+            "units": "percent of exports",
+            "year": 2024
+          },
+          {
+            "as_supplied_customized": 99.55623134304112,
+            "metric": "ext_pv_exports",
+            "reference_baseline": 99.55623134304108,
+            "scenario": 102.53347485129478,
+            "source_cells": {
+              "customized": "Output 3-1 Stress-external!E39",
+              "reference_baseline": "Output 3-1 Stress-external!E35"
+            },
+            "units": "percent of exports",
+            "year": 2026
+          },
+          {
+            "as_supplied_customized": 93.70930948475188,
+            "metric": "ext_pv_exports",
+            "reference_baseline": 93.70930948475188,
+            "scenario": 96.7983452479024,
+            "source_cells": {
+              "customized": "Output 3-1 Stress-external!H39",
+              "reference_baseline": "Output 3-1 Stress-external!H35"
+            },
+            "units": "percent of exports",
+            "year": 2029
+          },
+          {
+            "as_supplied_customized": 83.65374794444863,
+            "metric": "ext_pv_exports",
+            "reference_baseline": 83.65374794444864,
+            "scenario": 86.74308991140606,
+            "source_cells": {
+              "customized": "Output 3-1 Stress-external!M39",
+              "reference_baseline": "Output 3-1 Stress-external!M35"
+            },
+            "units": "percent of exports",
+            "year": 2034
+          },
+          {
+            "as_supplied_customized": 83.32378011757065,
+            "metric": "ext_pv_exports",
+            "reference_baseline": 83.32378011757075,
+            "scenario": 86.46826712164099,
+            "source_cells": {
+              "customized": "Output 3-1 Stress-external!R39",
+              "reference_baseline": "Output 3-1 Stress-external!R35"
+            },
+            "units": "percent of exports",
+            "year": 2039
+          },
+          {
+            "as_supplied_customized": 78.54394783711997,
+            "metric": "ext_pv_exports",
+            "reference_baseline": 78.54394783712,
+            "scenario": 81.6488410813099,
+            "source_cells": {
+              "customized": "Output 3-1 Stress-external!W39",
+              "reference_baseline": "Output 3-1 Stress-external!W35"
+            },
+            "units": "percent of exports",
+            "year": 2044
+          },
+          {
+            "as_supplied_customized": 17.16811742810344,
+            "metric": "ext_ds_exports",
+            "reference_baseline": 17.168117428103436,
+            "scenario": 17.331869818715727,
+            "source_cells": {
+              "customized": "Output 3-1 Stress-external!C63",
+              "reference_baseline": "Output 3-1 Stress-external!C59"
+            },
+            "units": "percent of exports",
+            "year": 2024
+          },
+          {
+            "as_supplied_customized": 15.170490840774175,
+            "metric": "ext_ds_exports",
+            "reference_baseline": 15.170490840774168,
+            "scenario": 15.607922957258353,
+            "source_cells": {
+              "customized": "Output 3-1 Stress-external!E63",
+              "reference_baseline": "Output 3-1 Stress-external!E59"
+            },
+            "units": "percent of exports",
+            "year": 2026
+          },
+          {
+            "as_supplied_customized": 15.892193499237061,
+            "metric": "ext_ds_exports",
+            "reference_baseline": 15.892193499237058,
+            "scenario": 16.37049585216041,
+            "source_cells": {
+              "customized": "Output 3-1 Stress-external!H63",
+              "reference_baseline": "Output 3-1 Stress-external!H59"
+            },
+            "units": "percent of exports",
+            "year": 2029
+          },
+          {
+            "as_supplied_customized": 13.31944731409288,
+            "metric": "ext_ds_exports",
+            "reference_baseline": 13.319447314092885,
+            "scenario": 13.813127244353682,
+            "source_cells": {
+              "customized": "Output 3-1 Stress-external!M63",
+              "reference_baseline": "Output 3-1 Stress-external!M59"
+            },
+            "units": "percent of exports",
+            "year": 2034
+          },
+          {
+            "as_supplied_customized": 13.687222643483278,
+            "metric": "ext_ds_exports",
+            "reference_baseline": 13.687222643483288,
+            "scenario": 14.214678627107963,
+            "source_cells": {
+              "customized": "Output 3-1 Stress-external!R63",
+              "reference_baseline": "Output 3-1 Stress-external!R59"
+            },
+            "units": "percent of exports",
+            "year": 2039
+          },
+          {
+            "as_supplied_customized": 13.488655379547126,
+            "metric": "ext_ds_exports",
+            "reference_baseline": 13.48865537954713,
+            "scenario": 14.024920549142728,
+            "source_cells": {
+              "customized": "Output 3-1 Stress-external!W63",
+              "reference_baseline": "Output 3-1 Stress-external!W59"
+            },
+            "units": "percent of exports",
+            "year": 2044
+          },
+          {
+            "as_supplied_customized": 39.00150259737198,
+            "metric": "ext_ds_revenue",
+            "reference_baseline": 39.00150259737196,
+            "scenario": 39.37350548671244,
+            "source_cells": {
+              "customized": "Output 3-1 Stress-external!C87",
+              "reference_baseline": "Output 3-1 Stress-external!C83"
+            },
+            "units": "percent of revenue",
+            "year": 2024
+          },
+          {
+            "as_supplied_customized": 33.70220801442355,
+            "metric": "ext_ds_revenue",
+            "reference_baseline": 33.70220801442353,
+            "scenario": 34.67399121752965,
+            "source_cells": {
+              "customized": "Output 3-1 Stress-external!E87",
+              "reference_baseline": "Output 3-1 Stress-external!E83"
+            },
+            "units": "percent of revenue",
+            "year": 2026
+          },
+          {
+            "as_supplied_customized": 34.35365566847189,
+            "metric": "ext_ds_revenue",
+            "reference_baseline": 34.35365566847187,
+            "scenario": 35.38758684597343,
+            "source_cells": {
+              "customized": "Output 3-1 Stress-external!H87",
+              "reference_baseline": "Output 3-1 Stress-external!H83"
+            },
+            "units": "percent of revenue",
+            "year": 2029
+          },
+          {
+            "as_supplied_customized": 27.982939226947533,
+            "metric": "ext_ds_revenue",
+            "reference_baseline": 27.98293922694753,
+            "scenario": 29.02011555718721,
+            "source_cells": {
+              "customized": "Output 3-1 Stress-external!M87",
+              "reference_baseline": "Output 3-1 Stress-external!M83"
+            },
+            "units": "percent of revenue",
+            "year": 2034
+          },
+          {
+            "as_supplied_customized": 28.4743309891688,
+            "metric": "ext_ds_revenue",
+            "reference_baseline": 28.4743309891688,
+            "scenario": 29.571628567439546,
+            "source_cells": {
+              "customized": "Output 3-1 Stress-external!R87",
+              "reference_baseline": "Output 3-1 Stress-external!R83"
+            },
+            "units": "percent of revenue",
+            "year": 2039
+          },
+          {
+            "as_supplied_customized": 27.466053850470896,
+            "metric": "ext_ds_revenue",
+            "reference_baseline": 27.46605385047088,
+            "scenario": 28.558015029090544,
+            "source_cells": {
+              "customized": "Output 3-1 Stress-external!W87",
+              "reference_baseline": "Output 3-1 Stress-external!W83"
+            },
+            "units": "percent of revenue",
+            "year": 2044
+          },
+          {
+            "as_supplied_customized": 67.21815163198976,
+            "metric": "public_pv_gdp",
+            "reference_baseline": 67.16672649784864,
+            "scenario": 67.8825366685148,
+            "source_cells": {
+              "customized": "Output 3-2 Stress-public!D16",
+              "reference_baseline": "Output 3-2 Stress-public!D12"
+            },
+            "units": "percent of GDP",
+            "year": 2024
+          },
+          {
+            "as_supplied_customized": 57.92293003026573,
+            "metric": "public_pv_gdp",
+            "reference_baseline": 58.64753275306902,
+            "scenario": 59.70097492610561,
+            "source_cells": {
+              "customized": "Output 3-2 Stress-public!F16",
+              "reference_baseline": "Output 3-2 Stress-public!F12"
+            },
+            "units": "percent of GDP",
+            "year": 2026
+          },
+          {
+            "as_supplied_customized": 49.174429601832706,
+            "metric": "public_pv_gdp",
+            "reference_baseline": 51.41361618155978,
+            "scenario": 50.849003462553675,
+            "source_cells": {
+              "customized": "Output 3-2 Stress-public!I16",
+              "reference_baseline": "Output 3-2 Stress-public!I12"
+            },
+            "units": "percent of GDP",
+            "year": 2029
+          },
+          {
+            "as_supplied_customized": 42.92293683635118,
+            "metric": "public_pv_gdp",
+            "reference_baseline": 45.34552213563537,
+            "scenario": 44.51555021956731,
+            "source_cells": {
+              "customized": "Output 3-2 Stress-public!N16",
+              "reference_baseline": "Output 3-2 Stress-public!N12"
+            },
+            "units": "percent of GDP",
+            "year": 2034
+          },
+          {
+            "as_supplied_customized": 39.67017986971067,
+            "metric": "public_pv_gdp",
+            "reference_baseline": 41.36040042435846,
+            "scenario": 41.19461637410804,
+            "source_cells": {
+              "customized": "Output 3-2 Stress-public!S16",
+              "reference_baseline": "Output 3-2 Stress-public!S12"
+            },
+            "units": "percent of GDP",
+            "year": 2039
+          },
+          {
+            "as_supplied_customized": 36.330537063902455,
+            "metric": "public_pv_gdp",
+            "reference_baseline": 37.21939669319727,
+            "scenario": 37.794816540141994,
+            "source_cells": {
+              "customized": "Output 3-2 Stress-public!X16",
+              "reference_baseline": "Output 3-2 Stress-public!X12"
+            },
+            "units": "percent of GDP",
+            "year": 2044
+          },
+          {
+            "as_supplied_customized": 356.5274839588164,
+            "metric": "public_pv_revenue",
+            "reference_baseline": 356.2547232053229,
+            "scenario": 360.05140599030875,
+            "source_cells": {
+              "customized": "Output 3-2 Stress-public!D40",
+              "reference_baseline": "Output 3-2 Stress-public!D36"
+            },
+            "units": "percent of revenue",
+            "year": 2024
+          },
+          {
+            "as_supplied_customized": 305.3222461631856,
+            "metric": "public_pv_revenue",
+            "reference_baseline": 309.14175824219575,
+            "scenario": 314.6946425715364,
+            "source_cells": {
+              "customized": "Output 3-2 Stress-public!F40",
+              "reference_baseline": "Output 3-2 Stress-public!F36"
+            },
+            "units": "percent of revenue",
+            "year": 2026
+          },
+          {
+            "as_supplied_customized": 262.31770347904956,
+            "metric": "public_pv_revenue",
+            "reference_baseline": 274.2624944204217,
+            "scenario": 271.2506056602677,
+            "source_cells": {
+              "customized": "Output 3-2 Stress-public!I40",
+              "reference_baseline": "Output 3-2 Stress-public!I36"
+            },
+            "units": "percent of revenue",
+            "year": 2029
+          },
+          {
+            "as_supplied_customized": 241.2905765067958,
+            "metric": "public_pv_revenue",
+            "reference_baseline": 254.90909952934254,
+            "scenario": 250.24342618839563,
+            "source_cells": {
+              "customized": "Output 3-2 Stress-public!N40",
+              "reference_baseline": "Output 3-2 Stress-public!N36"
+            },
+            "units": "percent of revenue",
+            "year": 2034
+          },
+          {
+            "as_supplied_customized": 227.03011566992407,
+            "metric": "public_pv_revenue",
+            "reference_baseline": 236.7031488976448,
+            "scenario": 235.7543764890448,
+            "source_cells": {
+              "customized": "Output 3-2 Stress-public!S40",
+              "reference_baseline": "Output 3-2 Stress-public!S36"
+            },
+            "units": "percent of revenue",
+            "year": 2039
+          },
+          {
+            "as_supplied_customized": 210.68539505635968,
+            "metric": "public_pv_revenue",
+            "reference_baseline": 215.8400048497199,
+            "scenario": 219.17693756732825,
+            "source_cells": {
+              "customized": "Output 3-2 Stress-public!X40",
+              "reference_baseline": "Output 3-2 Stress-public!X36"
+            },
+            "units": "percent of revenue",
+            "year": 2044
+          }
+        ],
+        "thresholds": {
+          "ext_ds_exports": 15.0,
+          "ext_ds_revenue": 18.0,
+          "ext_pv_exports": 180.0,
+          "ext_pv_gdp": 40.0,
+          "public_pv_gdp": 55.0
+        },
+        "evidence": {
+          "cache_mismatch_probes": [],
+          "cache_passed": 76,
+          "cache_total": 76,
+          "calculation": "computed_unverified",
+          "dynamic_reference_check": "no_trigger_observed",
+          "exact_excel": "pending",
+          "formula_profile": "not_verified",
+          "review_probes": [],
+          "saved_cache": "matched",
+          "structural": "passed"
+        },
+        "warnings": [
+          "exact_excel_comparison_pending",
+          "external_links_present_not_refreshed",
+          "formula_changes_not_certified_by_structure",
+          "macros_present_not_executed",
+          "public_debt_service_revenue_not_included",
+          "sampled_years_only"
+        ]
+      }
+    }
+  ]
+}

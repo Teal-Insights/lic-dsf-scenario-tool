@@ -65,6 +65,33 @@ class RationaleStoreTests(StoreTests):
 
 
 class RationaleContractTests(unittest.TestCase):
+    def test_annex_continuations_keep_driver_context_and_every_body_line(self):
+        import matplotlib.pyplot as plt
+        summary=charts.comparison_summary(fixture())
+        body=[f'Assumption line {i:02d}.' for i in range(70)]
+        summary['assumptions']=[{'scenario':'Illustrative case','shared_explanations':[
+            {'label':'Primary expenditure','changed':True,'text':'\n'.join(body)},
+            {'label':'Financing terms','changed':False,'text':'Financing explanation.'}]}]
+        pages=[]
+        class Sink:
+            def savefig(self,fig):
+                pages.append([(t.get_text(),t.get_fontweight()) for t in fig.texts
+                              if t.get_fontsize()==10 and t.get_text().startswith(
+                                  ('Assumption line ', 'Financing explanation.',
+                                   'Primary expenditure', 'Financing terms'))])
+        charts._rationale_pages(Sink(),summary,plt,'briefing')
+        self.assertGreater(len(pages),1)
+        self.assertTrue(any('(continued)' in text for page in pages for text,_ in page))
+        collected=[text for page in pages for text,weight in page if weight!='bold' and text]
+        self.assertEqual(collected,body+['Financing explanation.'])
+        for page in pages:
+            nonempty=[(text,weight) for text,weight in page if text]
+            self.assertEqual(nonempty[0][1],'bold')
+            for i,(text,weight) in enumerate(nonempty):
+                if weight=='bold':
+                    self.assertLess(i+1,len(nonempty),'A driver heading must not be orphaned')
+                    self.assertNotEqual(nonempty[i+1][1],'bold')
+
     def test_normalization_missing_and_unchanged_notes(self):
         self.assertEqual(normalize_rationale({'20':'  Cafe\u0301\nmodel ', '13':' '}),{'20':'Café\nmodel'})
         entries=rationale_entries({'delta_paths':{'20':[0,-1]},'terms':None},{'13':'Why spending is unchanged'})

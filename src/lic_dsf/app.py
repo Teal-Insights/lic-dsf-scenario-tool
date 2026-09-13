@@ -160,7 +160,7 @@ class Workspace:
                 job_directory = self.directory / "jobs" / job_id
                 job_directory.mkdir(parents=True, mode=0o700)
                 input_path = job_directory / "request.json"
-                input_path.write_text(canonical({"workbook": str(path), "workbook_sha256": case["workbook_sha"], "scenario": case["definition"], "parent_pid": os.getpid(), "deadline_utc": time.time() + workspace_timeout(self.args)}))
+                input_path.write_text(canonical({"workbook": str(path), "workbook_sha256": case["workbook_sha"], "scenario": case["definition"], "parent_pid": os.getpid(), "deadline_utc": time.time() + workspace_timeout(self.args)}), encoding="utf-8")
                 input_path.chmod(0o600)
                 with calculation_lease(self.calculation_lock) as lease:
                     kwargs = {"start_new_session": True} if os.name != "nt" else {}
@@ -188,9 +188,9 @@ class Workspace:
                             raise ValueError("The calculation exceeded its time limit. Saved inputs are retained.")
                     if child.returncode != 0:
                         error_file = job_directory / "error.json"
-                        code = json.loads(error_file.read_text()).get("code") if error_file.is_file() else None
+                        code = json.loads(error_file.read_text(encoding="utf-8")).get("code") if error_file.is_file() else None
                         raise ValueError("Calculation could not finish" + (": " + code if code else ". Saved inputs are retained."))
-                    result = json.loads((job_directory / "result.json").read_text())
+                    result = json.loads((job_directory / "result.json").read_text(encoding="utf-8"))
                 run_id = self.store.record_run(scenario_id, result, expected_revision=case["revision"])
                 finished = {"status": "complete", "run_id": run_id, "scenario_id": scenario_id, "evidence": result["evidence"]}
             except Exception as exc:
@@ -212,7 +212,7 @@ class Workspace:
 def checked_comparison_request(data, *, export=False):
     """HTTP callers must name the source and outward context they actually saw."""
     required = {"scenario_ids", "comparator_id", "workbook_sha", "expected_chart_context_revision"}
-    allowed = required | ({"format", "view"} if export else set())
+    allowed = required | ({"format", "view", "metric"} if export else set())
     if not isinstance(data, dict) or not required.issubset(data):
         raise ValueError("Reload this application and reopen the workbook before comparing or exporting.")
     if set(data) - allowed:
@@ -261,6 +261,8 @@ def handler_for(workspace):
             route = urlsplit(self.path)
             if route.path == "/":
                 return self.send(200, (Path(__file__).parent / "web.html").read_bytes(), "text/html; charset=utf-8")
+            if route.path in ('/fonts/Inter-Regular.otf', '/fonts/Inter-SemiBold.otf', '/fonts/IBMPlexSerif-SemiBold.otf'):
+                return self.send(200, (Path(__file__).parent / route.path.lstrip('/')).read_bytes(), 'font/otf')
             # Browser same-origin policy and Host validation protect this boot token.
             if route.path == "/api/boot":
                 with workspace.store._connection() as db:
@@ -345,6 +347,16 @@ def handler_for(workspace):
                     fmt = data.get("format", "json")
                     if fmt == "json":
                         return self.send(200, canonical(comparison).encode(), "application/octet-stream", "scenario-comparison.json")
+                    if fmt == "zip":
+                        from .briefing_pack import render_pack
+                        return self.send(200, render_pack(comparison), "application/zip", "lic-dsf-briefing-packet.zip")
+                    if fmt == "xlsx":
+                        from .briefing_pack import tables, workbook_bytes
+                        return self.send(200, workbook_bytes(tables(comparison), comparison), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "scenario-tables.xlsx")
+                    if data.get("metric") is not None:
+                        from .charts import render_indicator
+                        body = render_indicator(comparison, data['metric'], data.get('view'), fmt)
+                        return self.send(200, body, 'image/svg+xml' if fmt == 'svg' else 'image/png', 'scenario-chart.' + fmt)
                     if fmt not in ("png", "pdf") or data.get("view") not in ("standard", "briefing"):
                         raise ValueError("Choose a chart view and supported export format.")
                     from .charts import render_comparison

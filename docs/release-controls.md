@@ -6,9 +6,9 @@ A release comprises source, Git history and metadata, generated packages and the
 
 | Environment | Available evidence/control | Limit |
 | --- | --- | --- |
-| Fresh source clone | Public source, license, documentation, schemas and tests | The reviewed clone does not contain the maintainer's private admission gate, private policy/receipts or installed pre-push hook. No release CI workflow was present in the assessed source. |
+| Fresh source clone | Public source, license, documentation, schemas and tests | The reviewed clone does not contain the maintainer's private admission gate, private policy/receipts or installed pre-push hook. The source includes hosted source-test and documentation-check workflows. They do not publish releases or replace confidential admission review. |
 | Maintainer release environment | Separately provisioned admission inventory, policy, independent review records and local push hook | These are local controls. They must be checked after cloning or moving machines. A hook cannot govern unrelated API uploads or a privileged actor who disables it. |
-| Hosted repository | Required reviews/checks, restricted release credentials, protected branches/tags and security reporting are proposed setup requirements | Configuration and failed-attempt tests must be observed in the actual repository. This document does not assert they are enabled. |
+| Hosted repository | Required reviews/checks, restricted release credentials, protected branches/tags and security reporting require separately verified repository configuration | Configuration and failed-attempt tests must be observed in the actual repository. This document does not assert they are enabled. |
 | Built archive or deployment | Exact archive/image hash, full member inventory, provenance/rights evidence and separate review | A reviewed source tree does not automatically approve generated metadata, bundled dependencies, downloads or an image filesystem. |
 
 Git documents [local hooks and pre-push behavior](https://git-scm.com/docs/githooks). Verify the installed hook and its referenced control files directly; do not infer installation from source documentation.

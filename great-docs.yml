@@ -1,0 +1,92 @@
+module: lic_dsf
+parser: numpy
+dynamic: false
+reference:
+- title: Exceptions
+  desc: Exception classes
+  contents:
+  - InputError
+  - IntakeError
+- title: Typed Dicts
+  desc: TypedDict definitions
+  contents:
+  - Calculation
+  - Point
+  - Scenario
+- title: Functions
+  desc: Utility functions
+  contents:
+  - calculate
+  - engine_identity
+  - imported_scenario
+  - inspect_workbook
+  - normalize_scenario
+  - zero_scenario
+- title: Constants
+  desc: Module-level constants and data
+  contents:
+  - CONTRACT_VERSION
+display_name: LIC-DSF Scenario Analysis Tool
+pypi: false
+repo: https://github.com/Teal-Insights/lic-dsf-scenario-tool
+github_style: icon
+announcement:
+  content: Early-stage preview. Developed iteratively; stakeholder feedback and co-design
+    are welcome. Read the methods and verification limits.
+  type: warning
+  dismissable: false
+site:
+  # The default Bootstrap theme avoids Flatly's remote Google font import.
+  theme: default
+  toc: true
+  toc-depth: 2
+  css: site.css
+user_guide:
+- section: Start here
+  contents:
+  - getting-started.qmd
+  - installation.qmd
+  - tutorial.qmd
+  - reading-briefing.qmd
+- section: Understand the analysis
+  contents:
+  - methodology.qmd
+  - verification.qmd
+  - workbooks-inputs-outputs.qmd
+  - charts.qmd
+  - template-source.qmd
+- section: Save, share and recover
+  contents:
+  - exchange-recovery.qmd
+  - privacy-recovery.qmd
+  - chart-context.qmd
+- section: Review and contribute
+  contents:
+  - it-review.qmd
+  - feedback.qmd
+  - contributing.qmd
+  - conduct.qmd
+  - security.qmd
+  - accessibility-platforms.qmd
+  - dpg-evidence.qmd
+- section: Technical reference
+  contents:
+  - source-installation.qmd
+  - architecture.qmd
+  - data-contract.qmd
+  - product-contract.qmd
+  - chart-views.qmd
+  - decisions.qmd
+  - privacy-and-publication.qmd
+  - release-controls.qmd
+  - readiness.qmd
+  - third-party.qmd
+  - website-notices.qmd
+  - license.qmd
+  - documentation-index.qmd
+homepage: index
+show_security: false
+site_url: https://teal-insights.github.io/lic-dsf-scenario-tool/
+# The authored site uses local Bootstrap/SVG icons and needs no Font Awesome CDN.
+include_in_header:
+  - text: '<!-- font-awesome omitted: locally bundled icons only -->'

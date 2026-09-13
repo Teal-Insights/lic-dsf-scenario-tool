@@ -1,0 +1,2 @@
+great-docs==0.17.0
+tinycss2==1.5.1

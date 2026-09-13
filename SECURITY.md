@@ -2,17 +2,25 @@
 
 This preview supports a single user running a local loopback service. It has no multi-user authentication or tenant isolation. Keep it off public proxies and shared servers. Analytical workspaces contain workbooks, saved assumptions, private journals and shared explanations. The app does not encrypt them.
 
-## Reporting status
+## Report a suspected vulnerability privately
 
-A maintained private vulnerability-reporting route and supported-version policy have not yet been established. Do not send a sensitive report to an invented or unverified address. Enabling and testing a private route, assigning a responsible maintainer and agreeing response procedures remain general-release requirements.
+Use [GitHub private vulnerability reporting](https://github.com/Teal-Insights/lic-dsf-scenario-tool/security/advisories/new). This setting was enabled and read back on 13 September 2026. Do not put exploit details, tokens or confidential analytical material in a public issue.
 
-Before release, the repository administrator should enable and test [GitHub private vulnerability reporting](https://docs.github.com/en/code-security/how-tos/report-and-fix-vulnerabilities/configure-vulnerability-reporting/configure-for-a-repository), verify that maintainers receive notifications, and publish the confirmed route here. Set supported versions, triage responsibility, disclosure coordination and response expectations only after maintainers accept them. An enabled setting alone does not prove a report will be read.
+Teal Insights owns security triage for this experimental preview. Support is best-effort, with no guaranteed response time or continuous monitoring. A recurring review routine is being arranged; enabling the GitHub setting alone does not verify notification delivery or timely review.
+
+If you cannot use GitHub, email [lte@tealinsights.com](mailto:lte@tealinsights.com?subject=LIC-DSF%20private%20security%20report) with a minimal initial description and a way to reply. Do not attach confidential workbooks, credentials, sensitive logs or weaponized examples to that first message. Agree an appropriate channel for sensitive evidence before sending it. Email is a contact fallback, not a claim of a specially secured reporting service.
+
+Include the application release, operating system, affected feature, likely impact and minimal reproduction steps using synthetic or official illustrative data where possible. We may ask for more information privately. We will assess credible reports, coordinate fixes and disclosure with reporters, and publish an advisory when appropriate; none of those steps has a guaranteed turnaround.
+
+## Supported versions and updates
+
+The first experimental release is `0.1.0-alpha.1` (Python package `0.1.0a1`). Report problems with the exact release you used. We intend to fix supported issues in the latest preview; older previews have no promised backports or long-term support. There is no automatic updater. Review release notes and back up local work before replacing the package. Unreleased development builds are not an additional supported distribution.
 
 For a non-sensitive public bug report, supply the exact source/release identity and a minimal synthetic reproducer. Do not attach a workbook, database, journal, diagnostic log, screenshot, token or exploit containing private data. Public issues are unsuitable for confidential evidence. Follow your organisation's incident procedures for an actual disclosure.
 
 ## Implemented local safeguards and limits
 
-The local service checks the Host header, validates a request token and allowed Origin for protected routes, bounds request and workbook-archive size, and sends no-store and content-security headers. Workbook intake does not execute macros or refresh external links. These measures do not establish a completed security or network audit. Another process with access to the same user account may read local files or use the local service.
+The local service checks the Host header, validates a request token and allowed Origin for protected routes, bounds request and workbook-archive size, and sends no-store and content-security headers. Workbook intake does not execute macros or refresh external links. These measures do not establish a completed security or network audit. Loopback is shared by the host, not isolated to one operating-system account. Any process able to reach this host's loopback service can obtain its boot token and use its APIs, including a process belonging to another local account. Host/origin/token checks protect the browser request boundary; they are not OS-user authentication. Use this preview on a trusted single-user computer, not a shared host with untrusted local users or processes. Local file permissions remain a separate control.
 
 Exports select fields explicitly. Private journals, internal scenario names and original filenames are excluded from the comparison export. Shared explanations and chart labels are included where documented and may contain sensitive information. Inspect downloads before sharing. Hashes identify files and do not anonymise them.
 

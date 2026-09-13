@@ -7,6 +7,7 @@ import re
 from pathlib import Path, PurePosixPath
 import stat
 import zipfile
+from xml.parsers import expat
 
 from .contracts import CONTRACT_VERSION
 from types import SimpleNamespace
@@ -46,6 +47,25 @@ def _additive_input(formula, address):
     return re.fullmatch(expression, compact) is not None
 
 
+def _check_xml_part(content, *, required_xml):
+    # Parse declarations in their actual encoding rather than searching ASCII
+    # bytes. Scan every part: relationship targets need not end in .xml.
+    parser = expat.ParserCreate()
+    def reject(*args):
+        raise IntakeError("xml_declaration_not_supported")
+    parser.StartDoctypeDeclHandler = reject
+    parser.EntityDeclHandler = reject
+    parser.ExternalEntityRefHandler = reject
+    parser.SetParamEntityParsing(expat.XML_PARAM_ENTITY_PARSING_NEVER)
+    try:
+        parser.Parse(content, True)
+    except expat.ExpatError as exc:
+        if required_xml:
+            raise IntakeError("invalid_workbook_xml") from exc
+        # Binary/opaque parts may not be XML. If another reader treats one as
+        # XML, it cannot parse past a malformed prefix to resolve a declaration.
+
+
 def check_archive(path):
     path = Path(path)
     if not path.is_file():
@@ -72,10 +92,8 @@ def check_archive(path):
                     raise IntakeError("unsupported_archive_entry")
                 if info.file_size > MAX_PART or info.file_size > max(1, info.compress_size) * 1000:
                     raise IntakeError("expanded_part_limit")
-                if name.endswith('.xml') or name.endswith('.rels'):
-                    content = archive.read(info)
-                    if b'<!DOCTYPE' in content.upper() or b'<!ENTITY' in content.upper():
-                        raise IntakeError("xml_declaration_not_supported")
+                if not info.is_dir():
+                    _check_xml_part(archive.read(info), required_xml=name.lower().endswith(('.xml', '.rels')))
             if not {'[content_types].xml', 'xl/workbook.xml', 'xl/_rels/workbook.xml.rels'} <= names:
                 raise IntakeError("invalid_workbook_package")
             return {'macro_part_present': 'xl/vbaproject.bin' in names,

@@ -1,43 +1,57 @@
 # LIC-DSF Scenario Analysis Tool
 
-Explore how alternative macroeconomic and financing assumptions change debt indicators in a supported World Bank LIC-DSF workbook. Save cases and their reasoning, compare them with a chosen control, and prepare charts with the underlying data.
+Explore how alternative macroeconomic and financing assumptions change debt indicators in a supported World Bank LIC-DSF workbook. Save separate scenarios and their explanations, compare the results and export a briefing with charts and underlying data.
 
-**Work in progress.** This local application supports 13 customized input paths and six debt indicators at selected years. Fresh Microsoft Excel verification and actual Windows acceptance remain pending. It is not an official IMF/World Bank product or a formally recognized Digital Public Good.
+**Early-stage alpha, developed iteratively.** We welcome co-design with ministries of finance, international financial institutions and other stakeholders. This is not an official IMF or World Bank product. A successful calculation is not independent fresh Excel verification, which remains pending.
 
-## Get your first result
+## Start here
 
-1. [Install and start a local workspace](docs/installation.md). A technical colleague may need to help with Python and dependencies.
-2. [Run the public illustrative exercise](docs/tutorial.md). Save a no-change control and a lower-growth case, calculate both, and download a briefing.
-3. [Use your own supported workbook](docs/workbooks-inputs-outputs.md). Check its projection years, units and baseline before changing assumptions.
+- [Documentation and walkthroughs](https://teal-insights.github.io/lic-dsf-scenario-tool/)
+- [Experimental release: Windows and Mac downloads](https://github.com/Teal-Insights/lic-dsf-scenario-tool/releases/tag/v0.1.0-alpha.1)
+- [Installation guide](docs/installation.md) and [first scenario walkthrough](docs/tutorial.md)
+- [Information you can forward to IT](docs/it-review.md)
+- [Methods and limits](docs/methodology.md), [verification and reproducible checks](docs/verification.md)
 
-The app runs in your browser on your computer. It preserves the original workbook and saves scenarios separately. Excel is not needed to run calculations: a pinned Python evaluator reads workbook formulas. Macros do not run and external links do not refresh. [Methods and evidence](docs/methodology.md) explain what its checks establish.
+The website and alpha assets are being prepared; their links become available on publication. Desktop packages include Python and dependencies. Windows x64 and Apple Silicon/macOS14+ are the initial packaging targets. The Mac wrapper is unsigned and unnotarized. See [platform evidence](docs/accessibility-platforms.md) for the distinction between earlier tests and final-package acceptance. Technical users can also [install from source](docs/source-installation.md).
 
-The separately downloaded [World Bank template](docs/template-source.md) contains Ghana-labelled **purely illustrative** worked-example data. It is not an official Ghana forecast or DSA. The repository does not include the workbook binary, and the software license does not grant rights to that asset.
-
-## Work through five steps
+## From workbook to briefing
 
 | Step | What you do |
 | --- | --- |
-| Upload | Choose a completed supported workbook, or try the configured official example. |
-| Check baseline | Review the projection years and saved baseline values. |
-| Create scenarios | Edit annual assumptions, explain them, save a revision and calculate it. |
-| Compare | Select calculated cases and choose which case differences are measured against. |
-| Export briefing | Review both chart views, edit the heading and legend labels beside them, and download PDF, PNG and data-and-assumptions JSON. |
+| 1. Upload | Choose a completed supported workbook. For a first run, use the separately downloaded official illustrative example. |
+| 2. Check baseline | Review projection years, source identity and the baseline saved in your workbook. |
+| 3. Create scenarios | Edit annual assumptions, explain changes, save revisions and calculate. |
+| 4. Compare | Select calculated cases and choose the case against which differences should be measured. |
+| 5. Export briefing | Review both chart views, edit titles beside the charts and download the complete packet. |
 
-Each of the 13 inputs has a 21-year editor, period entry, unit/sign help and an optional shared explanation. Blank is unfinished; zero adds no adjustment. Financing overrides use a rate in percent and grace/maturity in years. A separate private journal retains notes excluded from briefing exports.
+The app runs in your browser on your own computer. A pinned Python evaluator reads the supported workbook formulas deterministically; it does not use AI inference or random sampling. Installed Excel is not required for calculation. VBA macros do not run and external workbook links do not refresh.
 
-Standard LIC-DSF and Policy briefing charts appear together and use the same calculation. The reference baseline, workbook-supplied customized case and your saved scenario remain distinct. Current outputs contain six sampled years, so charts cannot establish annual peaks or first threshold crossings. [Read both chart views](docs/charts.md).
+The supported [World Bank template](docs/template-source.md) contains Ghana-labelled **purely illustrative** data. Those figures are not an official Ghana forecast or DSA. The workbook binary is supplied separately, and the application's license does not grant rights to it. Users can upload their own completed workbook in the supported format; arbitrary template versions are not supported.
 
-Growth, funding-cost and investment examples supply editable assumptions and matched controls. They do not estimate a policy effect or an investment return. Scenario-file download/re-import, complete annual outputs and online calculation are still pending. Comparison JSON is an export record; it cannot reopen a scenario in this version.
+## What you can explore and share
 
-## Find the right guide
+The editor covers 13 customized-scenario macro inputs over a 21-year horizon, plus supported external financing terms. Nearby help explains units and signs. Changes are adjustments to the workbook's assumptions: zero means no adjustment; a blank is unfinished. Financing rates appear as percentages.
 
-[Documentation index](docs/README.md) groups the analyst, methods and developer guides. Start with [sharing and recovery](docs/exchange-recovery.md) before handing work to a colleague, and read [local data and privacy](docs/privacy-recovery.md) before using sensitive data.
+Generic growth, funding-cost and investment exercises provide editable illustrative assumptions. They are teaching examples, not calibrated forecasts or estimated investment returns. The workbook reference baseline and a calculated zero-adjustment customized case can differ; choose a control that isolates the change you want to study.
 
-Developers can use [architecture and checks](docs/architecture.md), [JSON contracts](docs/data-contract.md), [contributing](CONTRIBUTING.md), [security](SECURITY.md) and [third-party notices](THIRD_PARTY.md). [Platform/accessibility status](docs/accessibility-platforms.md) and [DPG evidence](docs/dpg-evidence.md) distinguish implementation from remaining acceptance work.
+Both **Standard LIC-DSF** and **Policy briefing** charts appear together and use the same numerical record. Output indicators cover six reported years. Lines between observations do not establish annual peaks or first threshold-crossing dates. CSV/JSON preserve full precision; chart labels are rounded for reading.
 
-## Ownership and contributions
+A complete briefing ZIP contains two PDF reports, twelve PNG and twelve SVG charts, five CSV tables, an Excel workbook, full-precision comparison JSON and a file-fingerprint manifest. Reports and tables explain source, assumptions, shared reasoning and evidence. Shared explanations and chart labels are intentional; private journals, internal workspace names and the original workbook are excluded. Review the actual files before sharing, because deliberately shared text and assumptions may still be confidential.
 
-Copyright 2026 Teal Insights. The application is permissively licensed open source under the [MIT license](LICENSE). Workbook, dependency and font rights are separate. No institutional endorsement is implied.
+A separate [scenario file](docs/exchange-recovery.md) lets a colleague import one case's inputs for the identical workbook, then review, save and calculate a new draft. It does not import verified results. Cross-workbook translation and multi-case exchange are not implemented. A briefing packet, a scenario file and a private backup serve different purposes.
 
-For a defect report, provide the app version, operating system, steps and a non-sensitive description. Review any material before placing it in a public issue. Workbooks, databases, journals, screenshots and logs may disclose analytical or personal data. Consult [security reporting](SECURITY.md) for current reporting arrangements.
+## Evidence, safety and contribution
+
+[Verification](docs/verification.md) distinguishes file identity, supported structure, saved-cache consistency, application regression, cross-platform agreement and fresh Excel comparison. The repository includes reproducible tests and a scoped official-example regression reference. Published CI results and exact package evidence must identify the build actually tested.
+
+Use this single-user preview on a trusted desktop. Its loopback browser service is not operating-system account authentication; it is unsuitable for a shared host with untrusted concurrent local users or processes. [Security](SECURITY.md), [privacy and recovery](docs/privacy-recovery.md) and [IT information](docs/it-review.md) explain the actual boundaries. No security certification or unconditional no-egress guarantee is claimed.
+
+We use the [Digital Public Goods Standard assessment](docs/dpg-evidence.md) to document practical alignment, evidence, gaps and technical choices. The tool has not been formally recognized or certified and does not claim full compliance.
+
+We welcome focused [contributions](CONTRIBUTING.md) under maintainer roadmap control, with accountable review and meaningful validation, including for AI-assisted work. Follow the [conduct policy](CODE_OF_CONDUCT.md). Report suspected vulnerabilities privately through [the security route](SECURITY.md), not public issues.
+
+## Ownership and feedback
+
+Copyright 2026 Teal Insights. Application code is open source under the [MIT license](LICENSE). [Third-party notices](THIRD_PARTY.md) distinguish dependency, font and workbook rights. No stakeholder endorsement is implied.
+
+[Help shape the next version](docs/feedback.md), or email [lte@tealinsights.com](mailto:lte@tealinsights.com). Describe what you tried and what would improve your work. Please leave confidential workbooks, analytical data, credentials and private logs out of feedback. Support is best-effort, without a guaranteed response time.

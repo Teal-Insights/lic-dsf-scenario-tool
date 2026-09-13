@@ -64,7 +64,7 @@ The package entry point `lic-dsf-scenario-tool` calls `lic_dsf.app:main`; `pytho
 | Chart export | `charts.py`, `chart_context.py` | Same saved numerical record, valid outward text, evidence on every page |
 | Workspace persistence | `store.py` | Preserved old records, supported migrations and recoverable backups |
 
-`schemas/scenario-v1.schema.json` describes numerical inputs. Comparison v3 adds outward labels, context and shared explanations around saved numerical records. These are versioned export contracts, not a stable third-party HTTP API promise or a scenario import interface. Application requests include a local session token and explicit workbook/context revision checks.
+`schemas/scenario-v1.schema.json` describes numerical inputs. Comparison v3 adds outward labels, context and shared explanations around saved numerical records. `schemas/scenario-file-v1.schema.json` adds a separate input-only envelope for one exact-workbook case. The browser validates it and opens an unsaved draft; saving and calculating use the existing application routes. Downloads reread the saved revision and select only shared fields. These file contracts do not promise a stable third-party HTTP API. Application requests include a local session token and explicit workbook/context revision checks.
 
 A code test, an installed browser test and an Excel comparison answer different questions. Preserve separate receipts for each. Review [contribution guidance](../CONTRIBUTING.md) and [publication boundaries](privacy-and-publication.md) before distributing a change.
 

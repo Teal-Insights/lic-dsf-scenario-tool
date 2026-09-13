@@ -1,6 +1,6 @@
 # Share a briefing and recover saved work
 
-Use PDF/PNG and comparison JSON to share selected results. Use a stopped copy of the complete data directory to preserve the editable workspace. These operations have different contents and purposes.
+Use PDF/PNG and comparison JSON to share selected results. Use a scenario file to reuse one saved case’s assumptions with the exact same workbook. Use a stopped copy of the complete data directory to preserve the whole workspace, including its private records.
 
 [Documentation index](README.md) · [Local data and privacy](privacy-recovery.md) · [JSON contract](data-contract.md)
 
@@ -14,9 +14,21 @@ Use PDF/PNG and comparison JSON to share selected results. Use a stopped copy of
 
 The JSON preserves full numerical precision and input paths. A chart alone cannot reconstruct every annual assumption. Both chart styles use the same calculations, and PDF explanations describe assumptions rather than establishing causality.
 
-This version exports `lic-dsf-comparison-v3`. It does **not** import that file back into the app. A scenario schema in the repository describes data shape; it does not provide a scenario-file exchange feature. Exact-workbook replay and applying assumptions to another workbook are pending product work. Do not promise a colleague an import button.
+Comparison exports use `lic-dsf-comparison-v3` and cannot be imported. To reuse assumptions, download the separate `lic-dsf-scenario-v1` file described below.
 
-To continue an analysis now, reopen the original local workspace. A colleague with an authorized copy of the same workbook can manually enter the documented assumptions, save and calculate their own cases, and check the resulting identities and evidence. That is manual reproduction. Merely matching scenario names or years does not establish exact replay, and a different workbook hash identifies a different analytical basis.
+## Share or reuse one scenario
+
+1. Open the saved case you want to share. Save changes to inputs, the shared label and explanations; finish any calculation already running. A current calculation is not required to download inputs.
+2. Expand **Share or reuse a scenario file**, then select **Download saved scenario file**. The app rereads the saved revision before creating `lic-dsf-scenario-<short-id>.json`. If another tab changed that revision, reopen the case before trying again.
+3. Inspect the actual file before sharing. It contains the full 13 input paths, financing choice, projection years, workbook fingerprint, shared chart label and shared explanations. It excludes the workbook itself, results, verification evidence, internal scenario name, private journal and workbook chart heading. Shared assumptions and text can still be sensitive.
+4. The recipient first loads the exact original workbook and checks its baseline. Matching names or years is insufficient: the full SHA-256 fingerprint must match. A workbook saved again by a spreadsheet application has different bytes and must not be substituted.
+5. Save or deliberately discard existing scenario, journal and chart-text drafts before importing. Choose the downloaded JSON under **Scenario file (.json)** and select **Import scenario file**.
+6. Review the new **unsaved** draft, including every changed input, its units, all years, financing terms and shared explanations. The shared label initially fills both the workspace name and the chart label. If that chart label already exists in this workbook, give the imported case a distinct label before saving.
+7. Select **Save scenario**, then **Calculate and show results**. Existing saved cases remain intact. Import does not bring a result or verified status into the workspace; inspect the new calculation’s evidence before comparing or exporting it.
+
+Files are limited to 131,072 bytes (128 KiB). The app rejects malformed JSON, unsupported versions or fields, another workbook or year mapping, incomplete/nonfinite input paths and invalid financing or shared text. Use the [scenario-file contract](data-contract.md#scenario-files) when preparing files outside the app. Do not change the fingerprint to bypass a refusal.
+
+Each file contains one scenario. Import does not remap years, translate an upstream model, apply assumptions to another workbook or load a set of cases at once. These remain separate product work. A scenario file also does not replace a full workspace backup.
 
 ## Back up and restore a workspace
 

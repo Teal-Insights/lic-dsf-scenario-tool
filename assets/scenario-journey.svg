@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 800" role="img" aria-labelledby="title desc">
+<title id="title">Five steps from workbook to briefing</title>
+<desc id="desc">Upload, check the baseline, create and calculate scenarios, compare, then review and export a briefing. Preserve the original workbook and keep private journal notes out of shared exports.</desc>
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8" fill="#5C6770"/></marker></defs>
+<rect width="480" height="800" rx="12" fill="#FAFAF7"/>
+<g font-family="Inter, Arial, sans-serif" font-size="24">
+<rect x="28" y="24" width="424" height="110" rx="12" fill="#FFFFFF" stroke="#D4D0CA"/>
+<text x="50" y="66" fill="#143E5A" font-weight="600">1  Upload a workbook</text>
+<text x="50" y="104" font-size="22" fill="#5C6770">Preserve the original file</text>
+<path d="M240 141 V163" stroke="#5C6770" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="28" y="172" width="424" height="110" rx="12" fill="#FFFFFF" stroke="#D4D0CA"/>
+<text x="50" y="214" fill="#143E5A" font-weight="600">2  Check the baseline</text>
+<text x="50" y="252" font-size="22" fill="#5C6770">Review years and evidence</text>
+<path d="M240 289 V311" stroke="#5C6770" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="28" y="320" width="424" height="110" rx="12" fill="#FFFFFF" stroke="#D4D0CA"/>
+<text x="50" y="362" fill="#143E5A" font-weight="600">3  Create scenarios</text>
+<text x="50" y="400" font-size="22" fill="#5C6770">Enter, explain, save, calculate</text>
+<path d="M240 437 V459" stroke="#5C6770" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="28" y="468" width="424" height="110" rx="12" fill="#FFFFFF" stroke="#D4D0CA"/>
+<text x="50" y="510" fill="#143E5A" font-weight="600">4  Compare the results</text>
+<text x="50" y="548" font-size="22" fill="#5C6770">Choose a clear comparison case</text>
+<path d="M240 585 V607" stroke="#5C6770" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="28" y="616" width="424" height="110" rx="12" fill="#143E5A" stroke="#D4D0CA"/>
+<text x="50" y="658" fill="#FFFFFF" font-weight="600">5  Export a briefing</text>
+<text x="50" y="696" font-size="22" fill="#FFFFFF">Review charts, data and notes</text>
+<text x="28" y="775" font-size="17" fill="#5C6770">LIC-DSF Scenario Analysis Tool · Teal Insights</text></g></svg>

@@ -75,7 +75,7 @@ class ChartsTest(unittest.TestCase):
             self.assertFalse(artist.get_parse_math());self.assertFalse(artist.get_usetex())
             self.assertLessEqual(artist.get_text().count('\n'),2)  # the heading is now the page title (larger type)
             texts=[t.get_text() for t in fig.texts]
-            self.assertIn('Workbook SHA-256: '+sha[:12]+'…',texts)
+            self.assertIn('Workbook reference: '+sha[:12]+'… (file fingerprint)',texts)
             self.assertIn(charts.ILLUSTRATIVE_DISCLOSURE,texts)
             self.assertTrue(any('Exact Excel comparison pending' in t for t in texts))
             boxes=[t.get_window_extent(fig.canvas.get_renderer()) for t in fig.texts]
@@ -105,11 +105,6 @@ class ChartsTest(unittest.TestCase):
             self.assertEqual(title.get_text().replace('\n',''),charts._title(summary,'public_pv_revenue',view=='briefing'))
             self.assertFalse(title.get_parse_math())
             if view=='briefing':
-                self.assertGreaterEqual(title.get_text().count('\n'),2)
-                annotation=next(a for a in ax.texts if a.get_gid()=='comparison-annotation')
-                box=annotation.get_window_extent(renderer)
-                self.assertLessEqual(box.x1,ax.bbox.x1);self.assertLess(box.y1,ax.bbox.y1)
-                self.assertGreater(box.y0,ax.bbox.y0)
                 for endpoint in (a for a in ax.texts if hasattr(a,'xy')):
                     endpoint_box=endpoint.get_window_extent(renderer)
                     self.assertLessEqual(endpoint_box.x1,ax.bbox.x1+1)
@@ -143,13 +138,12 @@ class ChartsTest(unittest.TestCase):
             with self.assertRaises(ValueError):charts.comparison_summary(c)
     def test_takeaway_uses_observed_comparator_and_neutral_review(self):
         c=fixture();s=charts.comparison_summary(c)
-        self.assertEqual(charts._title(s,'ext_pv_gdp',True),'Scenario A is 3.0 pp of GDP below Scenario B in 2044')
-        # The same wording for every indicator is asserted by tests/presets.js against the app's text takeaways.
-        self.assertEqual([charts._title(s,m[0],True) for m in charts.METRICS],
-                         ['Scenario A is 3.0 pp of GDP below Scenario B in 2044','Scenario A is 3.0 pp of exports below Scenario B in 2044',
-                          'Scenario A is 3.0 pp of exports below Scenario B in 2044','Scenario A is 3.0 pp of revenue below Scenario B in 2044',
-                          'Scenario A is 3.0 pp of GDP below Scenario B in 2044','Scenario A is 3.0 pp of revenue below Scenario B in 2044'])
-        self.assertEqual((charts._tenths(0.25),charts._tenths(0.15),charts._tenths(1.05),charts._tenths(2.949)),('0.3','0.1','1.1','2.9'))
+        self.assertEqual(charts._title(s,'ext_pv_gdp',True),'How scenarios differ from the comparison case')
+        self.assertEqual(len(charts.summary_lines(s,'ext_pv_gdp')),2)
+        self.assertEqual((charts._hundredths(0.25),charts._hundredths(0.15),charts._hundredths(1.05),charts._hundredths(2.949)),('0.25','0.15','1.05','2.95'))
+        self.assertEqual(charts._number(1e26), '1.00e+26')
+        self.assertEqual(charts._number(-1e26), '−1.00e+26')
+        self.assertEqual(charts._number(float.fromhex('0x1.fffffffffffffp+1023')), '1.80e+308')
         c['runs'][0]['result']['evidence']['calculation']='review_required'
         self.assertEqual(charts._title(charts.comparison_summary(c),'ext_pv_gdp',True),'This comparison needs numerical review')
     def test_both_formats_views_use_same_record(self):
@@ -173,14 +167,14 @@ class ChartsTest(unittest.TestCase):
         c=fixture();c['runs'][0]['result']['points'][5]['scenario']=None
         summary=charts.comparison_summary(c)
         row=charts._latest_row(summary,'ext_pv_gdp')
-        self.assertEqual(row['year'],2039)
-        self.assertEqual(row['reference_baseline'],c['runs'][0]['result']['points'][4]['reference_baseline'])
+        self.assertEqual(row['year'],2044)
+        self.assertEqual(row['reference_baseline'],c['runs'][0]['result']['points'][5]['reference_baseline'])
         import matplotlib.pyplot as plt
         fig,ax=plt.subplots();charts._dot_panel(ax,summary,'ext_pv_gdp')
         positions=[p.get_offsets().tolist() for p in ax.collections]
         texts=[t.get_text() for t in ax.texts]
         self.assertIn(f'{row["reference_baseline"]:.2f}',texts)
-        self.assertIn(f'{row["differences"]["Scenario A"]:+.2f}'.replace('-','\u2212'),texts)
+        self.assertIn('Missing',texts)
         plt.close(fig)
         for r in summary['rows']:
             if r['metric']=='ext_pv_gdp':r['threshold']=10000
@@ -192,9 +186,48 @@ class ChartsTest(unittest.TestCase):
         charts._panel(ax,summary,'public_pv_gdp','briefing',large=True)
         labels=[t for t in ax.texts if hasattr(t,'xy')]
         baseline=next(t for t in labels if ' '.join(t.get_text().split()).startswith('Reference baseline:'))
-        self.assertEqual(baseline.xy,(2044,41.6))
-        self.assertIn('41.60',baseline.get_text())
-        self.assertIsNotNone(baseline.arrow_patch)
+        self.assertAlmostEqual(baseline.xy[1],summary['rows'][29]['reference_baseline']-summary['rows'][29]['scenarios']['Scenario B'])
+        self.assertEqual(baseline.xy[0],2044)
+        self.assertIn('pp',baseline.get_text())
+        leaders=[t for t in labels if t.arrow_patch is not None]
+        self.assertTrue(any(t.xy==baseline.xy for t in leaders))
+        fig.canvas.draw()
+        renderer=fig.canvas.get_renderer()
+        text_left=min(t.get_window_extent(renderer).x0 for t in labels if t.get_text())
+        for leader in leaders:
+            box=leader.arrow_patch.get_window_extent(renderer)
+            self.assertLess(box.x1,text_left)
+            self.assertLess(leader.get_zorder(),baseline.get_zorder())
         plt.close(fig)
+
+    def test_all_alternatives_report_sign_changes_gaps_and_order_independence(self):
+        c=fixture();a=c['runs'][0]['result']['points'];control=c['runs'][1]['result']['points']
+        a[0]['scenario']=control[0]['scenario']+0.5
+        a[1]['scenario']=None
+        summary=charts.comparison_summary(c);facts=charts.summary_lines(summary,'ext_pv_gdp')
+        self.assertEqual(len(facts),2)
+        self.assertIn('Both higher and lower',facts[0]);self.assertIn('Coverage: 5 of 6',facts[0])
+        self.assertIn('−3.00 to +0.50',facts[0]);self.assertIn('Scenario C',facts[1])
+        c['runs'].reverse();self.assertEqual(charts.summary_lines(charts.comparison_summary(c),'ext_pv_gdp'),facts)
+        self.assertEqual(charts._difference(.0001),'≈0.00');self.assertEqual(charts._difference(0),'0.00')
+
+    def test_policy_paths_are_differences_standard_paths_are_levels(self):
+        import matplotlib.pyplot as plt
+        import numpy as np
+        c=fixture();c['runs'][0]['result']['points'][2]['scenario']=None
+        before=copy.deepcopy(c);summary=charts.comparison_summary(c);rows=summary['rows'][:6]
+        for view in ('standard','briefing'):
+            fig,ax=plt.subplots(figsize=(12,10.5));charts._panel(ax,summary,'ext_pv_gdp',view,large=True)
+            lines={line.get_label():line for line in ax.lines}
+            for label in summary['labels']:
+                expected=[r['differences' if view=='briefing' else 'scenarios'][label] for r in rows]
+                actual=lines[label].get_ydata()
+                for a,e in zip(actual,expected):
+                    if e is None:self.assertTrue(np.isnan(a))
+                    else:self.assertEqual(a,e)
+            if view=='briefing':self.assertIn('Difference, percentage points',ax.get_ylabel())
+            else:self.assertEqual(ax.get_ylabel(),'percent of GDP')
+            plt.close(fig)
+        self.assertEqual(c,before)
 
 if __name__=='__main__':unittest.main()

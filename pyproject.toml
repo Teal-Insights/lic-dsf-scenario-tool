@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "lic-dsf-scenario-tool"
-version = "0.1.0"
+version = "0.1.0a1"
 description = "Local customized scenario analysis for LIC-DSF IDA21 workbooks"
 requires-python = ">=3.11"
 license = {file = "LICENSE"}
@@ -24,4 +24,12 @@ where = ["src"]
 lic-dsf-scenario-tool = "lic_dsf.app:main"
 
 [tool.setuptools.package-data]
-lic_dsf = ["web.html"]
+lic_dsf = ["web.html", "fonts/*.otf", "fonts/*.txt", "fonts/README.md"]
+
+[tool.ruff]
+target-version = "py311"
+
+[tool.ruff.lint]
+# The first preview gates implementation errors. A broad formatting rewrite is
+# deliberately separate from numerical and packaging acceptance.
+select = ["E9", "F63", "F7", "F82", "F841"]

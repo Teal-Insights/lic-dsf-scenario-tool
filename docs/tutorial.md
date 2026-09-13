@@ -1,6 +1,6 @@
 # Make a two-case illustrative briefing
 
-Use the official public example to compare a no-change customized control with growth one percentage point lower for the first three projection years. You will save two cases, calculate them, inspect both chart views, download five files and reopen the saved work.
+Use the official public example to compare a no-change customized control with growth one percentage point lower for the first three projection years. You will save two cases, calculate them, inspect both chart views, download a complete briefing packet and reopen the saved work.
 
 This is a sensitivity exercise. The Ghana-labelled sample values are purely illustrative and are not an official country forecast, DSA or policy recommendation. A zero-adjustment customized control can differ from the workbook's reference baseline.
 
@@ -68,23 +68,37 @@ Do not assume all debt indicators move in the same direction or by the same amou
 
 ## 6. Review and download the briefing
 
-Standard LIC-DSF and Policy briefing previews appear together. Use the standard panels to inspect debt paths and thresholds, and the policy view to explain differences at its stated year. Each policy panel has its own scale. A line between sampled years is a visual guide.
+Standard LIC-DSF and Policy briefing previews appear together. Use the standard view to inspect debt levels and thresholds, and the policy view to inspect differences from your chosen comparison case across the reported years. Choose an indicator to update both views. Lines join selected reported observations; they do not establish what happened in intervening years.
 
-In the **Chart text** panel beside the previews, optionally enter `Illustrative growth sensitivity` as the **Heading on both chart views**. The same panel lists a **Legend label** field for each selected case, so you can rename `Lower growth` where the charts are. While you edit, existing previews retain the saved text and downloads are paused. Select **Apply to both views** to save your text, or **Discard edits and keep saved text** to reload the latest saved text. Both actions refresh the previews automatically when the selected calculations are current and numerical inputs are unchanged. Neither a heading nor a legend change requires a new numerical calculation; a legend change saves a new revision of that case with its calculation kept. Legend labels and the heading are outward text; review them deliberately. If another tab changed the heading and you have no unapplied chart-text draft, the app reloads the latest saved text, refreshes both views and asks you to download again. If you have unapplied text, it preserves that draft and asks you to choose **Discard edits and keep saved text**. Copy text you want to retain before discarding it.
+In **Chart text** beside the previews, enter `Illustrative growth sensitivity` as the **Heading on both chart views**. You can edit the selected cases' **Legend label** fields in the same place. Select **Apply to both views**, then inspect the updated charts. Text changes do not change the numerical assumptions or require another calculation. Downloads pause while text edits are unsaved; **Discard edits and keep saved text** restores the saved wording. [Chart-text help](chart-context.md) explains revision conflicts and using multiple tabs.
 
-Download and inspect all five files:
+Select **Download briefing packet (.zip)** and open the downloaded archive. Its 35 files include:
 
-- **Download standard PDF** and **Download standard PNG**.
-- **Download policy PDF** and **Download policy PNG**.
-- **Download data and assumptions**, the JSON companion containing exact inputs, years, values and deliberately shared explanations.
+- A **READ ME** explaining the packet and its evidence limits.
+- Standard LIC-DSF and Policy briefing PDF reports.
+- Six individual charts in each style, supplied as PNG and SVG.
+- An Excel workbook and five CSV tables with results, macro adjustments, financing assumptions, shared explanations and evidence.
+- Full-precision comparison JSON and a file manifest.
 
-The suggested chart filenames distinguish the views: `scenario-comparison-standard.pdf` and `scenario-comparison-policy.pdf`, with matching `.png` names. The JSON companion is `scenario-comparison-data.json`; it contains the shared comparison data for both views. If your browser adds a number to avoid a duplicate, open the file and check its content before renaming it.
+Start with the READ ME, then open both PDF reports. Confirm the labels, chosen comparison case, units, projection years and illustrative disclosure. The PDFs include reading guidance and shared explanations; their length depends on the cases and explanations selected. Open the Excel workbook's **Read me first** sheet before inspecting its tables.
 
-The PDFs contain seven chart pages plus a variable-length shared-explanation annex. PNGs contain the six-panel overview only. Confirm that labels, comparator, source reference, units, selected years and pending evidence are present. The illustrative disclosure must remain attached. A download-prepared indicator does not prove a file reached your download folder; open the actual files.
+The separate PDF/PNG downloads remain available when you only need a particular asset. SVGs in the complete packet scale cleanly for slides and publication. Excel and CSV let you reuse the numerical results in your own charts. Review shared explanations and labels before forwarding any file. The packet excludes the original workbook and private journal.
 
-Comparison JSON cannot be imported back into this app. Keep the original workbook and a private workspace backup if you need to continue the analysis later. [Exchange and recovery](exchange-recovery.md) explains the difference.
+A download-prepared indicator does not prove a file reached your download folder. Open the files and inspect them. Browser-added filename numbers do not change the content or its identity.
 
-## 7. Stop and reopen
+Comparison JSON cannot be imported back into this app. Use the separate scenario-file controls to reuse inputs, as described below. Keep the original workbook and a private workspace backup to preserve the complete analysis. [Exchange and recovery](exchange-recovery.md) explains the three file types.
+
+## 7. Reuse the saved assumptions
+
+Open the saved lower-growth case. Under **Share or reuse a scenario file**, select **Download saved scenario file**. Open the downloaded JSON and check the shared label, explanation, growth path and exact workbook fingerprint. This is an input file, separate from the briefing packet.
+
+With the same unchanged workbook loaded, save any outstanding drafts, choose that file under **Scenario file (.json)** and select **Import scenario file**. It opens as a new unsaved draft. Check all 13 paths and inherited financing. The internal name initially uses the shared label; the original workspace name and journal do not travel with the file.
+
+Set the workspace name to `Tutorial imported growth` and its chart label to `Imported growth` so it is distinct from the existing case. Select **Save scenario**, then **Calculate and show results**. Compare it with the original lower-growth case: equal inputs and workbook should produce the same numerical points with the same calculation runtime. The imported case needs its own calculation and evidence; the file supplies neither. Inspect any discrepancy before using it.
+
+For a colleague, provide this input file and arrange authorized access to the exact workbook separately. Importing into a different workbook is refused. See [sharing one scenario](exchange-recovery.md#share-or-reuse-one-scenario) for file limits and draft handling.
+
+## 8. Stop and reopen
 
 Save any private journal draft separately. Wait for calculations to finish, then stop the terminal application with Ctrl+C. Restart it with the same data directory and reopen the workbook from **Or reopen a workbook in this workspace**.
 
@@ -95,3 +109,8 @@ Confirm both cases and their shared explanations are present. Select and compare
 Select an input, enter **From year**, **Through year** and **Change to apply**, then **Apply to these years**. The range is inclusive and entries outside it remain unchanged. Type into individual year boxes when the path is irregular. Blank is unfinished; explicit zero adds no adjustment. A gold underline marks edits since the saved revision or initial draft, while signs and colors show positive, negative or zero values.
 
 Use the changed-input filter to review affected rows and the explanation field to record the source or judgment behind each path. Check transfer/FDI signs and asset units in the [input reference](workbooks-inputs-outputs.md). Financing rates are replacement levels in percent; grace and maturity are whole years. Save after any edit. Changed numerical inputs or financing terms require calculation. A save that changes only the case name, legend label or shared explanation keeps an already-current calculation. Save the text, compare again and review the refreshed exports; unsaved text cannot be exported. If the result is already stale or absent, a text-only save does not make it current.
+
+
+## Where to go next
+
+Use [reading and sharing a briefing](reading-briefing.md) to explain the packet to a colleague, [chart guidance](charts.md) to interpret the views and precision, and [exchange and recovery](exchange-recovery.md) to preserve or share work. These references cover the details without changing the numerical assumptions in this exercise.

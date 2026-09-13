@@ -1,0 +1,126 @@
+{
+  "scope": "Public Python package name/version advisory lookup only; not a complete native-library, source-code or runtime-security audit",
+  "checked_on": "2026-09-13",
+  "tool": "pip-audit",
+  "tool_version": "2.10.1",
+  "service": "PyPI vulnerability service",
+  "dependency_resolution": "disabled; versions taken from actual prepared runtime inventories",
+  "application_excluded": "The application itself is reviewed separately; the evaluator source commit is separate from its package version",
+  "dependencies": [
+    {
+      "name": "attrs",
+      "version": "26.1.0",
+      "vulns": []
+    },
+    {
+      "name": "contourpy",
+      "version": "1.3.3",
+      "vulns": []
+    },
+    {
+      "name": "cycler",
+      "version": "0.12.1",
+      "vulns": []
+    },
+    {
+      "name": "et-xmlfile",
+      "version": "2.0.0",
+      "vulns": []
+    },
+    {
+      "name": "excel-grapher",
+      "version": "3.7.0",
+      "vulns": []
+    },
+    {
+      "name": "fastpyxl",
+      "version": "1.0.12",
+      "vulns": []
+    },
+    {
+      "name": "fonttools",
+      "version": "4.64.0",
+      "vulns": []
+    },
+    {
+      "name": "jsonschema",
+      "version": "4.26.0",
+      "vulns": []
+    },
+    {
+      "name": "jsonschema-specifications",
+      "version": "2025.9.1",
+      "vulns": []
+    },
+    {
+      "name": "kiwisolver",
+      "version": "1.5.1",
+      "vulns": []
+    },
+    {
+      "name": "matplotlib",
+      "version": "3.11.1",
+      "vulns": []
+    },
+    {
+      "name": "numpy",
+      "version": "2.4.6",
+      "vulns": []
+    },
+    {
+      "name": "openpyxl",
+      "version": "3.1.5",
+      "vulns": []
+    },
+    {
+      "name": "packaging",
+      "version": "26.3",
+      "vulns": []
+    },
+    {
+      "name": "pillow",
+      "version": "12.3.0",
+      "vulns": []
+    },
+    {
+      "name": "pyparsing",
+      "version": "3.3.2",
+      "vulns": []
+    },
+    {
+      "name": "python-dateutil",
+      "version": "2.9.0.post0",
+      "vulns": []
+    },
+    {
+      "name": "pyyaml",
+      "version": "6.0.3",
+      "vulns": []
+    },
+    {
+      "name": "referencing",
+      "version": "0.37.0",
+      "vulns": []
+    },
+    {
+      "name": "rpds-py",
+      "version": "2026.6.3",
+      "vulns": []
+    },
+    {
+      "name": "six",
+      "version": "1.17.0",
+      "vulns": []
+    },
+    {
+      "name": "typing-extensions",
+      "version": "4.16.0",
+      "vulns": []
+    }
+  ],
+  "limitations": [
+    "No known findings is not a security guarantee",
+    "Native bundled libraries and unknown vulnerabilities are outside this query",
+    "Recheck after dependencies change or advisories are updated"
+  ]
+}

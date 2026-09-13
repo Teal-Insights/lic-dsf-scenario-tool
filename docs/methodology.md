@@ -29,7 +29,7 @@ An unchecked financing override retains the workbook's supplied financing values
 | As supplied customized | Customized output calculated using the workbook's supplied inputs |
 | Scenario | Customized output calculated using the saved scenario's adjustments and financing choice |
 
-An imported case preserves existing adjustments. A zero-adjustment case contains all explicit zero paths. Neither should be silently renamed the reference baseline. Every comparison uses one workbook identity and explicitly names a selected saved-case comparator.
+A case created from the workbook’s supplied customized inputs preserves its existing adjustments. A zero-adjustment case contains all explicit zero paths. Neither should be silently renamed the reference baseline. Every comparison uses one workbook identity and explicitly names a selected saved-case comparator.
 
 ## Outputs and chart coverage
 
@@ -57,6 +57,19 @@ Fresh Excel acceptance is not established for this preview. Hash and sentinel ch
 
 Revisions bind the workbook, full scenario definition and definition hash. Runs retain their original result, engine identity, contract version and result hash. A saved revision that changes only the name, legend label or shared explanations can reuse an already-current calculation from the uninterrupted sequence of revisions with the same numerical definition. The exported revision and shared text reflect the current saved revision; the original numerical result and result hash remain unchanged. Changed inputs, financing terms, workbook or runtime identity require a matching calculation. Returning to an earlier definition after an intervening numerical edit still requires calculation. A text-only save cannot make an absent or stale result current, and a calculation cannot be presented as the result of different numerical inputs.
 
-New JSON exports use `lic-dsf-comparison-v3`: workbook identity, selected comparator, labelled runs, revisions, hashes, scenario inputs, year mapping, source-cell points, thresholds, evidence and the explicit chart-context label/revision. The version-1 schema remains available for historical exports. Deliberately shared per-input explanations are included; private journals are excluded. JSON is a portable record; this preview does not provide a JSON re-import workflow or guarantee schema migration across future versions.
+New JSON exports use `lic-dsf-comparison-v3`: workbook identity, selected comparator, labelled runs, revisions, hashes, scenario inputs, year mapping, source-cell points, thresholds, evidence and the explicit chart-context label/revision. The version-1 schema remains available for historical exports. Deliberately shared per-input explanations are included; private journals are excluded. Comparison JSON is a portable results record and cannot be imported. The separate `lic-dsf-scenario-v1` file reuses inputs with the exact workbook and projection years, opening an unsaved draft that must be reviewed, saved and calculated. It carries no results or evidence and does not guarantee migration across future formats. See [scenario exchange](exchange-recovery.md#share-or-reuse-one-scenario).
 
 The learning examples supply assumptions, not estimated policy effects: growth ±1 percentage point in years 1–3, funding rate ±1 percentage point around a matched supplied-rate control, and investment spending +1 point of GDP in years 1–3 with an optional assumed growth benefit of +0.25 points in years 4–8. Compare with the indicated control; funding may show no effect without relevant new financing needs.
+
+
+## Readable guidance and evidence
+
+Both PDF reports now begin with a reading guide, and Excel opens a **Read me first** sheet. These explain purpose, source, assumptions, comparison, check limits and file fingerprints before technical detail. CSV/JSON schemas and exact numerical values are unchanged. See [reading and sharing a briefing](reading-briefing.md).
+
+## Deterministic local calculation
+
+The app uses fixed formula evaluation, not AI inference or random sampling. The supported template’s nonvolatile result paths produce repeatable numerical results with unchanged workbook inputs and engine version. Date-dependent formulas introduced into another workbook can change with the date; this is not a claim of support for arbitrary modified workbooks. The analyst supplies and explains the assumptions; the software does not estimate policy benefits. This property is separate from exact Microsoft Excel verification.
+
+## How this fits the IMF and World Bank guidance
+
+The [guidance references and page-specific explanation](reading-briefing.md#how-this-fits-the-guidance) connect this workflow to the 2018 LIC-DSF Guidance Note and the 2024 Supplement. They distinguish the baseline from exploratory customized assumptions, explain why financing and macroeconomic effects should be considered together, and identify where the 2024 references address climate analysis specifically. This general-purpose app implements the bounded customized-scenario workflow described above; it does not implement the full official framework or establish an official risk rating.

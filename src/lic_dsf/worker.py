@@ -11,7 +11,7 @@ import time
 def write_result(path, data):
     fd, temporary = tempfile.mkstemp(prefix=".result-", dir=path.parent)
     try:
-        with os.fdopen(fd, "w") as handle:
+        with os.fdopen(fd, "w", encoding="utf-8") as handle:
             json.dump(data, handle, allow_nan=False, sort_keys=True)
             handle.flush(); os.fsync(handle.fileno())
         os.replace(temporary, path)
@@ -74,7 +74,7 @@ def main(request_path):
     request_path = Path(request_path)
     stopped = None
     try:
-        request = json.loads(request_path.read_text())
+        request = json.loads(request_path.read_text(encoding="utf-8"))
         stopped = start_guard(request, request_path.parent)
         from . import calculate
         result = calculate(request["workbook"], request["scenario"], expected_sha256=request["workbook_sha256"])

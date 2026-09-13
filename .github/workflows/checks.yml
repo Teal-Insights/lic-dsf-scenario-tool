@@ -1,0 +1,79 @@
+name: Source checks
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# External contributions run without repository secrets or publishing access.
+permissions:
+  contents: read
+
+concurrency:
+  group: checks-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  source:
+    name: Python and JavaScript / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-14]
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '24'
+      - name: Build and install the application
+        run: python -m pip install .
+      - name: Check installed dependencies
+        run: python -m pip check
+      - name: Confirm the installed evaluator identity
+        run: python -c "from lic_dsf import engine_identity; print(engine_identity())"
+      - name: Run Python regression checks
+        run: python -m unittest discover -s tests -v
+      - name: Run JavaScript contract checks
+        run: python scripts/check_javascript.py
+      - name: Install the pinned linter
+        run: python -m pip install ruff==0.16.7
+      - name: Lint for implementation errors
+        run: python -m ruff check src tests scripts
+
+  documentation:
+    name: Documentation build and links
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.11'
+      - uses: quarto-dev/quarto-actions/setup@8a96df13519ee81fd526f2dfca5962811136661b # v2
+        with:
+          version: '1.8.27'
+      - name: Install separate documentation tooling
+        run: python -m pip install -r requirements-docs.txt
+      - name: Test the static resource checker
+        run: python scripts/test_docs_resources.py
+      - name: Prepare authored documentation
+        run: python scripts/prepare_docs.py
+      - name: Build the static website
+        run: great-docs build
+      - name: Finish public assets and generated links
+        run: python scripts/finish_docs.py
+      - name: Validate static HTML and CSS resource references
+        run: python scripts/check_docs.py
+
+# This workflow does not publish software, docs, or PR artifacts. Passing it is
+# not desktop, numerical Excel, security, or release acceptance.
