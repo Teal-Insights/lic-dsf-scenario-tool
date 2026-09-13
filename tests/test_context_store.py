@@ -1,3 +1,4 @@
+from contextlib import closing
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 import sqlite3
@@ -34,13 +35,13 @@ class ContextStoreTests(unittest.TestCase):
                                  engine_identity=self.identity, contract_version="test-1", **kwargs)
 
     def numerical_rows(self):
-        with sqlite3.connect(self.s.database) as db:
+        with closing(sqlite3.connect(self.s.database)) as db, db:
             return {table: list(db.execute(f"SELECT * FROM {table} ORDER BY rowid"))
                     for table in ("workbooks", "scenarios", "revisions", "runs", "reasoning")}
 
     def make_version1(self):
         # The base tables remain exactly the original version1 layout.
-        with sqlite3.connect(self.s.database) as db:
+        with closing(sqlite3.connect(self.s.database)) as db, db:
             db.execute("DROP TABLE shared_rationale")
             db.execute("DROP TABLE chart_context")
             db.execute("UPDATE metadata SET value='1' WHERE key='schema_version'")
@@ -52,7 +53,7 @@ class ContextStoreTests(unittest.TestCase):
         self.assertEqual(self.numerical_rows(), before)
         self.assertEqual(self.s.get_chart_context(self.sha),
                          {"workbook_sha256": self.sha, "label": None, "revision": 0})
-        with sqlite3.connect(self.s.database) as db:
+        with closing(sqlite3.connect(self.s.database)) as db, db:
             self.assertEqual(db.execute("SELECT value FROM metadata WHERE key='schema_version'").fetchone()[0], "3")
 
     def test_unknown_future_and_malformed_schemas_preserve_bytes(self):
@@ -66,7 +67,7 @@ class ContextStoreTests(unittest.TestCase):
             directory = self.path / name
             directory.mkdir()
             database = directory / "scenarios.sqlite3"
-            with sqlite3.connect(database) as db:
+            with closing(sqlite3.connect(database)) as db, db:
                 for statement in statements:
                     db.execute(statement)
             database.chmod(0o640)
@@ -75,7 +76,7 @@ class ContextStoreTests(unittest.TestCase):
                 store.ScenarioStore(directory)
             self.assertEqual(database.read_bytes(), before)
             self.assertEqual(database.stat().st_mode, mode)
-        with sqlite3.connect(self.s.database) as db:
+        with closing(sqlite3.connect(self.s.database)) as db, db:
             db.execute("UPDATE metadata SET value='1' WHERE key='schema_version'")
         before = self.s.database.read_bytes()
         with self.assertRaises(ValueError):
@@ -106,7 +107,7 @@ class ContextStoreTests(unittest.TestCase):
         for case in ("generated_column", "missing_check", "weakened_check"):
             directory = self.path / case
             candidate = store.ScenarioStore(directory)
-            with sqlite3.connect(candidate.database) as db:
+            with closing(sqlite3.connect(candidate.database)) as db, db:
                 if case == "generated_column":
                     db.execute("DROP TABLE shared_rationale")
                     db.execute("DROP TABLE chart_context")
@@ -128,7 +129,7 @@ class ContextStoreTests(unittest.TestCase):
         directory = self.path / "original_layout"
         directory.mkdir()
         database = directory / "scenarios.sqlite3"
-        with sqlite3.connect(database) as db:
+        with closing(sqlite3.connect(database)) as db, db:
             for sql in store._BASE_SCHEMA:
                 db.execute(sql.replace("CREATE TABLE ", "CREATE TABLE IF NOT EXISTS ")
                            .replace("\n        ", "\n                    "))
@@ -136,7 +137,7 @@ class ContextStoreTests(unittest.TestCase):
             db.execute("INSERT INTO workbooks VALUES (?,?,?)", (self.sha, "Original internal label", "2030-01-01"))
         restored = store.ScenarioStore(directory)
         self.assertEqual(restored.get_chart_context(self.sha)["revision"], 0)
-        with sqlite3.connect(database) as db:
+        with closing(sqlite3.connect(database)) as db, db:
             self.assertEqual(db.execute("SELECT label,created FROM workbooks").fetchone(),
                              ("Original internal label", "2030-01-01"))
 
@@ -213,7 +214,7 @@ class ContextStoreTests(unittest.TestCase):
             self.compare(workbook_sha=self.sha, expected_chart_context_revision=0)
 
     def test_comparison_context_is_in_same_snapshot_as_scenarios(self):
-        with sqlite3.connect(self.s.database) as db:
+        with closing(sqlite3.connect(self.s.database)) as db, db:
             db.execute("PRAGMA journal_mode=WAL")
         original = self.s._chart_context
         changed = False
@@ -238,7 +239,7 @@ class ContextStoreTests(unittest.TestCase):
         self.s.seed_chart_context(self.sha, "First context")
         self.s.seed_chart_context(other_sha, "Second context")
         self.assertNotEqual(self.s.get_chart_context(self.sha)["label"], self.s.get_chart_context(other_sha)["label"])
-        with sqlite3.connect(self.s.database) as db:
+        with closing(sqlite3.connect(self.s.database)) as db, db:
             db.execute("UPDATE chart_context SET label=' Noncanonical ' WHERE workbook_sha=?", (self.sha,))
         for action in (lambda: self.s.get_chart_context(self.sha), self.compare,
                        lambda: self.s.seed_chart_context(self.sha, "Replacement")):

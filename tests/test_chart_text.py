@@ -1,4 +1,5 @@
 """Atomic chart-text operation: legend labels and heading applied together or not at all."""
+from contextlib import closing
 import copy
 import json
 import unittest
@@ -34,7 +35,7 @@ class ChartTextStoreTests(unittest.TestCase):
         self.temp.cleanup()
 
     def tables(self):
-        with sqlite3.connect(self.s.database) as db:
+        with closing(sqlite3.connect(self.s.database)) as db, db:
             return {t: list(db.execute(f"SELECT * FROM {t} ORDER BY rowid")) for t in ("scenarios", "revisions", "runs", "shared_rationale", "chart_context")}
 
     def current(self, sid):
@@ -143,7 +144,7 @@ class ChartTextApiTests(unittest.TestCase):
         return answers[0]
 
     def records(self):
-        with sqlite3.connect(self.workspace.store.database) as db:
+        with closing(sqlite3.connect(self.workspace.store.database)) as db, db:
             return {t: list(db.execute(f"SELECT * FROM {t} ORDER BY rowid")) for t in ("scenarios", "revisions", "chart_context", "shared_rationale")}
 
     def test_route_applies_atomically_and_maps_conflicts(self):

@@ -1,3 +1,4 @@
+from contextlib import closing
 import copy
 import json
 import sqlite3
@@ -12,14 +13,14 @@ class RationaleStoreTests(StoreTests):
     def test_version2_migration_keeps_private_journals_and_runs(self):
         self.s.record_run(self.case['id'], self.result(), expected_revision=1)
         self.s.add_reasoning(self.case['id'], 'PRIVATE JOURNAL NEVER SHARED')
-        with sqlite3.connect(self.s.database) as db:
+        with closing(sqlite3.connect(self.s.database)) as db, db:
             db.execute('DROP TABLE shared_rationale')
             db.execute("UPDATE metadata SET value='2' WHERE key='schema_version'")
             before={table:list(db.execute('SELECT * FROM '+table)) for table in ['revisions','runs','reasoning','chart_context']}
         self.s=store.ScenarioStore(self.s.directory)
         self.assertEqual(self.s.get_scenario(self.case['id'])['shared_rationale'], {})
         self.assertEqual(self.current()['result'], self.result())
-        with sqlite3.connect(self.s.database) as db:
+        with closing(sqlite3.connect(self.s.database)) as db, db:
             for table,rows in before.items():self.assertEqual(list(db.execute('SELECT * FROM '+table)),rows)
         self.assertNotIn('PRIVATE JOURNAL', json.dumps(self.current()))
 
@@ -34,7 +35,7 @@ class RationaleStoreTests(StoreTests):
         self.assertEqual(second['shared_rationale'],notes)
         third=self.s.save_scenario(self.sha,'Local',self.definition,scenario_id=first['id'],expected_revision=2,shared_rationale={})
         self.assertEqual(third['shared_rationale'],{})
-        with sqlite3.connect(self.s.database) as db:
+        with closing(sqlite3.connect(self.s.database)) as db, db:
             self.assertEqual(json.loads(db.execute('SELECT notes FROM shared_rationale WHERE scenario_id=? AND revision=1',(first['id'],)).fetchone()[0]),notes)
 
     def test_invalid_notes_fail_without_writes(self):
@@ -44,10 +45,10 @@ class RationaleStoreTests(StoreTests):
             self.assertEqual(self.s.database.read_bytes(),before)
 
     def test_corruption_and_deleted_metadata_refused(self):
-        with sqlite3.connect(self.s.database) as db:
+        with closing(sqlite3.connect(self.s.database)) as db, db:
             db.execute("UPDATE shared_rationale SET notes=?",(json.dumps({'11':'tampered'}),))
         with self.assertRaises(store.StaleResult):self.s.get_scenario(self.case['id'])
-        with sqlite3.connect(self.s.database) as db:db.execute('DELETE FROM shared_rationale')
+        with closing(sqlite3.connect(self.s.database)) as db, db:db.execute('DELETE FROM shared_rationale')
         with self.assertRaises(store.StaleResult):self.s.get_scenario(self.case['id'])
 
     def test_metadata_edit_keeps_current_result_without_recalculation(self):

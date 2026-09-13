@@ -1,4 +1,5 @@
 """Synthetic HTTP contract tests; no workbook, network service or calculation fixture."""
+from contextlib import closing
 from io import BytesIO
 import json
 from pathlib import Path
@@ -58,7 +59,7 @@ class ContextApiTests(unittest.TestCase):
         return answers[0]
 
     def records(self):
-        with sqlite3.connect(self.workspace.store.database) as db:
+        with closing(sqlite3.connect(self.workspace.store.database)) as db, db:
             return {table: list(db.execute(f"SELECT * FROM {table} ORDER BY rowid"))
                     for table in ("workbooks", "scenarios", "revisions", "runs", "reasoning")}
 
