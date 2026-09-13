@@ -38,7 +38,7 @@ jobs:
           set -euo pipefail
           python3 - <<'PY'
           from pathlib import Path, PurePosixPath
-          import hashlib, io, os, stat, tarfile, zipfile
+          import hashlib, io, os, stat, subprocess, tarfile, tempfile, zipfile
 
           def package_site(archive, expected_sha, destination):
               raw = archive.read_bytes()
@@ -83,25 +83,67 @@ jobs:
                   for name in files:
                       if any(str(p) in files for p in PurePosixPath(name).parents):
                           raise ValueError('File/directory collision.')
-              # One ordinary tar member set, uploaded using the same official
-              # upload-artifact primitive as upload-pages-artifact. No dotfile filter.
-              owner_uid, owner_gid = os.getuid(), os.getgid()
-              if owner_uid == 0:
+              # Match the official Linux upload-pages-artifact archive construction
+              # with include-hidden-files=true; retain the reviewed upload transport.
+              if os.getuid() == 0:
                   raise ValueError('Pages packaging must run as an unprivileged user.')
-              with tarfile.open(destination, 'x', format=tarfile.USTAR_FORMAT) as t:
+              if destination.exists():
+                  raise ValueError('Pages artifact destination already exists.')
+              tool_env = {'PATH': '/usr/bin:/bin', 'LANG': 'C', 'LC_ALL': 'C'}
+              version = subprocess.run(['/usr/bin/tar', '--version'], check=True,
+                                       capture_output=True, text=True, env=tool_env,
+                                       timeout=10)
+              if 'GNU tar' not in version.stdout:
+                  raise ValueError('Pages packaging requires the Ubuntu GNU tar tool.')
+              with tempfile.TemporaryDirectory(prefix='reviewed-site-',
+                                               dir=destination.parent) as staging:
+                  site = Path(staging)
+                  site.chmod(0o755)
                   for name, data in sorted(files.items()):
-                      info = tarfile.TarInfo('./' + name)
-                      info.size = len(data)
-                      info.mode = 0o644
-                      info.uid, info.gid = owner_uid, owner_gid
-                      info.uname = info.gname = ''
-                      info.mtime = 0
-                      t.addfile(info, io.BytesIO(data))
-              with tarfile.open(destination) as t:
-                  extracted = {m.name.removeprefix('./'): t.extractfile(m).read() for m in t}
-                  if extracted != files:
-                      raise ValueError('Pages payload differs from reviewed site files.')
+                      target = site / name
+                      target.parent.mkdir(parents=True, exist_ok=True)
+                      with target.open('xb') as output:
+                          output.write(data)
+                      target.chmod(0o644)
+                  for directory in site.rglob('*'):
+                      if directory.is_dir():
+                          directory.chmod(0o755)
+                  subprocess.run(['/usr/bin/tar', '--dereference', '--hard-dereference',
+                                  '--directory', str(site), '-cvf', str(destination),
+                                  '--exclude=.git', '--exclude=.github', '.'],
+                                 check=True, env=tool_env, timeout=120,
+                                 stdout=subprocess.DEVNULL)
+              verify_pages_tar(destination, files)
               print('Verified', len(files), 'site files; all bytes preserved.')
+
+          def verify_pages_tar(destination, files):
+              expected_directories = {'.'}
+              for name in files:
+                  expected_directories.update(str(p) for p in PurePosixPath(name).parents)
+              with tarfile.open(destination) as archive:
+                  extracted = {}
+                  directories = set()
+                  seen = set()
+                  for member in archive:
+                      name = member.name.removeprefix('./').rstrip('/') or '.'
+                      if (member.name not in ('.', './')
+                              and member.name.rstrip('/') != './' + name):
+                          raise ValueError('Noncanonical Pages tar path.')
+                      if name in seen:
+                          raise ValueError('Duplicate Pages tar member.')
+                      seen.add(name)
+                      if member.uid != os.getuid() or member.gid != os.getgid():
+                          raise ValueError('Pages tar ownership differs from its runner.')
+                      if member.isdir():
+                          if name not in expected_directories or member.mode != 0o755:
+                              raise ValueError('Unexpected Pages tar directory.')
+                          directories.add(name)
+                      elif member.isfile() and name in files and member.mode == 0o644:
+                          extracted[name] = archive.extractfile(member).read()
+                      else:
+                          raise ValueError('Unexpected Pages tar file or link.')
+              if extracted != files or directories != expected_directories:
+                  raise ValueError('Pages payload differs from reviewed site files/directories.')
 
           temporary = Path(os.environ['RUNNER_TEMP'])
           package_site(temporary / 'reviewed-site.zip', os.environ['REVIEWED_SHA256'],
