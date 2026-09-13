@@ -28,6 +28,8 @@ reference:
   - CONTRACT_VERSION
 display_name: LIC-DSF Scenario Analysis Tool
 pypi: false
+# Use authored IT/dependency evidence; the generated table mislabels direct-VCS pins.
+package_info_page: false
 repo: https://github.com/Teal-Insights/lic-dsf-scenario-tool
 github_style: icon
 announcement:
