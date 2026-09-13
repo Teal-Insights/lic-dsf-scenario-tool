@@ -3,7 +3,7 @@
 // Synthetic DOM objects test state contracts; real keyboard/layout/download acceptance is separate.
 const fs=require('fs'),path=require('path'),vm=require('vm'),assert=require('assert/strict'),crypto=require('crypto');
 const html=fs.readFileSync(path.join(__dirname,'../src/lic_dsf/web.html'),'utf8');
-const script=html.split('<script>')[1].split('</script>')[0],lines=script.split('\n');new vm.Script(script);
+const script=html.split('<script>')[1].split('</script>')[0],lines=script.split(/\r?\n/);new vm.Script(script);
 function code(name){let start=lines.findIndex(l=>l.startsWith('function '+name+'(')||l.startsWith('async function '+name+'('));assert(start>=0,name);if(lines[start].endsWith('}'))return lines[start];let end=start+1;while(end<lines.length&&lines[end]!=='}')end++;return lines.slice(start,end+1).join('\n');}
 const checks=[];function pass(name){checks.push({name,passed:true});}const norm=x=>JSON.parse(JSON.stringify(x));
 function setup(){const fields={},created=[],revoked=[],status=[];function $(id){return fields[id]??=( {value:'',innerHTML:'',textContent:'',dataset:{},attrs:{},checked:false,disabled:false,children:{},classList:{set:new Set(['hidden']),add(x){this.set.add(x)},remove(x){this.set.delete(x)},toggle(x,on){on??=!this.set.has(x);on?this.set.add(x):this.set.delete(x);return on},contains(x){return this.set.has(x)}},setAttribute(k,v){this.attrs[k]=v},removeAttribute(k){delete this.attrs[k];if(k==='src')delete this.src},querySelector(q){return this.children[q]??={textContent:''}},querySelectorAll(){return []},focus(){},decode(){return Promise.resolve()}})};
