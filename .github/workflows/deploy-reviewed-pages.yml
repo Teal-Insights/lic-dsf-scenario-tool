@@ -16,9 +16,9 @@ jobs:
     timeout-minutes: 10
     permissions: {}
     env:
-      # Exact reviewed source-v6 site ZIP. Changing this pin requires new asset/source review.
-      REVIEWED_SHA256: 889eb9c441960bf3311adfa5c2823a5cba066c1db728b7b5385fb44f228ba8d6
-      ASSET_URL: https://github.com/Teal-Insights/lic-dsf-scenario-tool/releases/download/v0.1.0-alpha.1/LIC-DSF-documentation-0.1.0-alpha.1.zip
+      # Exact reviewed site ZIP with responsive layout correction. Changing this pin requires new asset/source review.
+      REVIEWED_SHA256: a7707005f0c3b89b9fcf9d87232a7e2b37dce2f9ed6e1aa24860e136289113f1
+      ASSET_URL: https://github.com/Teal-Insights/lic-dsf-scenario-tool/releases/download/v0.1.0-alpha.1/LIC-DSF-documentation-0.1.0-alpha.1-layout-fix.zip
     steps:
       - name: Require final reviewed binding
         shell: bash

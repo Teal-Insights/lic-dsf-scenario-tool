@@ -8,7 +8,6 @@ a{text-underline-offset:.15em}
 main a{font-weight:500}
 .navbar{background:#143E5A!important}
 .navbar .navbar-brand,.navbar .nav-link{color:#fff!important}
-#quarto-document-content{max-width:850px}
 .quarto-title-block .title{font-size:clamp(2rem,4vw,3rem)}
 .quarto-figure img{max-width:100%;height:auto}
 :focus-visible{outline:3px solid #0094BC;outline-offset:3px}
