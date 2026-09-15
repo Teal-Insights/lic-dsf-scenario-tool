@@ -9,7 +9,7 @@ Download the desktop packages from the [releases page](https://github.com/Teal-I
 | Your computer | Package | Limits |
 | --- | --- | --- |
 | Windows with an Intel or AMD 64-bit processor | Windows x64 ZIP | Windows Server 2022 was tested with an earlier build. Final alpha execution and managed Windows 11 laptop testing remain pending. Windows on Arm is not covered. |
-| Mac with Apple Silicon (M1 or later), macOS 14 or later | Mac arm64 ZIP | Unsigned and not notarized by Apple. Downloaded/quarantined Finder launch and a complete walkthrough of the next bundle remain pending. Intel Macs and older macOS are not covered by this package. |
+| Mac with Apple Silicon (M1 or later), macOS 14 or later | Mac arm64 ZIP | Unsigned and not notarized by Apple, so the first attempt to open it is blocked and you have to approve it once. Follow the Mac steps below. Intel Macs and older macOS are not covered by this package. |
 | Technical users on other configurations | [Source installation](source-installation.md) | Requires Python, Git and dependency installation; no additional platform acceptance is implied. |
 
 Python and the calculation dependencies are included in the desktop ZIPs. You do not need to install Excel to calculate scenarios. You do need a browser. The built-in walkthrough obtains the supported official workbook directly from the publisher; your own analysis uses a workbook you supply. Downloading the package and the example for the first time requires internet access. The verified cached example and built-in teaching cases can then be used offline. Read the [IT information page](it-review.md) if you need technical details for institutional review.
@@ -29,12 +29,46 @@ The package is an unsigned preview. If Windows or your institution blocks it, re
 
 ## Mac
 
-1. Download the Mac arm64 ZIP from the release page and extract it in Finder.
-2. Keep **LIC-DSF Scenario Tool.app** intact. Place it in a folder under your control. Do not edit files inside the app bundle.
-3. Open the app. Its launcher opens Terminal, then the local interface in your default browser. Keep Terminal open while using it.
-4. Use **Download and try the official example**, or **Try the official illustrative example** when already available, then follow the [walkthrough](tutorial.md). On older builds, use the [manual template download](template-source.md) and workbook chooser.
+The Mac package is an unsigned preview. It carries no Apple Developer ID signature and no Apple notarization, so macOS treats it as software from a developer it cannot identify and blocks the first attempt to open it. Signing and notarization are planned for a later release. Until then, the approval steps below are the supported way to open it. They use the ordinary macOS approval screen. They never ask you to remove the quarantine marker, turn off Gatekeeper or weaken any security setting.
 
-This first Mac preview has no Developer ID signature or Apple notarization. macOS may block a downloaded copy. If it does, stop and retain the message for [feedback](feedback.md) or institutional review. These instructions do not ask you to remove quarantine or turn off Gatekeeper. A successful development-machine launch would not prove that a downloaded copy passes this check.
+### Open it the first time
+
+1. Download the Mac arm64 ZIP from the release page. In Finder, open your Downloads folder and double-click the ZIP to extract it.
+2. Keep **LIC-DSF Scenario Tool.app** whole and put it somewhere you control, such as your Applications or Documents folder. Do not edit files inside the app.
+3. Double-click the app. **Expect this first attempt to be refused.** macOS shows a notice saying it cannot verify the app or its developer. Choose **Done** or **Cancel**. Do not choose Move to Trash.
+4. Open the Apple menu, choose **System Settings**, then **Privacy & Security** in the sidebar. Scroll down to the **Security** section near the bottom of that page.
+5. A line there names **LIC-DSF Scenario Tool** and says it was blocked. Select **Open Anyway** on that line.
+6. Confirm with your Mac login password, Touch ID or Apple Watch if you are asked.
+7. A last dialog repeats the warning and offers **Open Anyway** or **Open**. Choose it. The app now starts.
+8. macOS may also ask whether LIC-DSF Scenario Tool may control Terminal. Choose **OK**. The app uses Terminal only to show you that it is running and to give you a way to stop it.
+
+After this one approval, later launches open normally by double-clicking the app.
+
+### What the screens say on each macOS version
+
+The route is the same on every supported version; only the wording differs.
+
+| Your macOS | The notice on the refused first attempt | The line in Privacy & Security, Security |
+| --- | --- | --- |
+| macOS 14, Sonoma | "LIC-DSF Scenario Tool" cannot be opened because the developer cannot be verified. | "LIC-DSF Scenario Tool" was blocked from use because it is not from an identified developer. |
+| macOS 15, Sequoia | Apple could not verify "LIC-DSF Scenario Tool" is free of malware that may harm your Mac or compromise your privacy. | "LIC-DSF Scenario Tool" was blocked to protect your Mac. |
+| macOS 26, Tahoe | Apple could not verify "LIC-DSF Scenario Tool" is free of malware that may harm your Mac or compromise your privacy. | "LIC-DSF Scenario Tool" was blocked to protect your Mac. |
+
+On macOS 15 and later, holding Control and choosing Open no longer skips this approval. Use the System Settings route above.
+
+### If Open Anyway is missing or greyed out
+
+The **Open Anyway** line appears only for a short period after a blocked attempt. If you cannot see it, double-click the app again, dismiss the notice, and go straight back to System Settings, Privacy & Security.
+
+If your Mac is managed by your organisation, that button can be switched off by policy. Stop there, keep a copy of the message, and use your normal software-review process. Do not try to work around the control.
+
+### Run it and stop it
+
+The app opens a Terminal window that shows it starting, then your default browser at a local address. Keep that Terminal window open while you work. Use **Download and try the official example**, or **Try the official illustrative example** when it is already available, then follow the [walkthrough](tutorial.md).
+
+To stop the tool, press **Control-C** in its Terminal window, or close that window. Closing only the browser tab leaves the tool running.
+
+A file checksum published with the release can confirm that your download is the exact file we built. It does not establish that the software is safe, and it is not a substitute for your own review.
 
 ## Save, stop and return later
 
