@@ -12,3 +12,5 @@ recursive-include tests/fixtures *.json
 recursive-include scripts *.py
 recursive-include src/lic_dsf/fonts *.otf *.txt *.md
 recursive-include licenses *.txt
+
+recursive-include src/lic_dsf/illustrative_cases *.json

@@ -58,6 +58,12 @@ The Python tests cover component behavior, including validation, saved-state and
 
 The [CI workflow](https://github.com/Teal-Insights/lic-dsf-scenario-tool/actions/workflows/checks.yml) runs these checks on Linux, Windows and Mac hosted runners. A workflow file is not proof that a run passed. Release notes must link the actual runs for the published candidate and distinguish source checks from downloadable desktop-package acceptance.
 
+## Alpha.2 source-candidate checks
+
+The 0.1.0a2 source adds reproducible checks for fixed-publisher example retrieval, corrupt-cache refusal, exact teaching-resource hashes and workbook/year binding. JavaScript checks exercise loading each prepared draft, preserving saved work, both desktop chart assignments and stale-download rejection. Summary checks retain tiny nonzero inputs, unfinished values and edits reset to zero. Text-wrapping checks compare the optimized renderer against its prior algorithm, including combining characters, and verify that the bounded packet cache is discarded after success or failure.
+
+The label-only correction is reflected in the expected teaching label; all three input resources retain their pinned bytes. The numerical evaluator, reported-year definitions, intake hardening and locked comparison tolerance are unchanged. The release candidate needs fresh runs of the commands above and exact wheel/source-archive inspection. These checks do not establish desktop launcher acceptance, fresh Excel verification, hosted security acceptance or current CI success.
+
 ## Compare a scenario with Excel
 
 A fresh Excel comparison requires the exact workbook and complete scenario definition, including financing treatment. Work on a copy and preserve the original. Enter the same customized-scenario inputs, recalculate in desktop Microsoft Excel, save the recalculated copy and compare the corresponding output cells with the app's full-precision results.

@@ -8,4 +8,10 @@ The [machine-readable source record](template-source.json) records the exact pub
 
 A hash establishes file identity, not complete structural compatibility or numerical correctness. User-completed workbooks normally have different hashes. They require their own compatibility checks and evidence status.
 
+## One-click local example
+
+The new built-in walkthrough obtains this exact workbook with **Download and try the official example**, then keeps a verified local copy for offline reuse. The prepared investment assumptions are included with the application; the workbook is downloaded separately from the World Bank. No private workbook or scenario inputs are sent in the request. The publisher receives ordinary connection information, including the requesting IP address. The app refuses a changed or damaged file rather than silently treating it as the recorded example.
+
+This route is implemented in alpha.2. See [installation](installation.md) for matching download availability. Source checks do not establish desktop launch acceptance or a completed offline/network audit.
+
 The source repository does not contain the template binary. Its ownership and applicable distribution terms are separate from the MIT software license. Downloading from the publisher and processing locally is distinct from redistributing the binary inside a release. Document the actual release's required-asset rights before distribution.

@@ -117,3 +117,24 @@ Calculation requests, results and errors use explicit UTF-8 encoding at both end
 ## 13 September: workbook XML intake hardening
 
 Inspect every workbook ZIP member with a declaration-aware XML parser before downstream workbook reading. Reject DTDs/entities regardless of UTF-8/UTF-16 encoding or part filename. Malformed known XML parts fail with a stable intake error. Small valid-ZIP regression cases reproduce prior encoding/extension bypasses and verify their rejection. This does not execute macros, refresh external links or change economic formulas.
+
+
+## 13 September: built-in teaching cases without file handling
+
+First use should offer an optional official-example route without workbook selection or JSON import. This supersedes requiring separate workbook/scenario-file handling in the main tutorial, while preserving own-workbook intake and optional advanced exchange. The direct World Bank download is pinned to the recorded bytes, checked before use and cached locally; internet is needed for initial acquisition, not subsequent cached exercises. The template remains outside application archives and MIT licensing. No private workbook or scenario inputs are sent to its publisher.
+
+The prepared investment set consists of No investment, Larger assumed benefit and Smaller assumed benefit, with matched 8% interest, 4-year grace and 9-year maturity. These complete paths include their coordinated fiscal assumptions and are tied to the exact official illustrative workbook. Each opens as an unsaved draft for review, save and calculation. The main tutorial compares against No investment; it neither estimates investment returns nor treats a reference-baseline/control gap as an investment effect. Simpler generic exercises remain available separately.
+
+This direction is implemented in the alpha.2 source. This reconciled candidate requires fresh source checks and independent artifact review. Final rebuilt artifacts, actual public availability and release-specific installation acceptance remain separate. The calculation engine and numerical evidence limits are unchanged; independent fresh Excel verification and a complete offline/network audit are not established by these checks.
+
+## 13 September: bounded packet rendering performance
+
+Packet rendering reuses measured line wraps only within one export and reuses identical spreadsheet style objects. Printable ASCII prefix fitting uses measured binary search with the bundled fonts; Unicode/control text retains sequential fitting. The cache is bounded and discarded on completion or failure. All report layouts, font assets, PNG resolution, SVG outlines, tables, provenance and output inventory remain unchanged. Same-input packet equivalence and performance acceptance are separate from numerical verification; a new application identity requires fresh prepared teaching results.
+
+## 14 September: reconcile the next desktop source candidate
+
+The 0.1.0a2 source carries the application corrections used online into the desktop code: built-in example acquisition and teaching cases, clearer input summaries, stale-comparison feedback and bounded packet text layout. The hosted wrapper and deployment configuration are outside this source change. The public documentation deployment workflow and responsive site styles retain their existing bytes.
+
+Preserve the three teaching-resource files exactly. All numerical definitions, projection years, financing assumptions and shared explanations retain their reviewed values. The label Larger assumed benefit supersedes Earlier assumed benefit; this corrects the label without changing the timing or size of any assumption.
+
+Desktop launcher corrections and Open Anyway guidance require separate bundle implementation and acceptance. The [release notes draft](release-notes-0.1.0a2.md) keeps these items pending. Fresh source checks and exact package review cannot establish fresh Excel verification, hosted security acceptance or signing.

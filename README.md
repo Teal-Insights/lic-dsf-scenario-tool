@@ -7,18 +7,24 @@ Explore how alternative macroeconomic and financing assumptions change debt indi
 ## Start here
 
 - [Documentation and walkthroughs](https://teal-insights.github.io/lic-dsf-scenario-tool/)
-- [Experimental release: Windows and Mac downloads](https://github.com/Teal-Insights/lic-dsf-scenario-tool/releases/tag/v0.1.0-alpha.1)
+- [Published alpha.1: Windows and Mac downloads](https://github.com/Teal-Insights/lic-dsf-scenario-tool/releases/tag/v0.1.0-alpha.1)
 - [Installation guide](docs/installation.md) and [first scenario walkthrough](docs/tutorial.md)
 - [Information you can forward to IT](docs/it-review.md)
 - [Methods and limits](docs/methodology.md), [verification and reproducible checks](docs/verification.md)
 
 Use the assets attached to the alpha release page; if no downloads are listed, the preview is not yet available. Desktop packages include Python and dependencies. The initial packages target Windows x64 and Apple Silicon/macOS 14+. The Mac wrapper is unsigned and unnotarized. See [platform evidence](docs/accessibility-platforms.md) for the distinction between earlier tests and final-package acceptance. Technical users can also [install from source](docs/source-installation.md).
 
+## Try the built-in walkthrough
+
+**Source candidate: `0.1.0a2`.** This guide describes the next built-in walkthrough. Alpha.2 desktop packages and their installation checks are pending. The published alpha.1 predates this route. See the [release notes draft](docs/release-notes-0.1.0a2.md) for scope and remaining checks.
+
+Select **Download and try the official example** to obtain and check the World Bank template automatically. Internet is needed once; the verified local copy can then be used offline. No private workbook or scenario inputs are sent to the publisher. In **Try an illustrative investment**, load **No investment**, **Larger assumed benefit** and **Smaller assumed benefit** one at a time, review, save and calculate. No workbook chooser or JSON import is needed. Follow the [illustrative walkthrough](docs/tutorial.md).
+
 ## From workbook to briefing
 
 | Step | What you do |
 | --- | --- |
-| 1. Upload | Choose a completed supported workbook. For a first run, use the separately downloaded official illustrative example. |
+| 1. Choose workbook | Start the official illustrative example, or choose your own completed supported workbook. |
 | 2. Check baseline | Review projection years, source identity and the baseline saved in your workbook. |
 | 3. Create scenarios | Edit annual assumptions, explain changes, save revisions and calculate. |
 | 4. Compare | Select calculated cases and choose the case against which differences should be measured. |
@@ -38,7 +44,7 @@ Both **Standard LIC-DSF** and **Policy briefing** charts appear together and use
 
 A complete briefing ZIP contains two PDF reports, twelve PNG and twelve SVG charts, five CSV tables, an Excel workbook, full-precision comparison JSON and a file-fingerprint manifest. Reports and tables explain source, assumptions, shared reasoning and evidence. Shared explanations and chart labels are intentional; private journals, internal workspace names and the original workbook are excluded. Review the actual files before sharing, because deliberately shared text and assumptions may still be confidential.
 
-A separate [scenario file](docs/exchange-recovery.md) lets a colleague import one case's inputs for the identical workbook, then review, save and calculate a new draft. It does not import verified results. Cross-workbook translation and multi-case exchange are not implemented. A briefing packet, a scenario file and a private backup serve different purposes.
+For optional advanced exchange, a separate [scenario file](docs/exchange-recovery.md) lets a colleague import one case's inputs for the identical workbook, then review, save and calculate a new draft. It does not import verified results. Cross-workbook translation and multi-case exchange are not implemented. A briefing packet, a scenario file and a private backup serve different purposes.
 
 ## Evidence, safety and contribution
 

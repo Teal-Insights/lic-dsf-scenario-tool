@@ -1,6 +1,8 @@
 # Local data, sharing and recovery
 
-The application reads an uploaded workbook and keeps a separate copy in the chosen data directory. It stores scenarios, results and journal entries locally. The original selected file is not overwritten. The local service binds to `127.0.0.1`; it has no hosted upload service or account system. These design choices do not constitute a completed network or security audit.
+The application reads a selected workbook and keeps a separate copy in the chosen data directory. It stores scenarios, results and journal entries locally. The original selected file is not overwritten. The local service binds to `127.0.0.1`; it has no hosted upload service or account system. These design choices do not constitute a completed network or security audit.
+
+The new built-in example route downloads the exact official template directly from the World Bank when you request it. Internet is needed for the first download; a verified local copy supports later offline use. The request carries no private workbook or scenario inputs, though the publisher receives ordinary connection information such as IP address. Prepared teaching assumptions are local application files. This route is included in the alpha.2 source. Check [installation](installation.md) for matching download availability. Source checks do not establish desktop launch acceptance or a completed offline/network audit.
 
 ## Know what is retained
 
@@ -17,9 +19,9 @@ The workspace is not application-encrypted. Operating-system access controls, de
 
 PDF/PNG charts use your shared scenario labels, the separately saved optional chart-context label and a workbook hash prefix. JSON includes those labels and the context revision plus assumptions, results, full workbook/scenario identities, source cells and evidence. Internal scenario names, original workbook filenames and journal entries are excluded by the application's selected export fields. This does **not** anonymise the economics: values, years, labels and file hashes may identify a source or analysis.
 
-Check the actual downloaded file and its metadata before sending it. Keep evidence and any illustrative-data disclosure attached. Do not share the whole workspace as if it were a chart export. The preview has no GUI internal-pack export or spreadsheet export; a private full-workspace backup is a different operation.
+Check the actual downloaded file and its metadata before sending it. Keep evidence and any illustrative-data disclosure attached. Do not share the whole workspace as if it were a chart export. The briefing packet includes Excel and CSV tables, but it is not a full-workspace backup. The browser has no complete workspace-backup export control.
 
-Do not attach analytical data, journals, logs or screenshots to public support issues. Report a reproducible, non-sensitive description first. A formal private vulnerability-reporting route and independently reviewed privacy/security assessment remain release gaps.
+Do not attach analytical data, journals, logs or screenshots to public support issues. Report a reproducible, non-sensitive description first. Use the [private vulnerability-reporting route](../SECURITY.md) for suspected security defects. This does not imply a completed privacy/security certification.
 
 ## Back up and restore
 

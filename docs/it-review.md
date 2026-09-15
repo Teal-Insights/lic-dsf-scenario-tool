@@ -2,9 +2,9 @@
 
 The LIC-DSF Scenario Analysis Tool is an MIT-licensed local application for comparing alternative macroeconomic and financing assumptions in a supported debt-sustainability workbook. It saves scenarios and produces charts, reports and underlying data. It does not use AI inference or send workbooks to a hosted calculator.
 
-**Release scope: experimental alpha `0.1.0-alpha.1`.** This is information for an institution's assessment, not a security certification or a claim of universal policy compliance. Consult the release's asset fingerprints and evidence before evaluating a download. Source checks, package inspection and actual desktop execution are distinct evidence; the limitations below remain relevant.
+**Version scope: source candidate `0.1.0a2`; desktop bundles pending.** This is information for an institution's assessment, not a security certification or a claim of universal policy compliance. Consult the release's asset fingerprints and evidence before evaluating a download. Source checks, package inspection and actual desktop execution are distinct evidence; the limitations below remain relevant.
 
-[Download the two-page IT summary](https://github.com/Teal-Insights/lic-dsf-scenario-tool/releases/download/v0.1.0-alpha.1/LIC-DSF-IT-review-alpha1.pdf) once the alpha release is published. This page provides the fuller technical detail.
+For this version, forward this page or use your browser's print-to-PDF function. See the [release notes draft](release-notes-0.1.0a2.md) for pending package checks. The two-page PDF attached to alpha.1 describes that earlier release; it is not the IT summary for alpha.2.
 
 ## At a glance
 
@@ -23,6 +23,8 @@ The [installation guide](installation.md) gives extraction, startup, stopping an
 ## Data flow and storage
 
 ![A workbook is copied into a local workspace. A local browser talks to the application, which runs a bounded calculation worker and creates local exports. The analyst separately reviews and chooses whether to share them.](../assets/local-data-flow.svg)
+
+The diagram shows the local analytical workflow. A separate, user-triggered input route downloads the fixed official example from the World Bank over HTTPS and verifies its exact size and fingerprint before retaining a local copy. The publisher receives ordinary connection metadata; no analytical workbook, scenario inputs, results or notes are included in that request. A verified cached copy is reused without a new publisher download. See the network table below for this boundary and the limits of its test evidence.
 
 The selected original workbook is preserved. The app stores a separate copy, saved assumptions, revisions, private journals, calculation requests/results and worker logs in the workspace. Browser-only unsaved edits can be lost. Exported files go to the browser's download location or a location the user chooses.
 
@@ -51,10 +53,12 @@ Workbook intake does not execute VBA or refresh external workbook links. The eva
 
 ## Network behavior and dependencies
 
+Alpha.2 adds the one-click example route. Its verified cache supports reuse without another publisher download; the three teaching-case definitions are bundled locally. This candidate requires its own source and package checks. Representative offline analysis and observation of connected outbound traffic remain separate evidence work. The table describes the application's behavior, not a completed network audit. Cached workbooks remain outside the application archive.
+
 | Activity | Network use and boundary |
 | --- | --- |
 | Get the desktop package | Browser connects to GitHub and its release-asset delivery infrastructure. |
-| Get the reference workbook | Browser connects to the linked World Bank template page/download. The workbook is not bundled. |
+| Get the reference workbook | On the built-in example action, the local app downloads the pinned HTTPS World Bank file, checks its identity and caches it. No private workbook or scenario inputs are sent. The publisher sees ordinary connection information, such as IP address. The workbook is not bundled. Older builds use the browser download route. |
 | Install from source | Python tooling fetches the pinned evaluator from GitHub and dependencies from package repositories. The desktop ZIP avoids this installation step. |
 | Use the local interface | Browser connects to loopback. Interface fonts and chart resources are bundled. |
 | Calculate and export | Local Python processing; no hosted calculation API or telemetry service is required by the application. |
@@ -70,7 +74,7 @@ A prior application build completed a Windows Server 2022 x64, Administrator-acc
 
 The Mac packaging work uses Apple Silicon and a fresh relocatable CPython 3.11.16 runtime. Its selected NumPy dependency requires macOS 14 or later. Intel Mac and older macOS coverage are not claimed. Final downloaded/quarantined Finder launch is a separate check from a local terminal calculation.
 
-Current source checks include 131 Python tests, four JavaScript suites and focused linting. The new locale and XML intake regressions reproduced failures before their fixes. This is bounded testing and source review, not penetration testing, WCAG certification, formal DPG recognition or independent fresh Excel verification. [Platform status](accessibility-platforms.md) and [verification](verification.md) explain the limits.
+The candidate source checks and their limits are listed in [verification](verification.md). Rebuilt artifacts require independent review, and desktop launch checks remain pending. Earlier locale and XML intake regressions reproduced failures before their fixes. This is bounded testing, not penetration testing, WCAG certification, formal DPG recognition or independent fresh Excel verification. [Platform status](accessibility-platforms.md) records historical evidence separately.
 
 ## Updates, removal and reporting
 

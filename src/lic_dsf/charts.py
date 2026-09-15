@@ -31,6 +31,8 @@ METRICS = (
 )
 COLORS = {'navy': '#143E5A', 'cyan': '#0094BC', 'gray': '#5C6770',
           'ink': '#2A2A2A', 'line': '#D4D0CA', 'ivory': '#FAFAF7'}
+from contextvars import ContextVar
+_PACKET_WRAP_CACHE = ContextVar("packet_wrap_cache", default=None)
 _RENDER_LOCK = threading.RLock()
 VIEW_NAMES = {'standard': 'Standard LIC-DSF', 'briefing': 'Policy briefing'}
 OFFICIAL_EXAMPLE_SHA = '3a0a0b80c7cbc95ac953f25ecae0b437129d669ceb8aeefb54ab86dc8727ea86'
@@ -366,18 +368,42 @@ def _dot_panel(ax,summary,metric):
 
 
 def _header_lines(text, renderer, font, width):
-    """Wrap literal text to its measured width without truncating characters."""
+    """Wrap literal text without truncation; cache only inside one packet."""
+    from matplotlib.backends.backend_agg import RendererAgg
+    cache = _PACKET_WRAP_CACHE.get()
+    key = None
+    if cache is not None and type(renderer) is RendererAgg:
+        key = (text, renderer.dpi, font.copy(), width)
+        if key in cache:
+            return list(cache[key])
+    original = text
     lines=[]
     while text:
         if renderer.get_text_width_height_descent(text,font,ismath=False)[0] <= width:
             lines.append(text);break
         end=1
-        while end < len(text) and renderer.get_text_width_height_descent(text[:end+1],font,ismath=False)[0] <= width:
-            end+=1
+        # Printable ASCII in the bundled fonts has nondecreasing advances.
+        # Keep the original linear search for Unicode/combining/control text.
+        if text.isascii() and text.isprintable() and type(renderer) is RendererAgg:
+            upper=len(text)
+            while end+1 < upper:
+                middle=(end+upper)//2
+                if renderer.get_text_width_height_descent(text[:middle],font,ismath=False)[0] <= width:
+                    end=middle
+                else:
+                    upper=middle
+        else:
+            while end < len(text) and renderer.get_text_width_height_descent(text[:end+1],font,ismath=False)[0] <= width:
+                end+=1
         boundary=text.rfind(' ',0,end+1)
         if boundary > 0:end=boundary+1
         lines.append(text[:end]);text=text[end:]
-    return lines or ['']
+    lines = lines or ['']
+    # Bound both entry count and retained text. The context is discarded even
+    # when rendering raises, and never carries labels across packet requests.
+    if key is not None and len(cache) < 256 and len(original) <= 4096:
+        cache[key] = tuple(lines)
+    return lines
 
 
 def _header(fig, summary, view, *, detail=False):

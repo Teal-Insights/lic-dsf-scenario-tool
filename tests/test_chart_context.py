@@ -13,7 +13,7 @@ class ChartContextTests(unittest.TestCase):
     def test_deliberate_text_and_fiscal_years(self):
         for label in ("Budget: FY2030/31", "FY2030/2031", "2030/31", "2030/2031",
                       "FY30/31", "FY 2030/31", "fy 99/00", "FY1999/00",
-                      "Résumé — budget (2030)", "$20 {draft}_<example>", "A" * 80):
+                      "Résumé \u2014 budget (2030)", "$20 {draft}_<example>", "A" * 80):
             with self.subTest(label=label):
                 self.assertEqual(context.normalize_context_label(label), label)
         self.assertEqual(context.normalize_context_label("  Re\u0301sume\u0301  "), "Résumé")

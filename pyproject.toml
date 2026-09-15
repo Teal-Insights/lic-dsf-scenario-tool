@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "lic-dsf-scenario-tool"
-version = "0.1.0a1"
+version = "0.1.0a2"
 description = "Local customized scenario analysis for LIC-DSF IDA21 workbooks"
 requires-python = ">=3.11"
 license = {file = "LICENSE"}
@@ -24,7 +24,7 @@ where = ["src"]
 lic-dsf-scenario-tool = "lic_dsf.app:main"
 
 [tool.setuptools.package-data]
-lic_dsf = ["web.html", "fonts/*.otf", "fonts/*.txt", "fonts/README.md"]
+lic_dsf = ["web.html", "illustrative_cases/*.json", "fonts/*.otf", "fonts/*.txt", "fonts/README.md"]
 
 [tool.ruff]
 target-version = "py311"

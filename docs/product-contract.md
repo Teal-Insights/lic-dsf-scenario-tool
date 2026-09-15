@@ -2,7 +2,7 @@
 
 The product accepts a completed supported LIC-DSF IDA21 workbook, checks it, and enables the analyst to enter the 13 customized-scenario macro paths and external financing terms. Input labels, units and fiscal-year mapping follow the template. Period entry and year-by-year entry should be easy to understand; blank and explicit zero remain distinct.
 
-The baseline belongs to the uploaded workbook. Example data are an optional, explicitly illustrative route. Results, saved scenarios, reasoning and exports bind to exact workbook and assumption identities. Do not combine cases from different baselines under one unqualified comparison.
+The baseline belongs to the selected workbook. Example data are an optional, explicitly illustrative route. Results, saved scenarios, reasoning and exports bind to exact workbook and assumption identities. Do not combine cases from different baselines under one unqualified comparison.
 
 The application must preserve original files, report unsupported structures specifically, retain previous valid results after failures, and refuse ambiguous stale-result exports. A successful calculation with pending exact-run evidence is useful but must remain visibly distinct from an Excel-verified result. Numerical checks retain `atol=1e-6`, error-class equality and first-divergence reporting.
 
@@ -54,3 +54,12 @@ The packet is built from one current saved comparison, using the same export fie
 Both PDF reports now begin with a reading guide, and Excel opens a **Read me first** sheet. These explain purpose, source, assumptions, comparison, check limits and file fingerprints before technical detail. CSV/JSON schemas and exact numerical values are unchanged. See [reading and sharing a briefing](reading-briefing.md).
 
 Contextual help must explain an unfamiliar term at its point of use. Progress distinguishes missing calculations from missing selection. Input summaries may show rounded, abbreviated paths while exact edits and exports remain unchanged; small nonzero values must not appear as literal zero. No automated economic-realism assessment or official endorsement is implied.
+
+
+## Built-in illustrative learning route
+
+A first-time user can start the official example without a file chooser, and load complete illustrative investment cases without importing scenario files. The app downloads the exact publisher workbook on explicit action, verifies its fingerprint and retains a local copy for offline reuse. It does not bundle or relicense the workbook. First-use network behavior is disclosed beside the action; private workbook and scenario data are not included in the download request.
+
+The three prepared cases bind to the exact official workbook and projection years: No investment, Larger assumed benefit and Smaller assumed benefit. Their external financing assumptions match at 8% interest, 4-year grace and 9-year maturity. Load creates an unsaved draft; review, save and calculate remain explicit. Loading must not overwrite saved cases or silently discard drafts. The user chooses No investment as comparator. Shared explanations identify the coordinated fiscal/growth paths and illustrative assumptions, without a promise of returns or independent calibration.
+
+This optional learning route supplements own-workbook intake. Generic sensitivity exercises and advanced scenario-file exchange remain available. It does not expand supported workbook versions or numerical coverage, establish fresh Excel verification, or turn the general tool into an investment-specific product. This reconciled candidate requires fresh source checks and independent artifact review. Final release artifacts, installation and representative offline/connected network observation must be documented separately.

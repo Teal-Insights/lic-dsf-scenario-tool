@@ -4,9 +4,15 @@ The application runs on one computer. A loopback-only HTTP service serves the bu
 
 ```mermaid
 flowchart TD
-    U[Local workbook selection] --> I[Identity and compatibility checks]
+    D[User selects official example] --> K{Verified local copy?}
+    K -->|Available| I[Identity and compatibility checks]
+    K -->|Missing| P[HTTPS download from World Bank]
+    P --> H[Exact size and SHA-256 check]
+    H --> I
+    U[Local workbook selection] --> I
     I --> W[Preserved workbook copy]
     I --> E[Scenario editor]
+    T[Bundled teaching inputs for exact example] --> E
     E --> S[Saved revisions and private journal]
     S --> C[Bounded calculation worker]
     W --> C
@@ -15,13 +21,15 @@ flowchart TD
     V --> X[Selected PDF, PNG and JSON exports]
 ```
 
-The diagram describes the application route, not a completed network/security audit. Installation downloads public dependencies. Operating-system services, the browser and other software on the computer have their own network behaviour.
+The diagram includes the optional external example-download route and the local analytical workflow. A user-triggered download sends no analytical workbook, assumptions, results or notes; the publisher receives ordinary connection metadata. A cached example is checked before reuse, and a changed or damaged copy is refused. Loading a prepared case opens an editable unsaved draft; it does not save or calculate automatically. Source installation can also download public dependencies. These descriptions are not a completed offline/network or security audit. Operating-system services, the browser and other software on the computer have their own network behaviour.
 
 ## Boundaries
 
 | Component | Responsibility |
 | --- | --- |
 | `workbooks.py` | Bound and inspect workbook packages, identify bytes, read supported layout and caches |
+| `official_example.py` | Fetch the fixed HTTPS publisher file on user action; restrict redirects and verify size and SHA-256 |
+| `illustrative.py` and `illustrative_cases/` | Load integrity-checked teaching inputs only for the exact official workbook and years |
 | `scenarios.py` | Normalize complete customized inputs and financing terms |
 | `engine.py` and semantic adapter | Calculate selected workbook dependencies and attach explicit evidence |
 | `store.py` | Preserve revisions and reasoning, migrate the known schema, save per-workbook outward context, validate identities and refuse stale runs |
@@ -44,9 +52,9 @@ See the [data contract](data-contract.md) for schema limits and [exchange/recove
 
 ## Start developing from the installed source
 
-1. Follow [installation](installation.md), including a noneditable install into a dedicated environment. Keep data outside the source tree.
+1. Follow [source installation](source-installation.md), including a noneditable install into a dedicated environment. Keep data outside the source tree.
 2. Run `python -m lic_dsf.app --help` and verify the imported package path with `python -c "import lic_dsf; print(lic_dsf.__file__)"`.
-3. From the source root, run `python -m unittest discover -s tests -v`. With Node.js installed, run `node tests/example_definitions.js` and `node tests/presets.js`. These JavaScript files are synthetic source/handler checks; neither launches a browser or calculates a workbook.
+3. From the source root, run `python -m unittest discover -s tests -v`. With Node.js installed, run `python scripts/check_javascript.py` to execute every checked-in JavaScript suite. These JavaScript files are synthetic source/handler checks; neither launches a browser or calculates a workbook.
 4. Run [the public tutorial](tutorial.md) against the installed package in a new data directory. Reinstall after source edits and restart before checking the installed behavior.
 
 The package entry point `lic-dsf-scenario-tool` calls `lic_dsf.app:main`; `python -m lic_dsf.app` is the equivalent module route used in this guide. `web.html` is bundled as package data. The source distribution also includes documentation and schemas via `MANIFEST.in`; a wheel contains the runtime package, so retain the source documentation alongside it.
@@ -56,6 +64,7 @@ The package entry point `lic-dsf-scenario-tool` calls `lic_dsf.app:main`; `pytho
 | Change | Begin here | Preserve or verify |
 | --- | --- | --- |
 | Supported workbook geometry | `ida21.py`, `workbooks.py` | Row labels, year mapping, cached values and explicit refusal of unsupported geometry |
+| Example acquisition and teaching cases | `official_example.py`, `illustrative.py`, `app.py`, `web.html` | Explicit download, publisher restriction, exact input identity, unsaved-draft and private-journal preservation |
 | Scenario definitions | `scenarios.py`, `contracts.py` | Complete finite paths, canonical units and financing relations |
 | Numerical behavior | `engine.py`, `excel_semantics.py` | Probe scope, first divergence, exact error classes and absolute tolerance `1e-6` |
 | Shared explanations | `rationale.py`, `store.py` | Revision binding, integrity and separation from private journals |

@@ -1,4 +1,4 @@
-"""Loopback-only analyst workspace. No hosted upload or external runtime assets."""
+"""Loopback-only analyst workspace with opt-in official-example retrieval."""
 from __future__ import annotations
 
 import argparse
@@ -23,9 +23,9 @@ from . import CONTRACT_VERSION, calculate, engine_identity, inspect_workbook, im
 from .store import ScenarioStore, StaleResult, canonical
 from .chart_context import validate_chart_context
 from .rationale import normalize_rationale
+from .official_example import OFFICIAL_EXAMPLE_SHA, download_official_example, verify_official_example
 
 MAX_UPLOAD = 25 * 1024 * 1024
-OFFICIAL_EXAMPLE_SHA = "3a0a0b80c7cbc95ac953f25ecae0b437129d669ceb8aeefb54ab86dc8727ea86"
 
 
 @contextmanager
@@ -96,6 +96,7 @@ class Workspace:
         self.executor = ThreadPoolExecutor(max_workers=1, thread_name_prefix="calculation")
         self.jobs = {}
         self.job_lock = threading.Lock()
+        self.example_lock = threading.Lock()
         self.calculation_lock = Path(args.calculation_lock) if args.calculation_lock else self.directory / "calculation.lock"
 
     def path(self, sha):
@@ -129,8 +130,12 @@ class Workspace:
         finally:
             Path(temporary).unlink(missing_ok=True)
 
+    def inspection(self, sha):
+        return inspect_workbook(self.path(sha))
+
     def context(self, sha):
-        info = inspect_workbook(self.path(sha))
+        from .illustrative import builtin_investment_cases
+        info = self.inspection(sha)
         if info["workbook_sha256"] != sha:
             raise ValueError("The local workbook changed. Upload the original again.")
         from .ida21 import METRICS, OFFSETS, cell
@@ -143,9 +148,33 @@ class Workspace:
         finally:
             workbook.close()
         return {"inspection": info, "scenarios": self.store.list_scenarios(sha), "baseline_preview": preview,
+                "builtin_investment_cases": builtin_investment_cases(sha, info["input_years"]),
                 "chart_context": self.store.get_chart_context(sha),
                 "baseline_preview_evidence": "saved_workbook_values_not_recalculated",
                 "imported": imported_scenario(info), "zero": zero_scenario(info)}
+
+    def load_example(self):
+        # Serialize only example intake, leaving saved work and ordinary API reads available.
+        if not self.example_lock.acquire(blocking=False):
+            raise ValueError("The example is already being loaded. Wait for it to finish.")
+        try:
+            configured = getattr(self.args, "example", None)
+            if configured:
+                example = Path(configured).read_bytes()
+                expected = self.args.example_sha256 or (OFFICIAL_EXAMPLE_SHA if self.args.illustrative_example else None)
+                if expected and hashlib.sha256(example).hexdigest() != expected:
+                    raise ValueError("The configured example differs from its source identity. Restore the original file.")
+                return self.ingest(example, self.args.example_label)
+            cached = self.uploads / (OFFICIAL_EXAMPLE_SHA + ".xlsm")
+            if cached.exists() or cached.is_symlink():
+                if cached.is_symlink() or not cached.is_file():
+                    raise ValueError("The saved example is not a regular workbook. Saved work is retained.")
+                example = verify_official_example(cached.read_bytes())
+            else:
+                example = download_official_example()
+            return self.ingest(example, "Official illustrative example")
+        finally:
+            self.example_lock.release()
 
     def start_calculation(self, scenario_id):
         case = self.store.get_scenario(scenario_id)
@@ -268,8 +297,9 @@ def handler_for(workspace):
                 with workspace.store._connection() as db:
                     books = [dict(r) for r in db.execute("SELECT sha,label FROM workbooks ORDER BY created DESC")]
                 return self.send(200, {"token": workspace.token, "title": workspace.args.edition_title,
-                    "note": workspace.args.edition_note, "example_available": bool(workspace.args.example),
-                    "example_label": workspace.args.example_label, "illustrative_example": workspace.args.illustrative_example,
+                    "note": workspace.args.edition_note, "example_available": True,
+                    "example_requires_download": not bool(workspace.args.example) and not (workspace.uploads / (OFFICIAL_EXAMPLE_SHA + ".xlsm")).is_file(),
+                    "example_label": workspace.args.example_label, "illustrative_example": not bool(workspace.args.example) or workspace.args.illustrative_example,
                     "workbooks": books})
             if not self.authorized():
                 return self.send(403, {"error": "Reload this local application tab."})
@@ -311,17 +341,11 @@ def handler_for(workspace):
                 if not isinstance(data, dict):
                     raise ValueError("Use a workspace request object.")
                 if self.path == "/api/example":
-                    if not workspace.args.example:
-                        raise ValueError("No example is configured. Upload your workbook.")
-                    example = Path(workspace.args.example).read_bytes()
-                    expected = workspace.args.example_sha256 or (OFFICIAL_EXAMPLE_SHA if workspace.args.illustrative_example else None)
-                    if expected and hashlib.sha256(example).hexdigest() != expected:
-                        raise ValueError("The example differs from its configured source identity. Upload a supported workbook or restore the exact example.")
-                    return self.send(200, workspace.ingest(example, workspace.args.example_label))
+                    return self.send(200, workspace.load_example())
                 if self.path == "/api/save":
                     if len(data.get("share_label", "Scenario")) > 40:
                         raise ValueError("Use a shared chart label of at most 40 characters.")
-                    info = inspect_workbook(workspace.path(data["workbook_sha"]))
+                    info = workspace.inspection(data["workbook_sha"])
                     definition = normalize_scenario(data["definition"], info["input_years"])
                     return self.send(200, workspace.store.save_scenario(data["workbook_sha"], data["name"], definition,
                         scenario_id=data.get("scenario_id"), expected_revision=data.get("expected_revision"), share_label=data.get("share_label", "Scenario"),

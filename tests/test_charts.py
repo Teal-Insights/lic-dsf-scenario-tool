@@ -23,7 +23,7 @@ def fixture():
 class ChartsTest(unittest.TestCase):
     def test_unavailable_context_glyphs_refuse_both_export_formats(self):
         c=fixture();c['format']='lic-dsf-comparison-v2'
-        c['chart_context']={'workbook_sha256':'a'*64,'label':'分析 — FY2030/31','revision':1}
+        c['chart_context']={'workbook_sha256':'a'*64,'label':'分析 \u2014 FY2030/31','revision':1}
         before=copy.deepcopy(c)
         # Valid stored Unicode text remains readable, but cannot silently render as boxes.
         self.assertEqual(charts.comparison_summary(c)['chart_context'],c['chart_context'])
@@ -34,7 +34,7 @@ class ChartsTest(unittest.TestCase):
                 self.assertNotIn('分析',str(error.exception))
         self.assertEqual(c,before)
     def test_supported_accented_label_keeps_selected_font_coverage(self):
-        c=fixture();c['chart_context']={'workbook_sha256':'a'*64,'label':'Résumé — Budget: FY2030/31 $x_{2}$ <draft>','revision':1}
+        c=fixture();c['chart_context']={'workbook_sha256':'a'*64,'label':'Résumé \u2014 Budget: FY2030/31 $x_{2}$ <draft>','revision':1}
         charts._check_context_glyphs(charts.comparison_summary(c))
     def test_context_versions_and_foreign_context_refused(self):
         for version in (None,'lic-dsf-comparison-v1','lic-dsf-comparison-v2'):
@@ -63,7 +63,7 @@ class ChartsTest(unittest.TestCase):
         c=fixture();sha=charts.OFFICIAL_EXAMPLE_SHA
         c['workbook_sha256']=sha
         for run in c['runs']:run['result']['workbook_sha256']=sha
-        label='$x_{2}$ <Budget> — FY2030/31 '+('W'*51)
+        label='$x_{2}$ <Budget> \u2014 FY2030/31 '+('W'*51)
         self.assertLessEqual(len(label),80)
         c['chart_context']={'workbook_sha256':sha,'label':label,'revision':1}
         summary=charts.comparison_summary(c)

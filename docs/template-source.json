@@ -8,5 +8,11 @@
   "bytes": 5504930,
   "data_disclosure": "Illustrative worked-example data. Ghana labels inside this template do not identify an official Ghana DSA or forecast.",
   "numerical_verification": "Not established by this download/hash check.",
-  "redistribution": "Template not included in this source repository; external ownership and applicable terms remain separate."
+  "redistribution": "Template not included in this source repository; external ownership and applicable terms remain separate.",
+  "local_example_route": {
+    "status": "implemented in alpha.2 source; check release availability and exact artifact evidence; full offline/network audit remains separate",
+    "acquisition": "Direct publisher download on user action; exact SHA-256 required before use",
+    "cache": "Verified local copy for offline reuse; not bundled in the application distribution",
+    "request_data": "No private workbook or scenario inputs; publisher sees ordinary connection information"
+  }
 }

@@ -1,13 +1,14 @@
 # Find your way around the documentation
 
-Start with the tutorial to produce a two-case briefing from public illustrative data. These guides describe the experimental local application and its technical source route. They do not assume access to private workshop instructions or a maintainer's computer.
+Start with the built-in tutorial to compare three illustrative investment cases without workbook or scenario-file selection. The walkthrough describes alpha.2; alpha.1 predates this route. Check [installation and release availability](installation.md) against your installed version. These guides describe the experimental local application and its technical source route. They do not assume access to private workshop instructions or a maintainer's computer.
 
 ## Use the tool
 
 | Your task | Guide |
 | --- | --- |
 | Install, start, stop or reopen | [Installation](installation.md) |
-| Calculate a first result and compare two cases | [Worked tutorial](tutorial.md) |
+| Compare prepared investment assumptions without file handling | [Built-in walkthrough](tutorial.md) |
+| Explore a simple growth sensitivity | [Optional growth exercise](growth-tutorial.md) |
 | Check a workbook, input unit or output | [Workbook, input and output reference](workbooks-inputs-outputs.md) |
 | Understand assumptions and verification | [Methods and evidence](methodology.md) |
 | Choose and interpret charts | [Chart guide](charts.md) |

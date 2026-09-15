@@ -172,7 +172,7 @@ class ContextApiTests(unittest.TestCase):
 
     def test_workbook_context_includes_only_explicit_saved_label(self):
         fake_book = SimpleNamespace(close=lambda: None)
-        inspection = {"workbook_sha256": self.sha, "first_projection_year": 2030}
+        inspection = {"workbook_sha256": self.sha, "first_projection_year": 2030, "input_years": list(range(2030, 2051))}
         with patch.object(self.workspace, "path", return_value=Path("synthetic.xlsx")), \
              patch.object(app, "inspect_workbook", return_value=inspection), \
              patch.object(app, "imported_scenario", return_value={}), \

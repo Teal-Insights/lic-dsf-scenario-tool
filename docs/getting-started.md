@@ -10,8 +10,8 @@ This tool lets you explore those assumptions through the customized-scenario mec
 
 1. [Download and start](installation.md) the Windows or Mac application.
 2. Load the [official illustrative workbook](template-source.md). Its Ghana-labelled figures are an example, not an official country forecast or DSA.
-3. Follow the [two-case walkthrough](tutorial.md): review the baseline, save a no-change control and a lower-growth case, and explain the change.
-4. Calculate both cases and compare them using the familiar LIC-DSF charts and policy briefing charts together.
+3. Follow the [illustrative investment walkthrough](tutorial.md): review the baseline, then load, review, save and calculate **No investment**, **Larger assumed benefit** and **Smaller assumed benefit**. No scenario-file import is needed.
+4. Compare the three cases against **No investment**, using the familiar LIC-DSF charts and policy briefing charts together.
 5. Review and download the complete briefing packet. It contains both PDF reports, charts, underlying tables, assumptions, explanations and evidence.
 
 You enter adjustments for each projection year. The preview reports debt indicators at six selected years; lines between those observations are not independently calculated annual results. [Methods](methodology.md) explains this and other boundaries.

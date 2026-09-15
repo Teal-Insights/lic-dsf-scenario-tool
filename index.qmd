@@ -8,7 +8,7 @@ Explore how different macroeconomic and financing assumptions affect debt indica
 
 ## Start with a worked example
 
-[Download and install](user-guide/installation.qmd), then follow the [two-case walkthrough](user-guide/tutorial.qmd) using the official illustrative workbook. Windows and Mac distributions are being prepared for the first downloadable release.
+[Download and install](user-guide/installation.qmd), then follow the [illustrative walkthrough](user-guide/tutorial.qmd) using the official illustrative workbook. The next walkthrough is available in the 0.1.0a2 source candidate; alpha.2 desktop bundles are pending. Published alpha.1 downloads predate the built-in teaching route.
 
 The workflow keeps your source workbook and separate scenario assumptions together, so you can review what changed before sharing results.
 

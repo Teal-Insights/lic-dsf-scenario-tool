@@ -7,7 +7,7 @@ import io
 import json
 from zipfile import ZipFile, ZIP_DEFLATED
 
-from .charts import METRICS, comparison_summary, render_comparison, render_indicator
+from .charts import METRICS, comparison_summary, render_comparison, render_indicator, _PACKET_WRAP_CACHE
 from .ida21 import INPUTS
 from .reader_guide import reader_sections, technical_glossary, financing_comparison_note, comparison_orientation, guidance_references
 
@@ -89,6 +89,10 @@ def workbook_bytes(table_map, comparison=None):
     wb.remove(wb.active)
     wb.properties.creator = 'LIC-DSF Scenario Analysis Tool'
     wb.properties.title = 'Scenario comparison: data, assumptions and evidence'
+    body_font = Font(name='Calibri', size=11)
+    body_alignment = Alignment(vertical='top', wrap_text=True)
+    header_fill = PatternFill('solid', fgColor='143E5A')
+    header_font = Font(name='Calibri', bold=True, color='FFFFFF')
     for name, rows in table_map.items():
         ws = wb.create_sheet(name)
         for row in rows:
@@ -98,13 +102,13 @@ def workbook_bytes(table_map, comparison=None):
                 if isinstance(cell.value, str):
                     # Explicit strings also preserve '#N/A' as data, not an Excel error.
                     cell.data_type = 's'
-                cell.font = Font(name='Calibri', size=11)
-                cell.alignment = Alignment(vertical='top', wrap_text=True)
+                cell.font = body_font
+                cell.alignment = body_alignment
                 if isinstance(cell.value, (int, float)) and not isinstance(cell.value, bool):
                     cell.number_format = '0.###############'
         for cell in ws[1]:
-            cell.fill = PatternFill('solid', fgColor='143E5A')
-            cell.font = Font(name='Calibri', bold=True, color='FFFFFF')
+            cell.fill = header_fill
+            cell.font = header_font
         ws.freeze_panes = 'A2'
         ws.auto_filter.ref = ws.dimensions
         for index, title in enumerate(rows[0], 1):
@@ -128,6 +132,15 @@ def workbook_bytes(table_map, comparison=None):
 
 
 def render_pack(comparison):
+    """Render one packet with a bounded, request-local text layout cache."""
+    token = _PACKET_WRAP_CACHE.set({})
+    try:
+        return _render_pack(comparison)
+    finally:
+        _PACKET_WRAP_CACHE.reset(token)
+
+
+def _render_pack(comparison):
     """No workspace access: callers must pass the existing shareable allowlist."""
     table_map = tables(comparison)
     files = {'data-and-assumptions.json': _json(comparison),

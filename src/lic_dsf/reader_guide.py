@@ -16,7 +16,9 @@ def reader_sections():
         ('Read the comparison correctly',
          'The comparison case is the saved scenario against which differences are measured. The workbook reference baseline stays visible separately. '
          'For a programme comparison, use a no-programme case with consistent other assumptions and financing treatment. '
-         'A difference from the reference baseline is not, by itself, a programme effect.'),
+         'A difference from the reference baseline is not, by itself, a programme effect. '
+         'In the official illustrative example, the saved baseline and customized calculations already use different domestic-debt paths. '
+         'The No investment teaching case follows the customized starting point; its gap from Reference baseline is not an investment benefit. '),
         ('Read the numbers and limits',
          'PV means present value; PPG means public and publicly guaranteed debt. A percentage point (pp) is a change in a ratio: 40% to 39% is a fall of 1 percentage point. '
          'Results cover selected years only; gaps between years do not establish a peak or first threshold crossing. '
