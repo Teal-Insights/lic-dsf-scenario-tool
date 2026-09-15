@@ -49,7 +49,9 @@ user_guide:
   - getting-started.qmd
   - installation.qmd
   - tutorial.qmd
+  - growth-tutorial.qmd
   - reading-briefing.qmd
+  - release-notes-0.1.0a2.qmd
 - section: Understand the analysis
   contents:
   - methodology.qmd
