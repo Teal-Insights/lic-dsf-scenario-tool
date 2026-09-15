@@ -6,6 +6,8 @@ The application corrections first used online are now in the source for the next
 
 Both chart previews and briefing downloads retain checks against stale comparisons. Input summaries keep small nonzero adjustments visible, discarded edits require confirmation, and packet rendering reuses text layout work within one export. Calculations, numerical tolerances and reported years are unchanged.
 
+Git checkout now preserves the exact built-in teaching-resource bytes under Windows-style line-ending conversion. The source archive carries the same attributes rule. Resource fingerprints and assumptions are unchanged. A local checkout/build/install reproduction is separate from fresh Windows CI and final desktop acceptance; see [verification](verification.md#teaching-resource-checkout-integrity).
+
 ## Desktop packaging planned for this release
 
 - **Windows:** extract the ZIP first. The next launcher will explain how to extract it if started without the bundled runtime, including from inside the ZIP preview. This guard still needs its Windows bundle check.

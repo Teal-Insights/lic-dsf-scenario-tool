@@ -1,5 +1,5 @@
 include LICENSE README.md CONTRIBUTING.md CODE_OF_CONDUCT.md SECURITY.md THIRD_PARTY.md
-include AGENTS.md .gitignore great-docs.yml requirements-docs.txt site.css index.qmd
+include AGENTS.md .gitignore .gitattributes great-docs.yml requirements-docs.txt site.css index.qmd
 include .github/CODEOWNERS
 recursive-include .github *.yml *.md
 recursive-include assets *.svg *.otf *.txt *.md

@@ -50,6 +50,8 @@ For optional advanced exchange, a separate [scenario file](docs/exchange-recover
 
 [Verification](docs/verification.md) distinguishes file identity, supported structure, saved-cache consistency, application regression, cross-platform agreement and fresh Excel comparison. The repository includes reproducible tests and a scoped official-example regression reference. Published CI results and exact package evidence must identify the build actually tested.
 
+The alpha.2 source preserves the exact built-in teaching-resource bytes during Git checkout, including with Windows-style line-ending conversion. See the [resource-integrity checks](docs/verification.md#teaching-resource-checkout-integrity) for the reproduction and its limits.
+
 Use this single-user preview on a trusted desktop. Its loopback browser service is not operating-system account authentication; it is unsuitable for a shared host with untrusted concurrent local users or processes. [Security](SECURITY.md), [privacy and recovery](docs/privacy-recovery.md) and [IT information](docs/it-review.md) explain the actual boundaries. No security certification or unconditional no-egress guarantee is claimed.
 
 We use the [Digital Public Goods Standard assessment](docs/dpg-evidence.md) to document practical alignment, evidence, gaps and technical choices. The tool has not been formally recognized or certified and does not claim full compliance.

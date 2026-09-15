@@ -64,6 +64,21 @@ The 0.1.0a2 source adds reproducible checks for fixed-publisher example retrieva
 
 The label-only correction is reflected in the expected teaching label; all three input resources retain their pinned bytes. The numerical evaluator, reported-year definitions, intake hardening and locked comparison tolerance are unchanged. The release candidate needs fresh runs of the commands above and exact wheel/source-archive inspection. These checks do not establish desktop launcher acceptance, fresh Excel verification, hosted security acceptance or current CI success.
 
+### Teaching-resource checkout integrity
+
+The three built-in JSON resources are checked against fixed SHA-256 fingerprints before loading. Git must preserve their canonical LF bytes. `.gitattributes` limits that rule to these resources and is included in the source archive.
+
+To run the focused installed-resource and Git checkout checks from the source root:
+
+```sh
+python -m unittest discover -s tests -p test_builtin_investment.py -v
+python -m unittest discover -s tests -p test_resource_checkout.py -v
+```
+
+The checkout test uses a temporary Git repository with `core.autocrlf=true` and `core.eol=crlf`. An unprotected text file must become CRLF while all three resource hashes remain unchanged. The test requires Git and does not change your working checkout or global Git settings.
+
+A local macOS before/after reproduction also builds and installs a wheel from each scratch checkout. Without the attributes rule, the installed resources have CRLF bytes and both normal-load tests fail the integrity check. With the rule, source, wheel and installed resources retain the pinned bytes. This is evidence for the checkout and packaging correction, not actual Windows acceptance. Fresh required Windows CI on the repaired candidate and desktop launch checks remain pending.
+
 ## Compare a scenario with Excel
 
 A fresh Excel comparison requires the exact workbook and complete scenario definition, including financing treatment. Work on a copy and preserve the original. Enter the same customized-scenario inputs, recalculate in desktop Microsoft Excel, save the recalculated copy and compare the corresponding output cells with the app's full-precision results.
