@@ -16,10 +16,14 @@ Python and the calculation dependencies are included in the desktop ZIPs. You do
 
 ## Windows
 
-1. Download the Windows x64 ZIP from the release page. Right-click it and choose **Extract All**. Keep the entire extracted folder together; do not run the launcher from inside the ZIP preview.
+**Extract the ZIP before you open anything inside it.** Windows shows the inside of a ZIP file as though it were an ordinary folder, but the tool cannot run from that view. If you double-click **Start LIC-DSF.cmd** while you are still looking inside the ZIP, Windows reports `The system cannot find the path specified.` That message means the files were never extracted; nothing is broken and nothing is blocking you. Right-click the ZIP, choose **Extract All**, then open the folder Windows creates and start the tool from there.
+
+1. Download the Windows x64 ZIP from the release page. Right-click it and choose **Extract All**, then choose **Extract**. Keep the entire extracted folder together.
 2. Put the folder somewhere you can write, outside an unintended cloud-synced folder. No administrator installation is intended. Organisational application controls may still block execution.
-3. Open **Start LIC-DSF.cmd**. A command window checks the package and opens your default browser. Keep the command window open while using the tool.
+3. In the extracted folder, open **Start LIC-DSF.cmd**. A command window checks the package and opens your default browser. Keep the command window open while using the tool.
 4. In alpha.2, select **Download and try the official example** for your first run, then follow the [walkthrough](tutorial.md). If the example is already available, select **Try the official illustrative example**. Older builds use the [manual template download](template-source.md) and workbook chooser.
+
+From alpha.2 the launcher recognises this mistake. Started from inside the ZIP, **Start LIC-DSF.cmd** explains that the files were never extracted and how to extract them, instead of reporting a missing path. Keep the extracted folder name short and leave it in a normal location such as your Downloads or Documents folder; very long folder paths can exceed the Windows path limit.
 
 The package is an unsigned preview. If Windows or your institution blocks it, record the message and use your organisation's normal software-review process. Do not disable endpoint protection. A file checksum can confirm an exact download; it does not establish that software is safe.
 
@@ -55,6 +59,7 @@ Deleting the extracted Windows folder or Mac app removes that copy of the softwa
 
 | What you see | Next step |
 | --- | --- |
+| Windows says `The system cannot find the path specified.` | The launcher was started from inside the ZIP. Extract the ZIP first, then run **Start LIC-DSF.cmd** from the extracted folder. |
 | An operating-system security warning | Retain the message; follow the approved review route. Do not weaken security settings. |
 | A missing or changed package-file message | Extract a fresh complete copy. Do not edit the package manifest to make it pass. |
 | A command window closes or shows an error | Keep a non-confidential description of the message and your OS/architecture for feedback. |
