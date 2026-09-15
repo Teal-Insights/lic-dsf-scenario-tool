@@ -8,7 +8,7 @@ This is a sensitivity exercise. The Ghana-labelled sample values are purely illu
 
 ## 1. Load the unchanged public example
 
-Use the official-example button described in the [built-in walkthrough](tutorial.md#1-start-the-official-example). On older builds without that route, download the file linked in [Template source](template-source.md), choose it in step 1 and select **Upload and check**. Keep it unchanged: saving it in a spreadsheet application changes its identity and may change saved values.
+Use the official-example button described in the [built-in walkthrough](tutorial.md). On older builds without that route, download the file linked in [Template source](template-source.md), choose it in step 1 and select **Upload and check**. Keep it unchanged: saving it in a spreadsheet application changes its identity and may change saved values.
 
 The app should accept the workbook and display the baseline table. Under **File fingerprint (SHA-256)**, confirm the fingerprint against the [recorded official SHA-256](template-source.md). The five workflow steps report progress, not a certification of the assumptions or Excel agreement.
 
