@@ -9,7 +9,7 @@ Download the desktop packages from the [releases page](https://github.com/Teal-I
 | Your computer | Package | Limits |
 | --- | --- | --- |
 | Windows with an Intel or AMD 64-bit processor | Windows x64 ZIP | Windows Server 2022 was tested with an earlier build. Final alpha execution and managed Windows 11 laptop testing remain pending. Windows on Arm is not covered. |
-| Mac with Apple Silicon (M1 or later), macOS 14 or later | Mac arm64 ZIP | Unsigned and not notarized by Apple, so the first attempt to open it is blocked and you have to approve it once. Follow the Mac steps below. Intel Macs and older macOS are not covered by this package. |
+| Mac with Apple Silicon (M1 or later), macOS 14 or later | Mac arm64 ZIP | Unsigned and not notarized by Apple, so the first attempt to open it is blocked and you have to approve it once. Follow the Mac steps below. The downloaded and quarantined approval route and a complete walkthrough of the packaged build remain unverified. Intel Macs and older macOS are not covered by this package. |
 | Technical users on other configurations | [Source installation](source-installation.md) | Requires Python, Git and dependency installation; no additional platform acceptance is implied. |
 
 Python and the calculation dependencies are included in the desktop ZIPs. You do not need to install Excel to calculate scenarios. You do need a browser. The built-in walkthrough obtains the supported official workbook directly from the publisher; your own analysis uses a workbook you supply. Downloading the package and the example for the first time requires internet access. The verified cached example and built-in teaching cases can then be used offline. Read the [IT information page](it-review.md) if you need technical details for institutional review.
@@ -39,7 +39,7 @@ The Mac package is an unsigned preview. It carries no Apple Developer ID signatu
 4. Open the Apple menu, choose **System Settings**, then **Privacy & Security** in the sidebar. Scroll down to the **Security** section near the bottom of that page.
 5. A line there names **LIC-DSF Scenario Tool** and says it was blocked. Select **Open Anyway** on that line.
 6. Confirm with your Mac login password, Touch ID or Apple Watch if you are asked.
-7. A last dialog repeats the warning and offers **Open Anyway** or **Open**. Choose it. The app now starts.
+7. A last dialog repeats the warning and offers **Open Anyway** or **Open**. Choose it.
 8. macOS may also ask whether LIC-DSF Scenario Tool may control Terminal. Choose **OK**. The app uses Terminal only to show you that it is running and to give you a way to stop it.
 
 After this one approval, later launches open normally by double-clicking the app.
@@ -69,6 +69,10 @@ The app opens a Terminal window that shows it starting, then your default browse
 To stop the tool, press **Control-C** in its Terminal window, or close that window. Closing only the browser tab leaves the tool running.
 
 A file checksum published with the release can confirm that your download is the exact file we built. It does not establish that the software is safe, and it is not a substitute for your own review.
+
+### What is not yet verified on Mac
+
+Starting this application from a local copy, serving the interface in a browser and quitting it were observed on Apple Silicon. The downloaded and quarantined route through **Open Anyway** above has not been completed end to end for this package, and neither has a full walkthrough of the finished package. The steps above are the supported route to follow, not a recorded result. If any screen differs from the table above, stop and send [feedback](feedback.md) rather than working around the control.
 
 ## Save, stop and return later
 
