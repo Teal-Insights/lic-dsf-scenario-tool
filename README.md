@@ -16,7 +16,7 @@ Use the assets attached to the alpha release page; if no downloads are listed, t
 
 ## Try the built-in walkthrough
 
-**Version `0.1.0a2`.** This guide describes the alpha.2 built-in walkthrough; the earlier alpha.1 release predates this route. Check the release page for the alpha.2 desktop packages and use the assets attached to the matching release. Platform acceptance for the alpha.2 packages is not complete. See the [release notes draft](docs/release-notes-0.1.0a2.md) for scope and the checks that remain open.
+**Version `0.1.0a2`.** This guide describes the alpha.2 built-in walkthrough; the earlier alpha.1 release predates this route. Check the release page for the alpha.2 desktop packages and use the assets attached to the matching release. Package-assembly status: Windows execution, downloaded Mac approval and the complete desktop walkthrough are unverified in this guide. See the [release notes](docs/release-notes-0.1.0a2.md#release-evidence) for scope and how to find later evidence for the exact download.
 
 Select **Download and try the official example** to obtain and check the World Bank template automatically. Internet is needed once; the verified local copy can then be used offline. No private workbook or scenario inputs are sent to the publisher. In **Try an illustrative investment**, load **No investment**, **Larger assumed benefit** and **Smaller assumed benefit** one at a time, review, save and calculate. No workbook chooser or JSON import is needed. Follow the [illustrative walkthrough](docs/tutorial.md).
 

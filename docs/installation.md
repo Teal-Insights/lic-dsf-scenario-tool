@@ -2,14 +2,14 @@
 
 **Preview guide: 0.1.0a2.** Start with the official illustrative workbook and the [walkthrough](tutorial.md). The application is developed iteratively with stakeholder feedback; it is not an official IMF or World Bank product.
 
-**Version `0.1.0a2`.** This guide describes the alpha.2 built-in walkthrough; the earlier alpha.1 release predates this route. Check the release page for the alpha.2 desktop packages and use the assets attached to the matching release. Platform acceptance for the alpha.2 packages is not complete. See the [release notes draft](release-notes-0.1.0a2.md) for scope and the checks that remain open.
+**Version `0.1.0a2`.** This guide describes the alpha.2 built-in walkthrough; the earlier alpha.1 release predates this route. Check the release page for the alpha.2 desktop packages and use the assets attached to the matching release. Package-assembly status: Windows execution, downloaded Mac approval and the complete desktop walkthrough are unverified in this guide. See the [release notes](release-notes-0.1.0a2.md#release-evidence) for scope and how to find later evidence for the exact download.
 
 Download the desktop packages from the [releases page](https://github.com/Teal-Insights/lic-dsf-scenario-tool/releases). The [alpha.1 assets](https://github.com/Teal-Insights/lic-dsf-scenario-tool/releases/tag/v0.1.0-alpha.1) predate this built-in walkthrough, so use the alpha.2 assets for this guide. If no alpha.2 downloads are listed, that package is not available yet and technical users can inspect the source through [source installation](source-installation.md). Use only assets attached to the matching release. Do not use an unrelated repository's files or the GitHub **Code → Download ZIP** button as a desktop installer.
 
 | Your computer | Package | Limits |
 | --- | --- | --- |
-| Windows with an Intel or AMD 64-bit processor | Windows x64 ZIP | Windows Server 2022 was tested with an earlier build. Final alpha execution and managed Windows 11 laptop testing remain pending. Windows on Arm is not covered. |
-| Mac with Apple Silicon (M1 or later), macOS 14 or later | Mac arm64 ZIP | Unsigned and not notarized by Apple, so the first attempt to open it is blocked and you have to approve it once. Follow the Mac steps below. The downloaded and quarantined approval route and a complete walkthrough of the packaged build remain unverified. Intel Macs and older macOS are not covered by this package. |
+| Windows with an Intel or AMD 64-bit processor | Windows x64 ZIP | Windows Server 2022 was tested with an earlier build. At package assembly, final-package execution and managed Windows 11 laptop testing were unverified; see the [release evidence](release-notes-0.1.0a2.md#release-evidence). Windows on Arm is not covered. |
+| Mac with Apple Silicon (M1 or later), macOS 14 or later | Mac arm64 ZIP | Unsigned and not notarized by Apple, so the first attempt to open it is blocked and you have to approve it once. Follow the Mac steps below. At package assembly, the downloaded and quarantined approval route and a complete walkthrough of the packaged build were unverified; see the [release evidence](release-notes-0.1.0a2.md#release-evidence). Intel Macs and older macOS are not covered by this package. |
 | Technical users on other configurations | [Source installation](source-installation.md) | Requires Python, Git and dependency installation; no additional platform acceptance is implied. |
 
 Python and the calculation dependencies are included in the desktop ZIPs. You do not need to install Excel to calculate scenarios. You do need a browser. The built-in walkthrough obtains the supported official workbook directly from the publisher; your own analysis uses a workbook you supply. Downloading the package and the example for the first time requires internet access. The verified cached example and built-in teaching cases can then be used offline. Read the [IT information page](it-review.md) if you need technical details for institutional review.
@@ -42,7 +42,7 @@ The Mac package is an unsigned preview. It carries no Apple Developer ID signatu
 7. A last dialog repeats the warning and offers **Open Anyway** or **Open**. Choose it.
 8. macOS may also ask whether LIC-DSF Scenario Tool may control Terminal. Choose **OK**. The app uses Terminal only to show you that it is running and to give you a way to stop it.
 
-After this one approval, later launches open normally by double-clicking the app.
+For later launches, double-click the same app again. If macOS blocks it again, retain the message and follow the guidance below.
 
 ### What the screens say on each macOS version
 
@@ -70,9 +70,9 @@ To stop the tool, press **Control-C** in its Terminal window, or close that wind
 
 A file checksum published with the release can confirm that your download is the exact file we built. It does not establish that the software is safe, and it is not a substitute for your own review.
 
-### What is not yet verified on Mac
+### Mac evidence at package assembly
 
-Starting this application from a local copy, serving the interface in a browser and quitting it were observed on Apple Silicon. The downloaded and quarantined route through **Open Anyway** above has not been completed end to end for this package, and neither has a full walkthrough of the finished package. The steps above are the supported route to follow, not a recorded result. If any screen differs from the table above, stop and send [feedback](feedback.md) rather than working around the control.
+Earlier local copies of this application started, served the interface and quit on Apple Silicon. At package assembly, the downloaded and quarantined route through **Open Anyway** and a full walkthrough of the finished package were unverified. The steps above describe the route to follow; they do not record a successful test. Consult the [release evidence](release-notes-0.1.0a2.md#release-evidence) for later results tied to the exact archive you downloaded. If any screen differs from the table above, stop and send [feedback](feedback.md) rather than working around the control.
 
 ## Save, stop and return later
 
