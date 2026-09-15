@@ -1,10 +1,10 @@
 # Download, start and reopen the tool
 
-**Source preview guide: 0.1.0a2.** Start with the official illustrative workbook and the [walkthrough](tutorial.md). The application is developed iteratively with stakeholder feedback; it is not an official IMF or World Bank product.
+**Preview guide: 0.1.0a2.** Start with the official illustrative workbook and the [walkthrough](tutorial.md). The application is developed iteratively with stakeholder feedback; it is not an official IMF or World Bank product.
 
-**Source candidate: `0.1.0a2`.** This guide describes the next built-in walkthrough. Alpha.2 desktop packages and their installation checks are pending. The published alpha.1 predates this route. See the [release notes draft](release-notes-0.1.0a2.md) for scope and remaining checks.
+**Version `0.1.0a2`.** This guide describes the alpha.2 built-in walkthrough; the earlier alpha.1 release predates this route. Check the release page for the alpha.2 desktop packages and use the assets attached to the matching release. Platform acceptance for the alpha.2 packages is not complete. See the [release notes draft](release-notes-0.1.0a2.md) for scope and the checks that remain open.
 
-The currently published downloads are attached to the [alpha.1 release](https://github.com/Teal-Insights/lic-dsf-scenario-tool/releases/tag/v0.1.0-alpha.1). They predate this built-in walkthrough. The next desktop bundles are pending; technical users can inspect this candidate through [source installation](source-installation.md). Use only assets attached to the matching release. Do not use an unrelated repository's files or the GitHub **Code → Download ZIP** button as a desktop installer.
+Download the desktop packages from the [releases page](https://github.com/Teal-Insights/lic-dsf-scenario-tool/releases). The [alpha.1 assets](https://github.com/Teal-Insights/lic-dsf-scenario-tool/releases/tag/v0.1.0-alpha.1) predate this built-in walkthrough, so use the alpha.2 assets for this guide. If no alpha.2 downloads are listed, that package is not available yet and technical users can inspect the source through [source installation](source-installation.md). Use only assets attached to the matching release. Do not use an unrelated repository's files or the GitHub **Code → Download ZIP** button as a desktop installer.
 
 | Your computer | Package | Limits |
 | --- | --- | --- |
@@ -16,14 +16,14 @@ Python and the calculation dependencies are included in the desktop ZIPs. You do
 
 ## Windows
 
-**Extract the ZIP before you open anything inside it.** Windows shows the inside of a ZIP file as though it were an ordinary folder, but the tool cannot run from that view. If you double-click **Start LIC-DSF.cmd** while you are still looking inside the ZIP, Windows reports `The system cannot find the path specified.` That message means the files were never extracted; nothing is broken and nothing is blocking you. Right-click the ZIP, choose **Extract All**, then open the folder Windows creates and start the tool from there.
+**Extract the ZIP before you open anything inside it.** Windows shows the inside of a ZIP file as though it were an ordinary folder, but the tool cannot run from that view. From alpha.2, **Start LIC-DSF.cmd** looks for the bundled runtime before it does anything else. If `runtime\python.exe` is not in the same folder as the launcher, it says that the program files are missing from the folder, names the file it could not find, gives the two usual causes and lists the extraction steps. The two usual causes are a launcher opened from inside the ZIP and a ZIP that was only partly extracted. Right-click the ZIP, choose **Extract All**, then open the folder Windows creates and start the tool from there.
 
 1. Download the Windows x64 ZIP from the release page. Right-click it and choose **Extract All**, then choose **Extract**. Keep the entire extracted folder together.
 2. Put the folder somewhere you can write, outside an unintended cloud-synced folder. No administrator installation is intended. Organisational application controls may still block execution.
 3. In the extracted folder, open **Start LIC-DSF.cmd**. A command window checks the package and opens your default browser. Keep the command window open while using the tool.
 4. In alpha.2, select **Download and try the official example** for your first run, then follow the [walkthrough](tutorial.md). If the example is already available, select **Try the official illustrative example**. Older builds use the [manual template download](template-source.md) and workbook chooser.
 
-From alpha.2 the launcher recognises this mistake. Started from inside the ZIP, **Start LIC-DSF.cmd** explains that the files were never extracted and how to extract them, instead of reporting a missing path. Keep the extracted folder name short and leave it in a normal location such as your Downloads or Documents folder; very long folder paths can exceed the Windows path limit.
+The alpha.2 launcher replaces the bare missing-path error with that explanation and the extraction steps. It cannot tell how the folder came to be incomplete, so it describes both usual causes rather than asserting one. Keep the extracted folder name short and leave it in a normal location such as your Downloads or Documents folder; very long folder paths can exceed the Windows path limit.
 
 The package is an unsigned preview. If Windows or your institution blocks it, record the message and use your organisation's normal software-review process. Do not disable endpoint protection. A file checksum can confirm an exact download; it does not establish that software is safe.
 
@@ -59,10 +59,11 @@ Deleting the extracted Windows folder or Mac app removes that copy of the softwa
 
 | What you see | Next step |
 | --- | --- |
-| Windows says `The system cannot find the path specified.` | The launcher was started from inside the ZIP. Extract the ZIP first, then run **Start LIC-DSF.cmd** from the extracted folder. |
+| **Start LIC-DSF.cmd** says the program files are missing | The bundled runtime is not beside the launcher. Extract the whole ZIP with **Extract All**, keep every extracted file together, then run **Start LIC-DSF.cmd** from the extracted folder. |
+| Windows says `The system cannot find the path specified.` | An alpha.1 launcher was started from inside the ZIP. Extract the ZIP first, then run **Start LIC-DSF.cmd** from the extracted folder. |
 | An operating-system security warning | Retain the message; follow the approved review route. Do not weaken security settings. |
 | A missing or changed package-file message | Extract a fresh complete copy. Do not edit the package manifest to make it pass. |
-| A command window closes or shows an error | Keep a non-confidential description of the message and your OS/architecture for feedback. |
+| A command window closes or shows an error | From alpha.2 the launcher reports the status number before it pauses. Keep a non-confidential description of the message, the status number and your OS/architecture for feedback. |
 | Browser connection refused | Check the command window is still running and use its current local address. |
 | No download/example button or prepared teaching cases | Check your release version. Alpha.1 predates the built-in route; it supports manual workbook and scenario-file intake. Use the matching alpha.2 package for this walkthrough. |
 | Example download fails | Check internet access and retry. A changed or corrupt publisher file is refused. Once the verified example is cached, the exercise can run offline. |

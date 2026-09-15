@@ -7,7 +7,7 @@ Explore how alternative macroeconomic and financing assumptions change debt indi
 ## Start here
 
 - [Documentation and walkthroughs](https://teal-insights.github.io/lic-dsf-scenario-tool/)
-- [Published alpha.1: Windows and Mac downloads](https://github.com/Teal-Insights/lic-dsf-scenario-tool/releases/tag/v0.1.0-alpha.1)
+- [Releases: Windows and Mac downloads](https://github.com/Teal-Insights/lic-dsf-scenario-tool/releases)
 - [Installation guide](docs/installation.md) and [first scenario walkthrough](docs/tutorial.md)
 - [Information you can forward to IT](docs/it-review.md)
 - [Methods and limits](docs/methodology.md), [verification and reproducible checks](docs/verification.md)
@@ -16,7 +16,7 @@ Use the assets attached to the alpha release page; if no downloads are listed, t
 
 ## Try the built-in walkthrough
 
-**Source candidate: `0.1.0a2`.** This guide describes the next built-in walkthrough. Alpha.2 desktop packages and their installation checks are pending. The published alpha.1 predates this route. See the [release notes draft](docs/release-notes-0.1.0a2.md) for scope and remaining checks.
+**Version `0.1.0a2`.** This guide describes the alpha.2 built-in walkthrough; the earlier alpha.1 release predates this route. Check the release page for the alpha.2 desktop packages and use the assets attached to the matching release. Platform acceptance for the alpha.2 packages is not complete. See the [release notes draft](docs/release-notes-0.1.0a2.md) for scope and the checks that remain open.
 
 Select **Download and try the official example** to obtain and check the World Bank template automatically. Internet is needed once; the verified local copy can then be used offline. No private workbook or scenario inputs are sent to the publisher. In **Try an illustrative investment**, load **No investment**, **Larger assumed benefit** and **Smaller assumed benefit** one at a time, review, save and calculate. No workbook chooser or JSON import is needed. Follow the [illustrative walkthrough](docs/tutorial.md).
 
