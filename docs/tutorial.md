@@ -1,6 +1,6 @@
 # Try an illustrative investment, from assumptions to briefing
 
-**Source candidate: `0.1.0a2`.** This guide describes the next built-in walkthrough. Alpha.2 desktop packages and their installation checks are pending. The published alpha.1 predates this route. See the [release notes draft](release-notes-0.1.0a2.md) for scope and remaining checks.
+**Version `0.1.0a2`.** This guide describes the alpha.2 built-in walkthrough; the earlier alpha.1 release predates this route. Check the release page for the alpha.2 desktop packages and use the assets attached to the matching release. Package-assembly status: Windows execution, downloaded Mac approval and the complete desktop walkthrough are unverified in this guide. See the [release notes](release-notes-0.1.0a2.md#release-evidence) for scope and how to find later evidence for the exact download.
 
 Learn the tool without choosing a workbook file or importing a scenario file. The app obtains the official illustrative workbook and provides three prepared teaching cases. You review the assumptions, save and calculate each case, compare the results and download a briefing.
 

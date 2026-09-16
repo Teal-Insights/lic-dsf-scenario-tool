@@ -2,9 +2,9 @@
 
 The LIC-DSF Scenario Analysis Tool is an MIT-licensed local application for comparing alternative macroeconomic and financing assumptions in a supported debt-sustainability workbook. It saves scenarios and produces charts, reports and underlying data. It does not use AI inference or send workbooks to a hosted calculator.
 
-**Version scope: source candidate `0.1.0a2`; desktop bundles pending.** This is information for an institution's assessment, not a security certification or a claim of universal policy compliance. Consult the release's asset fingerprints and evidence before evaluating a download. Source checks, package inspection and actual desktop execution are distinct evidence; the limitations below remain relevant.
+**Version scope: `0.1.0a2`.** At package assembly, Windows execution, downloaded Mac approval and a complete desktop walkthrough were unverified. The [release evidence](release-notes-0.1.0a2.md#release-evidence) explains how to check later results for the exact archive. This is information for an institution's assessment, not a security certification or a claim of universal policy compliance. Consult the release's asset fingerprints and evidence before evaluating a download. Source checks, package inspection and actual desktop execution are distinct evidence; the limitations below remain relevant.
 
-For this version, forward this page or use your browser's print-to-PDF function. See the [release notes draft](release-notes-0.1.0a2.md) for pending package checks. The two-page PDF attached to alpha.1 describes that earlier release; it is not the IT summary for alpha.2.
+For this version, forward this page or use your browser's print-to-PDF function. See the [release notes](release-notes-0.1.0a2.md) for package scope and evidence limits. The two-page PDF attached to alpha.1 describes that earlier release; it is not the IT summary for alpha.2.
 
 ## At a glance
 
@@ -53,7 +53,7 @@ Workbook intake does not execute VBA or refresh external workbook links. The eva
 
 ## Network behavior and dependencies
 
-Alpha.2 adds the one-click example route. Its verified cache supports reuse without another publisher download; the three teaching-case definitions are bundled locally. This candidate requires its own source and package checks. Representative offline analysis and observation of connected outbound traffic remain separate evidence work. The table describes the application's behavior, not a completed network audit. Cached workbooks remain outside the application archive.
+Alpha.2 adds the one-click example route. Its verified cache supports reuse without another publisher download; the three teaching-case definitions are bundled locally. Alpha.2 requires its own source and package checks. Representative offline analysis and observation of connected outbound traffic remain separate evidence work. The table describes the application's behavior, not a completed network audit. Cached workbooks remain outside the application archive.
 
 | Activity | Network use and boundary |
 | --- | --- |
@@ -74,7 +74,7 @@ A prior application build completed a Windows Server 2022 x64, Administrator-acc
 
 The Mac packaging work uses Apple Silicon and a fresh relocatable CPython 3.11.16 runtime. Its selected NumPy dependency requires macOS 14 or later. Intel Mac and older macOS coverage are not claimed. Final downloaded/quarantined Finder launch is a separate check from a local terminal calculation.
 
-The candidate source checks and their limits are listed in [verification](verification.md). Rebuilt artifacts require independent review, and desktop launch checks remain pending. Earlier locale and XML intake regressions reproduced failures before their fixes. This is bounded testing, not penetration testing, WCAG certification, formal DPG recognition or independent fresh Excel verification. [Platform status](accessibility-platforms.md) records historical evidence separately.
+The alpha.2 source checks and their limits are listed in [verification](verification.md). Rebuilt artifacts require independent review. Desktop launch checks were unverified at package assembly; later results must identify the tested archive. Earlier locale and XML intake regressions reproduced failures before their fixes. This is bounded testing, not penetration testing, WCAG certification, formal DPG recognition or independent fresh Excel verification. [Platform status](accessibility-platforms.md) records historical evidence separately.
 
 ## Updates, removal and reporting
 

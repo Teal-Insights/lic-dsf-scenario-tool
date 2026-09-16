@@ -137,10 +137,16 @@ The 0.1.0a2 source carries the application corrections used online into the desk
 
 Preserve the three teaching-resource files exactly. All numerical definitions, projection years, financing assumptions and shared explanations retain their reviewed values. The label Larger assumed benefit supersedes Earlier assumed benefit; this corrects the label without changing the timing or size of any assumption.
 
-Desktop launcher corrections and Open Anyway guidance require separate bundle implementation and acceptance. The [release notes draft](release-notes-0.1.0a2.md) keeps these items pending. Fresh source checks and exact package review cannot establish fresh Excel verification, hosted security acceptance or signing.
+At this source-reconciliation stage, desktop launcher corrections and Open Anyway guidance required separate bundle implementation and acceptance. The [release notes](release-notes-0.1.0a2.md) now describe the package changes and distinguish them from platform acceptance. Fresh source checks and exact package review cannot establish fresh Excel verification, hosted security acceptance or signing.
 
 ## 15 September: preserve teaching-resource bytes during checkout
 
 The built-in JSON assumptions retain LF line endings in Git checkouts through a scoped `.gitattributes` rule. A Windows-style checkout with `core.autocrlf=true` previously converted these resources to CRLF; building and installing a wheel retained the converted bytes and the integrity check refused them. The source archive includes the attributes file so the rule also survives source distribution.
 
 This mechanical correction preserves every reviewed resource byte and the existing expected fingerprints. It changes no numerical definition, year, financing assumption, shared explanation or integrity-check behavior. A scratch Git regression exercises CRLF conversion with an unprotected control file and checks the protected resources. A macOS simulation establishes the conversion mechanism; actual Windows CI and final desktop-package acceptance require separate evidence.
+
+## 15 September: combine platform documentation for alpha.2
+
+The release documentation combines Windows extraction and missing-runtime guidance with the unsigned Mac approval and stopping steps. Both platform packages must carry the same documentation commit as the release tag. This documentation-only integration changes no application source, teaching assumption, evaluator identity or numerical tolerance.
+
+Bundled status prose records the evidence available at package assembly. Later platform receipts belong with the matching release and must identify the exact archive, source commit, environment, steps and observed result. Keep every unperformed check explicitly unverified; a later passing test does not alter the historical assembly status or establish coverage beyond that test. Source/history admission, package admission, actual desktop acceptance and fresh Excel verification remain separate.

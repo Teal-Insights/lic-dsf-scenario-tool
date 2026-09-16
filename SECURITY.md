@@ -14,7 +14,7 @@ Include the application release, operating system, affected feature, likely impa
 
 ## Supported versions and updates
 
-The first experimental release is `0.1.0-alpha.1` (Python package `0.1.0a1`). Report problems with the exact release you used. We intend to fix supported issues in the latest preview; older previews have no promised backports or long-term support. There is no automatic updater. Review release notes and back up local work before replacing the package. Unreleased development builds are not an additional supported distribution.
+The first experimental release was `0.1.0-alpha.1` (Python package `0.1.0a1`); later previews are listed on the repository's releases page with their own versions. Report problems with the exact release you used. We intend to fix supported issues in the latest preview; older previews have no promised backports or long-term support. There is no automatic updater. Review release notes and back up local work before replacing the package. Unreleased development builds are not an additional supported distribution.
 
 For a non-sensitive public bug report, supply the exact source/release identity and a minimal synthetic reproducer. Do not attach a workbook, database, journal, diagnostic log, screenshot, token or exploit containing private data. Public issues are unsuitable for confidential evidence. Follow your organisation's incident procedures for an actual disclosure.
 
