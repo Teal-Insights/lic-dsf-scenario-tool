@@ -58,6 +58,8 @@ We use the [Digital Public Goods Standard assessment](docs/dpg-evidence.md) to d
 
 We welcome focused [contributions](CONTRIBUTING.md) under maintainer roadmap control, with accountable review and meaningful validation, including for AI-assisted work. Follow the [conduct policy](CODE_OF_CONDUCT.md). Report suspected vulnerabilities privately through [the security route](SECURITY.md), not public issues.
 
+Maintainers can use the [unsigned Windows launcher build](docs/windows-bootstrap-build.md) to build a launcher and collect evidence for artifact review. Compilation does not establish desktop launch, signing or Excel acceptance.
+
 ## Ownership and feedback
 
 Copyright 2026 Teal Insights. Application code is open source under the [MIT license](LICENSE). [Third-party notices](THIRD_PARTY.md) distinguish dependency, font and workbook rights. No stakeholder endorsement is implied.

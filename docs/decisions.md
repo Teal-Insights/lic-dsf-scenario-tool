@@ -150,3 +150,10 @@ This mechanical correction preserves every reviewed resource byte and the existi
 The release documentation combines Windows extraction and missing-runtime guidance with the unsigned Mac approval and stopping steps. Both platform packages must carry the same documentation commit as the release tag. This documentation-only integration changes no application source, teaching assumption, evaluator identity or numerical tolerance.
 
 Bundled status prose records the evidence available at package assembly. Later platform receipts belong with the matching release and must identify the exact archive, source commit, environment, steps and observed result. Keep every unperformed check explicitly unverified; a later passing test does not alter the historical assembly status or establish coverage beyond that test. Source/history admission, package admission, actual desktop acceptance and fresh Excel verification remain separate.
+
+
+## 3 October: separate unsigned Windows launcher build
+
+A manual, main-only workflow compiles the general launcher with the hosted runner's existing x64 MSVC and Windows SDK. It records exact source, toolchain and PE evidence and uploads the unsigned executable separately from build diagnostics, with seven-day retention. Scoped LF attributes preserve the four pinned bootstrap source inputs during checkout.
+
+This adds a build route and maintainer guidance. It does not change application calculations, teaching resources, existing source-check runners or documentation deployment. The resulting PE still needs artifact review and native process/package acceptance. Signing, Windows11 standard-user launch, Excel acceptance and public release remain separate. No signing credential, cloud resource or release permission is introduced.

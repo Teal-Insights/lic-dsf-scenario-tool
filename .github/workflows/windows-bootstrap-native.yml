@@ -1,0 +1,52 @@
+# Native execution and output acceptance require separate exact evidence.
+name: Reviewed unsigned Windows bootstrap build
+'on':
+  workflow_dispatch:
+permissions: {}
+concurrency:
+  group: windows-bootstrap-native
+  cancel-in-progress: false
+jobs:
+  unsigned:
+    if: github.repository == 'Teal-Insights/lic-dsf-scenario-tool' && github.repository_id == '1366690131' && github.event.repository.private == false && github.ref == 'refs/heads/main'
+    runs-on: windows-2022
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout exact caller commit without persisted credentials
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # reviewed public v6 pin
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+          fetch-depth: 1
+      - name: Compile reviewed bootstrap with the existing x64 MSVC and SDK
+        id: native
+        shell: powershell
+        run: |
+          $ErrorActionPreference = 'Stop'
+          & .\packaging\windows-bootstrap\build_ci.ps1 -OutputDirectory (Join-Path $env:RUNNER_TEMP 'licdsf-unsigned-bootstrap')
+      - name: Upload unsigned PE for exact artifact review
+        if: success()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # reviewed public v4.6.2 pin
+        with:
+          name: unsigned-bootstrap-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}\licdsf-unsigned-bootstrap\Start LIC-DSF.exe
+          if-no-files-found: error
+          retention-days: 7
+          overwrite: false
+      - name: Retain compiler/header/dependency diagnostics separately
+        if: always() && steps.native.outcome != 'skipped'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # reviewed public v4.6.2 pin
+        with:
+          name: bootstrap-build-evidence-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}\licdsf-unsigned-bootstrap\compiler.log
+            ${{ runner.temp }}\licdsf-unsigned-bootstrap\dependencies.log
+            ${{ runner.temp }}\licdsf-unsigned-bootstrap\headers.log
+            ${{ runner.temp }}\licdsf-unsigned-bootstrap\unsigned-build-receipt.json
+            ${{ runner.temp }}\licdsf-unsigned-bootstrap\runner-toolchain.json
+          if-no-files-found: ignore
+          retention-days: 7
+          overwrite: false
+# No build output is executed, signed, assembled, released or represented as acceptance.
