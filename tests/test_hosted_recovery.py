@@ -98,6 +98,7 @@ class RecoveryBoundary(unittest.TestCase):
         self.assertIn('<a href="https://github.com/Teal-Insights/lic-dsf-scenario-tool">LIC-DSF Scenario Tool</a>', callout)
         self.assertIn('illustrative online version', callout)
         self.assertIn('Macronia', callout)
+        self.assertIn('relabelled here as a fictional country, Macronia', callout)
         self.assertIn('does not represent any actual country', callout)
 
     def test_first_steps_are_guided(self):
