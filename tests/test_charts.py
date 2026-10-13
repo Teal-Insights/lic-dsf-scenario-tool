@@ -255,4 +255,27 @@ class ChartsTest(unittest.TestCase):
         project=tomllib.loads((Path(__file__).parents[1]/'pyproject.toml').read_text())['project']
         self.assertEqual(VERSION,project['version'])
 
+    def test_style_sheet_uses_brand_roles(self):
+        import matplotlib;matplotlib.use('Agg')
+        import matplotlib.pyplot as plt
+        from matplotlib.colors import to_hex
+        summary=charts.comparison_summary(fixture())
+        fig,ax=plt.subplots()
+        charts._panel(ax,summary,'ext_pv_gdp','standard')
+        threshold=[line for line in ax.lines if list(line.get_ydata())==[40,40]][0]
+        comparator=[line for line in ax.lines if line.get_label()==summary['comparator']][0]
+        self.assertEqual(to_hex(threshold.get_color()),charts.COLORS['ink'].lower())
+        self.assertNotEqual(threshold._unscaled_dash_pattern,comparator._unscaled_dash_pattern)
+        self.assertEqual(to_hex(ax.yaxis.get_gridlines()[0].get_color()),charts.COLORS['line'].lower())
+        self.assertFalse(ax.spines['left'].get_visible())
+        plt.close(fig)
+        fig,ax=plt.subplots()
+        charts._panel(ax,summary,'ext_pv_gdp','briefing')
+        fig.canvas.draw()
+        zero=[line for line in ax.lines if list(line.get_ydata())==[0,0]][0]
+        self.assertEqual(to_hex(zero.get_color()),charts.COLORS['gray'].lower());self.assertIn(zero.get_alpha(),(None,1))
+        labels=[tick.get_text() for tick in ax.get_yticklabels() if tick.get_text()]
+        self.assertIn('0',labels);self.assertTrue(any(label.startswith('+') for label in labels));self.assertTrue(any(label.startswith('\u2212') for label in labels))
+        plt.close(fig)
+
 if __name__=='__main__':unittest.main()

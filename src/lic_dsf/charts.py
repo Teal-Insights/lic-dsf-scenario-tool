@@ -36,6 +36,9 @@ from contextvars import ContextVar
 _PACKET_WRAP_CACHE = ContextVar("packet_wrap_cache", default=None)
 _RENDER_LOCK = threading.RLock()
 VIEW_NAMES = {'standard': 'Standard LIC-DSF', 'briefing': 'Policy briefing'}
+# Style roles from brand tokens (tokens.json v1.0.0, copied: the public repo cannot import the private brand package).
+THRESHOLD_STYLE = {'color': COLORS['ink'], 'ls': (0, (7, 3)), 'lw': 1.6}
+GRID_STYLE = {'color': COLORS['line'], 'linewidth': .6, 'alpha': .7}
 OFFICIAL_EXAMPLE_SHA = '3a0a0b80c7cbc95ac953f25ecae0b437129d669ceb8aeefb54ab86dc8727ea86'
 ILLUSTRATIVE_DISCLOSURE = ('Ghana-labelled sample is purely illustrative; '
                            'it is not an official Ghana forecast or DSA.')
@@ -283,21 +286,25 @@ def _panel(ax,summary,metric,view,large=False,heading=True):
                 endings.append([end_value,end_label,color,end_year])
     threshold=rows[0]['threshold'];threshold_name='Benchmark' if metric.startswith('public_') else 'Threshold'
     if briefing:
-        ax.axhline(0,color='#5c6770',lw=1,alpha=.55)
+        ax.axhline(0,color=COLORS['gray'],lw=1.3)
     if _numeric(threshold) and not briefing:
         # Drawn within the observed year span so displaced endpoint labels cannot appear
         # to name it, and named on the chart so the reader need not find the footnote.
-        ax.plot([min(years),max(years)],[threshold,threshold],color='#444444',ls=(0,(5,4)),lw=1.2)
+        ax.plot([min(years),max(years)],[threshold,threshold],**THRESHOLD_STYLE)
         # Standard view: label at the right end (no endpoint labels there); briefing view: left end, clear of its endpoint labels.
-        ax.text(max(years) if not briefing else min(years),threshold,f'{threshold_name} {threshold:g}',fontsize=size-1,color='#444444',va='bottom',ha='right' if not briefing else 'left',bbox={'facecolor':'white','edgecolor':'none','pad':1})
+        ax.text(max(years) if not briefing else min(years),threshold,f'{threshold_name} {threshold:g}',fontsize=size-1,color=COLORS['ink'],va='bottom',ha='right' if not briefing else 'left',bbox={'facecolor':'white','edgecolor':'none','pad':1})
     nums=[v for _,vs,_,_,_ in series for v in vs if _numeric(v)]+([threshold] if _numeric(threshold) and not briefing else [])
     lo=min([0]+nums);hi=max(([0] if briefing else [1])+nums);span=hi-lo
     if span==0:lo,hi,span=-.5,.5,1
     ax.set_ylim(lo-.04*span,hi+(.38 if briefing else .16)*span)
     ax.set_xticks(years);ax.set_xticklabels([str(y) for y in years],fontsize=size-1)
-    ax.tick_params(axis='y',labelsize=size-1,colors=COLORS['gray']);ax.grid(axis='y',color='#E5E7EB',linewidth=.65)
-    for spine in ('top','right'):ax.spines[spine].set_visible(False)
-    for spine in ('left','bottom'):ax.spines[spine].set_color(COLORS['line'])
+    ax.tick_params(axis='y',labelsize=size-1,colors=COLORS['gray'],length=0);ax.grid(axis='y',**GRID_STYLE)
+    if briefing:
+        # Explicit sign on the difference scale: +2 above the comparison case, −2 below.
+        from matplotlib.ticker import FuncFormatter
+        ax.yaxis.set_major_formatter(FuncFormatter(lambda v,_:'0' if abs(v)<1e-12 else ('+' if v>0 else '−')+f'{abs(v):g}'))
+    for spine in ('top','right','left'):ax.spines[spine].set_visible(False)
+    ax.spines['bottom'].set_color(COLORS['line'])
     width=max(years)-min(years) or 1
     ax.set_xlim(min(years)-width*.03,max(years)+width*(.43 if briefing else .03))
     if briefing:
@@ -695,7 +702,7 @@ def render_comparison(comparison, view='standard', format='png'):
             from matplotlib.font_manager import FontProperties
             from matplotlib.lines import Line2D
             handles,labels=axes.flat[0].get_legend_handles_labels()
-            handles.append(Line2D([],[],color='#444444',ls=(0,(5,4)),lw=1.2));labels.append('Threshold or benchmark (value shown in each panel)')
+            handles.append(Line2D([],[],**THRESHOLD_STYLE));labels.append('Threshold or benchmark (value shown in each panel)')
             legend=fig.legend(handles,labels,loc='upper left',bbox_to_anchor=(.075,top+.01),ncol=min(4,len(handles)),frameon=False,prop=font_properties(family='Inter',size=9),handlelength=2.4,columnspacing=1.6)
             fig.canvas.draw()
             legend_height=legend.get_window_extent(fig.canvas.get_renderer()).height/fig.bbox.height
