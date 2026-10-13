@@ -7,7 +7,8 @@ import io
 import json
 from zipfile import ZipFile, ZIP_DEFLATED
 
-from .charts import METRICS, comparison_summary, render_comparison, render_indicator, _PACKET_WRAP_CACHE
+from .charts import METRICS, STAMP, comparison_summary, render_comparison, render_indicator, stamp_line, _PACKET_WRAP_CACHE
+from .release import RELEASE_DATE, VERSION
 from .ida21 import INPUTS
 from .reader_guide import reader_sections, technical_glossary, financing_comparison_note, comparison_orientation, guidance_references
 
@@ -84,7 +85,7 @@ def workbook_bytes(table_map, comparison=None):
     from openpyxl.utils import get_column_letter
     wb = Workbook()
     orientation = comparison_orientation(comparison_summary(comparison)) if comparison is not None else [('Source and comparison', 'See the scenario, comparator, workbook fingerprint and input disclosure columns in Results for this table export.')]
-    guide = [['Read me first', 'How to use these tables']] + [list(item) for item in orientation + reader_sections()] + [[title, text] for title, text, url in guidance_references()] + [['Technical field', 'Meaning']] + [list(item) for item in technical_glossary()]
+    guide = [['Read me first', 'How to use these tables'], ['Status', stamp_line()]] + [list(item) for item in orientation + reader_sections()] + [[title, text] for title, text, url in guidance_references()] + [['Technical field', 'Meaning']] + [list(item) for item in technical_glossary()]
     table_map = {'Read me first': guide, **table_map}
     wb.remove(wb.active)
     wb.properties.creator = 'LIC-DSF Scenario Analysis Tool'
@@ -152,7 +153,7 @@ def _render_pack(comparison):
         for metric, *_ in METRICS:
             for fmt in ('png', 'svg'):
                 files[f'charts/{label}/{metric}.{fmt}'] = render_indicator(comparison, metric, view, fmt)
-    reading = ['START HERE: LIC-DSF scenario briefing', '',
+    reading = ['START HERE: LIC-DSF scenario briefing', stamp_line(), '',
         'Open reports/policy-report.pdf for the reading guide and comparison.',
         'Open tables.xlsx, starting with Read me first, to inspect or reuse the numbers.', '']
     for heading, body in comparison_orientation(comparison_summary(comparison)) + reader_sections():
@@ -177,7 +178,8 @@ def _render_pack(comparison):
     for field, meaning in technical_glossary():
         reading.append(field + ': ' + meaning)
     files['READ ME.txt'] = ('\n'.join(reading) + '\n').encode('utf-8')
-    manifest = {'format': 'lic-dsf-briefing-packet-v1', 'workbook_sha256': comparison['workbook_sha256'],
+    manifest = {'format': 'lic-dsf-briefing-packet-v1', 'notice': STAMP, 'tool_version': VERSION, 'release_date': RELEASE_DATE,
+        'workbook_sha256': comparison['workbook_sha256'],
         'comparator_id': comparison['comparator_id'], 'provenance': comparison.get('workbook_provenance'),
         'files': {name: {'bytes': len(data), 'sha256': hashlib.sha256(data).hexdigest()}
                   for name, data in sorted(files.items())}}

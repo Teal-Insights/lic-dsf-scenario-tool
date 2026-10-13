@@ -17,6 +17,7 @@ from .chart_context import validate_chart_context
 from .reader_guide import reader_sections, financing_comparison_note, comparison_orientation, guidance_references
 from .rationale import rationale_entries
 from .typography import register_fonts, font_properties, FONT_FAMILY
+from .release import VERSION, RELEASE_DATE
 
 register_fonts()
 
@@ -192,6 +193,25 @@ def _series(summary,metric):
 
 
 SAMPLED_NOTE='Sampled points; connecting lines are visual guides. Gaps preserve missing/error values.'
+STAMP='Illustrative. Not an IMF or World Bank product.'
+
+
+def stamp_line():
+    return f'{STAMP} LIC-DSF Scenario Tool {VERSION} · {RELEASE_DATE}'
+
+
+def _stamp(fig):
+    """Stamp a finished figure at save time, in the top band every page keeps clear."""
+    if any(text.get_gid()=='illustrative-stamp' for text in fig.texts):return
+    text=fig.text(.96,1-.12/fig.get_figheight(),stamp_line(),ha='right',va='top',fontproperties=font_properties(size=8),color=COLORS['navy'],parse_math=False)
+    text.set_gid('illustrative-stamp')
+
+
+class _StampedPages:
+    """PdfPages wrapper: every saved page carries the stamp."""
+    def __init__(self,pdf):self._pdf=pdf
+    def savefig(self,fig):
+        _stamp(fig);self._pdf.savefig(fig)
 
 
 def _footnote(summary, metric, full=True):
@@ -682,10 +702,11 @@ def render_comparison(comparison, view='standard', format='png'):
             fig.subplots_adjust(left=.075,right=.96,top=top-legend_height-.015,bottom=.12,hspace=.75,wspace=.29)
         footer='Source: uploaded workbook and analyst assumptions; scenarios calculated by this tool. '+(SAMPLED_NOTE+' ' if view=='standard' else '')+SCOPE+' '+summary['interpretation']
         fig.text(.075,.038,textwrap.fill(footer,160),fontsize=9,color=COLORS['gray'],va='bottom')
-        if format=='png':fig.savefig(result,format='png',dpi=160,metadata={'Software':'LIC-DSF chart renderer','Title':VIEW_NAMES[view]});plt.close(fig)
+        if format=='png':_stamp(fig);fig.savefig(result,format='png',dpi=160,metadata={'Software':'LIC-DSF chart renderer','Title':VIEW_NAMES[view],'Disclaimer':stamp_line()});plt.close(fig)
         else:
-            metadata={'Title':VIEW_NAMES[view],'Author':None,'Subject':'Saved scenario comparison','Keywords':None,'Creator':'LIC-DSF chart renderer','Producer':'LIC-DSF chart renderer','CreationDate':None,'ModDate':None}
-            with PdfPages(result,metadata=metadata) as pdf:
+            metadata={'Title':VIEW_NAMES[view],'Author':None,'Subject':'Saved scenario comparison','Keywords':STAMP,'Creator':'LIC-DSF chart renderer','Producer':'LIC-DSF chart renderer','CreationDate':None,'ModDate':None}
+            with PdfPages(result,metadata=metadata) as pages:
+                pdf=_StampedPages(pages)
                 _reader_pages(pdf, summary, plt, view)
                 pdf.savefig(fig);plt.close(fig)
                 _comparison_pages(pdf,summary,plt)
@@ -749,7 +770,9 @@ def render_indicator(comparison, metric, view='standard', format='svg'):
                 '… · File fingerprint, not a quality check. Selected years only.', fontsize=10, color=COLORS['gray'])
             fig.text(.095, .024, 'Teal Insights · Inputs: workbook and analyst assumptions. Scenarios calculated by this tool; see briefing guide.',
                      fontsize=9, color=COLORS['gray'])
-            metadata = {'Creator': 'LIC-DSF Scenario Analysis Tool', 'Date': None} if format == 'svg' else {'Software': 'LIC-DSF Scenario Analysis Tool'}
+            metadata = ({'Creator': 'LIC-DSF Scenario Analysis Tool', 'Date': None, 'Description': stamp_line(), 'Rights': STAMP} if format == 'svg'
+                        else {'Software': 'LIC-DSF Scenario Analysis Tool', 'Disclaimer': stamp_line()})
+            _stamp(fig)
             fig.savefig(result, format=format, dpi=180, metadata=metadata)
         finally:
             plt.close(fig)

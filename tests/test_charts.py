@@ -230,4 +230,29 @@ class ChartsTest(unittest.TestCase):
             plt.close(fig)
         self.assertEqual(c,before)
 
+    def test_exports_carry_illustrative_stamp(self):
+        import re
+        from unittest.mock import patch
+        from PIL import Image
+        line=charts.stamp_line()
+        self.assertTrue(line.startswith(charts.STAMP))
+        self.assertIn(charts.VERSION,line);self.assertIn(charts.RELEASE_DATE,line)
+        svg=charts.render_indicator(fixture(),'ext_pv_gdp','standard','svg')
+        self.assertIn(b'illustrative-stamp',svg)
+        png=charts.render_indicator(fixture(),'ext_pv_gdp','briefing','png')
+        self.assertEqual(Image.open(io.BytesIO(png)).text.get('Disclaimer'),line)
+        overview=charts.render_comparison(fixture(),'standard','png')
+        self.assertEqual(Image.open(io.BytesIO(overview)).text.get('Disclaimer'),line)
+        for view in ('standard','briefing'):
+            with patch.object(charts,'_stamp',wraps=charts._stamp) as stamp:
+                pdf=charts.render_comparison(fixture(),view,'pdf')
+            pages=len(re.findall(rb'/Type\s*/Page\b(?!s)',pdf))
+            self.assertGreater(pages,6);self.assertEqual(stamp.call_count,pages,view)
+
+    def test_release_version_matches_project(self):
+        import tomllib
+        from lic_dsf.release import VERSION
+        project=tomllib.loads((Path(__file__).parents[1]/'pyproject.toml').read_text())['project']
+        self.assertEqual(VERSION,project['version'])
+
 if __name__=='__main__':unittest.main()
