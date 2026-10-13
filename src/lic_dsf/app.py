@@ -67,7 +67,7 @@ def shareable(comparison):
         output["workbook_provenance"] = {
             "source": "World Bank official IDA21 template",
             "illustrative": True,
-            "disclosure": "Illustrative data from the IMF and World Bank LIC-DSF template. It does not represent any actual country.",
+            "disclosure": "Illustrative IMF and World Bank LIC-DSF template data for Macronia, which represents no actual country.",
             "source_url": "https://thedocs.worldbank.org/en/doc/f0ade6bcf85b6f98dbeb2c39a2b7770c-0360012025/new-lic-dsf-template",
         }
     else:

@@ -52,6 +52,7 @@ class NoCountryName(unittest.TestCase):
                     'hosted_wait.js': (root / 'hosted_wait.js').read_text()}
         for name, text in surfaces.items():
             self.assertEqual(named(text), [], name)
+        self.assertIn('Macronia', charts.ILLUSTRATIVE_DISCLOSURE)
 
     def test_official_example_exports(self):
         from matplotlib.axes import Axes
@@ -63,6 +64,7 @@ class NoCountryName(unittest.TestCase):
         c = official(public_fixture())
         shared = shareable(official(json.loads(json.dumps(c))))
         self.assertEqual(named(json.dumps(shared)), [], 'shared comparison JSON')
+        self.assertIn('Macronia', shared['workbook_provenance']['disclosure'])
         with patch('lic_dsf.briefing_pack.render_comparison', return_value=b'PDF'), patch('lic_dsf.briefing_pack.render_indicator', return_value=b'CHART'):
             blob = render_pack(c)
         with ZipFile(io.BytesIO(blob)) as z:

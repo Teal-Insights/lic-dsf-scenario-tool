@@ -61,11 +61,40 @@ class RecoveryBoundary(unittest.TestCase):
         self.assertIn('does not represent any actual country', page)  # country-name guard: tests/test_no_country_name.py
         self.assertIn('Illustrative', page)
 
-    def test_visit_repeats_what_this_site_is(self):
+    def test_visit_box_is_short_and_names_the_local_tool(self):
         page = hosted_page().decode()
+        self.assertNotIn('online experiment', page.lower())
+        self.assertNotIn('online visit', page.lower())
         aside = page[page.index('<aside class="card">'):page.index('</aside>')]
-        self.assertIn('Illustrative walkthrough.', aside)
-        self.assertIn('runs locally on your own computer', aside)
+        self.assertTrue(aside.startswith('<aside class="card"><strong>Illustrative online version</strong>'))
+        self.assertIn('href="https://github.com/Teal-Insights/lic-dsf-scenario-tool"', aside)
+        self.assertIn('meant to run locally on your own computer', aside)
+        self.assertIn('Macronia', aside)
         self.assertIn('mailto:lte@tealinsights.com', aside)
-        self.assertLess(aside.index('Illustrative walkthrough.'), aside.index('<p>Illustrative online experiment.'))
+        # Service detail sits in a closed disclosure; the delete button and the export wait panel stay outside it.
+        limits = aside[aside.index('<details class="help">'):aside.index('</details>')]
+        self.assertIn('final slot is reserved', limits)
+        self.assertNotIn('open', aside[aside.index('<details class="help"'):aside.index('<summary>', aside.index('<details class="help"'))])
+        self.assertNotIn('deleteVisit', limits)
+        self.assertNotIn('exportWaitPanel', limits)
 
+    def test_edition_title_and_note_are_short_and_plain(self):
+        from lic_dsf.hosted import EDITION_NOTE, EDITION_TITLE
+        self.assertEqual(EDITION_TITLE, 'LIC-DSF Scenario Tool: illustrative online version')
+        self.assertLess(len(EDITION_NOTE), 200)
+        self.assertNotIn('experiment', EDITION_NOTE)
+
+    def test_upload_step_explains_the_desktop_version(self):
+        page = hosted_page().decode()
+        step1 = page[page.index('<section id="upload"'):page.index('</section>', page.index('<section id="upload"'))]
+        self.assertIn('In the desktop version, this is where you would upload your own completed DSA workbook. '
+                      'This online version uses the official illustrative example instead, so nobody uploads private data.', step1)
+        self.assertNotIn('.xlsm">Download the supported template</a>', page)
+
+    def test_landing_names_the_local_tool_and_macronia(self):
+        page = landing().decode()
+        callout = page[page.index('What this site is'):page.index('id="begin"')]
+        self.assertIn('<a href="https://github.com/Teal-Insights/lic-dsf-scenario-tool">LIC-DSF Scenario Tool</a>', callout)
+        self.assertIn('illustrative online version', callout)
+        self.assertIn('Macronia', callout)
+        self.assertIn('does not represent any actual country', callout)
