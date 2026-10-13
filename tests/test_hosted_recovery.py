@@ -46,3 +46,17 @@ class RecoveryBoundary(unittest.TestCase):
     def test_entry_download_link_targets_current_alpha2_release(self):
         page=landing().decode()
         self.assertIn('<a href="https://github.com/Teal-Insights/lic-dsf-scenario-tool/releases/tag/v0.1.0-alpha.2">Download the local app for your own workbook</a>',page)
+
+    def test_landing_callout(self):
+        page = landing().decode()
+        self.assertIn('What this site is', page)
+        self.assertIn('runs locally on your own computer', page)
+        self.assertIn('design feedback', page)
+        self.assertIn('mailto:lte@tealinsights.com', page)
+        self.assertIn('published by the World Bank', page)
+        self.assertLess(page.index('What this site is'), page.index('id="begin"'))
+        self.assertLess(page.index('published by the World Bank'), page.index('id="begin"'))
+        self.assertLess(page.index('Not an IMF or World Bank product'), page.index('id="begin"'))
+        self.assertLess(page.index('id="begin"'), page.index('<details class="limits">'))
+        self.assertNotIn('Ghana', page)
+        self.assertIn('Illustrative', page)
