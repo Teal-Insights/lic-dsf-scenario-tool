@@ -87,9 +87,9 @@ class RecoveryBoundary(unittest.TestCase):
     def test_upload_step_explains_the_desktop_version(self):
         page = hosted_page().decode()
         step1 = page[page.index('<section id="upload"'):page.index('</section>', page.index('<section id="upload"'))]
-        self.assertIn('In the desktop version, this is where you would upload your own completed DSA workbook. '
-                      'This online version uses the official illustrative example instead, so nobody uploads private data. '
-                      'Anything you type is still processed on this server, so keep it illustrative.', step1)
+        self.assertIn('In the desktop app, this is where you would upload your own completed DSA workbook, or reopen one saved on your computer. '
+                      'This web version cannot do that, so it uses the official illustrative example instead: the most recent version of the', step1)
+        self.assertIn('new-lic-dsf-template', step1)
         self.assertNotIn('.xlsm">Download the supported template</a>', page)
 
     def test_landing_names_the_local_tool_and_macronia(self):
@@ -105,7 +105,7 @@ class RecoveryBoundary(unittest.TestCase):
         def before(a, b): self.assertLess(page.index(a), page.index(b), (a, b))
         self.assertRegex(page, r'id="exampleButton"[^>]*data-hint="[^"]*Macronia[^"]*step 2')
         self.assertIn('<h2 tabindex="-1">2. Review the baseline</h2>', page)
-        self.assertIn('These are the Macronia starting debt ratios before any change.', page)
+        self.assertIn('Make sure the tool read the file correctly before you change anything', page)
         self.assertIn('Optional. Ticking it marks step 2 as done; it changes no numbers.', page)
         self.assertIn("'In step 3, load a teaching case (or edit inputs), then Save scenario and Calculate.'", page)
         self.assertIn("'Optional: tick the box in step 2 once you have looked over the Macronia baseline. Then save and calculate a case in step 3.'", page)
@@ -113,7 +113,7 @@ class RecoveryBoundary(unittest.TestCase):
         self.assertIn("'Load teaching case 1'", page)
         self.assertIn('<strong>New here?</strong>', page)
         before('<strong>New here?</strong>', 'Customized Scenario</strong> tabs.')
-        self.assertIn("status('Teaching case loaded. Next: scroll to the end of step 3 and choose Save scenario, then Calculate and show results.'", page)
+        self.assertIn("status('Teaching case loaded but not saved. Next: click Save scenario in the bar at the bottom of the screen, then Calculate and show results.'", page)
         self.assertIn('teaching cases take a few seconds', page)
         self.assertNotIn('startup results', page)
         self.assertIn('Delete my work and return to the start', page)
@@ -128,4 +128,22 @@ class RecoveryBoundary(unittest.TestCase):
         landing_page = landing().decode()
         self.assertIn('load and calculate at least two teaching cases', landing_page)
         self.assertLess(landing_page.index('You will: start the example'), landing_page.index('id="begin"'))
+
+    def test_walkthrough_says_what_each_step_is_for(self):
+        page = hosted_page().decode()
+        main = page[page.index('<main'):page.index('<section id="methodology"')]
+        methodology = page[page.index('<section id="methodology"'):page.index('</section>', page.index('<section id="methodology"'))]
+        # Fine print and the generic glossary live in How this tool works, not in the main flow.
+        for text in ('Early-stage preview', 'What do PV, PPG and percentage points mean?', 'fresh Excel verification remains pending'):
+            self.assertNotIn(text, main)
+        self.assertIn('<summary>Notes, limits and verification</summary>', methodology)
+        self.assertIn('<summary>Glossary</summary>', methodology)
+        self.assertIn('Early-stage preview', methodology)
+        # Each step says what it is for.
+        self.assertEqual(main.count('class="step-purpose"'), 5)
+        # Step 3: a numbered path, a Save/Calculate bar that stays in view, and plain unsaved-edit wording.
+        self.assertIn('<ol class="teach-steps"', main)
+        self.assertRegex(page, r'\.save-bar\{[^}]*position:sticky;bottom:0')
+        self.assertIn('This draft is not saved yet. Click Save scenario (bottom of step 3) to keep it, or Discard unsaved edits (top of step 3) to drop it. Then try again.', page)
+        self.assertNotIn('before switching', page)
 
