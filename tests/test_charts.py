@@ -234,20 +234,26 @@ class ChartsTest(unittest.TestCase):
         import re
         from unittest.mock import patch
         from PIL import Image
-        line=charts.stamp_line()
-        self.assertTrue(line.startswith(charts.STAMP))
-        self.assertIn(charts.VERSION,line);self.assertIn(charts.RELEASE_DATE,line)
-        svg=charts.render_indicator(fixture(),'ext_pv_gdp','standard','svg')
-        self.assertIn(b'illustrative-stamp',svg)
-        png=charts.render_indicator(fixture(),'ext_pv_gdp','briefing','png')
-        self.assertEqual(Image.open(io.BytesIO(png)).text.get('Disclaimer'),line)
-        overview=charts.render_comparison(fixture(),'standard','png')
-        self.assertEqual(Image.open(io.BytesIO(overview)).text.get('Disclaimer'),line)
+        official=fixture();official['workbook_sha256']=charts.OFFICIAL_EXAMPLE_SHA
+        for run in official['runs']:run['result']['workbook_sha256']=charts.OFFICIAL_EXAMPLE_SHA
+        self.assertTrue(charts.stamp_line(True).startswith(charts.STAMP))
+        self.assertTrue(charts.stamp_line(False).startswith('Not an IMF or World Bank product.'))
+        for line in (charts.stamp_line(True),charts.stamp_line(False)):
+            self.assertIn(charts.VERSION,line);self.assertIn(charts.RELEASE_DATE,line)
+        # The official illustrative example says so; an analyst's own workbook is never called illustrative.
+        for comparison,line in ((official,charts.stamp_line(True)),(fixture(),charts.stamp_line(False))):
+            svg=charts.render_indicator(comparison,'ext_pv_gdp','standard','svg')
+            self.assertIn(b'illustrative-stamp',svg)
+            png=charts.render_indicator(comparison,'ext_pv_gdp','briefing','png')
+            self.assertEqual(Image.open(io.BytesIO(png)).text.get('Disclaimer'),line)
+            overview=charts.render_comparison(comparison,'standard','png')
+            self.assertEqual(Image.open(io.BytesIO(overview)).text.get('Disclaimer'),line)
         for view in ('standard','briefing'):
             with patch.object(charts,'_stamp',wraps=charts._stamp) as stamp:
-                pdf=charts.render_comparison(fixture(),view,'pdf')
+                pdf=charts.render_comparison(official,view,'pdf')
             pages=len(re.findall(rb'/Type\s*/Page\b(?!s)',pdf))
             self.assertGreater(pages,6);self.assertEqual(stamp.call_count,pages,view)
+            self.assertTrue(all(call.args[1]==charts.stamp_line(True) for call in stamp.call_args_list))
 
     def test_release_version_matches_project(self):
         import tomllib
@@ -274,6 +280,8 @@ class ChartsTest(unittest.TestCase):
         fig.canvas.draw()
         zero=[line for line in ax.lines if list(line.get_ydata())==[0,0]][0]
         self.assertEqual(to_hex(zero.get_color()),charts.COLORS['gray'].lower());self.assertIn(zero.get_alpha(),(None,1))
+        comparator=[line for line in ax.lines if line.get_label()==summary['comparator']][0]
+        self.assertLess(zero.get_zorder(),comparator.get_zorder(),'series draw over the zero line')
         labels=[tick.get_text() for tick in ax.get_yticklabels() if tick.get_text()]
         self.assertIn('0',labels);self.assertTrue(any(label.startswith('+') for label in labels));self.assertTrue(any(label.startswith('\u2212') for label in labels))
         plt.close(fig)

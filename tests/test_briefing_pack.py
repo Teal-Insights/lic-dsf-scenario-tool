@@ -106,18 +106,19 @@ class BriefingPackTest(unittest.TestCase):
         self.assertTrue(any('#page=38' in url for url in links))
 
     def test_packet_and_tables_carry_illustrative_stamp(self):
-        from lic_dsf.charts import STAMP, stamp_line
+        from lic_dsf.charts import OFFICIAL_EXAMPLE_SHA, STAMP, stamp_line
         from lic_dsf.release import VERSION
-        c=public_fixture()
-        with patch('lic_dsf.briefing_pack.render_comparison',return_value=b'PDF'),patch('lic_dsf.briefing_pack.render_indicator',return_value=b'CHART'):
-            blob=render_pack(c)
-        with ZipFile(io.BytesIO(blob)) as z:
-            self.assertEqual(len(z.namelist()),35)
-            lines=z.read('READ ME.txt').decode('utf-8').splitlines()
-            self.assertEqual(lines[:2],['START HERE: LIC-DSF scenario briefing',stamp_line()])
-            manifest=json.loads(z.read('manifest.json'))
-            self.assertEqual(manifest['notice'],STAMP);self.assertEqual(manifest['tool_version'],VERSION)
-        wb=load_workbook(io.BytesIO(workbook_bytes(tables(c),c)))
-        guide={row[0].value:row[1].value for row in wb['Read me first'] if row[0].value}
-        self.assertEqual(guide['Status'],stamp_line())
-
+        official=public_fixture();official['workbook_sha256']=OFFICIAL_EXAMPLE_SHA;official['chart_context']['workbook_sha256']=OFFICIAL_EXAMPLE_SHA
+        for run in official['runs']:run['result']['workbook_sha256']=OFFICIAL_EXAMPLE_SHA
+        for c,line,notice in ((official,stamp_line(True),STAMP),(public_fixture(),stamp_line(False),'Not an IMF or World Bank product.')):
+            with patch('lic_dsf.briefing_pack.render_comparison',return_value=b'PDF'),patch('lic_dsf.briefing_pack.render_indicator',return_value=b'CHART'):
+                blob=render_pack(c)
+            with ZipFile(io.BytesIO(blob)) as z:
+                self.assertEqual(len(z.namelist()),35)
+                lines=z.read('READ ME.txt').decode('utf-8').splitlines()
+                self.assertEqual(lines[:2],['START HERE: LIC-DSF scenario briefing',line])
+                manifest=json.loads(z.read('manifest.json'))
+                self.assertEqual(manifest['notice'],notice);self.assertEqual(manifest['tool_version'],VERSION)
+            wb=load_workbook(io.BytesIO(workbook_bytes(tables(c),c)))
+            guide={row[0].value:row[1].value for row in wb['Read me first'] if row[0].value}
+            self.assertEqual(guide['Status'],line)

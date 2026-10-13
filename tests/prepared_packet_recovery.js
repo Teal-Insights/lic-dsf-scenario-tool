@@ -59,6 +59,8 @@ function setup(queued=false){
  ]){
   const t=setup();await t.s.exportFile('zip');change(t.s);t.s.updateWorkflow();assert.equal(t.s.$('preparedPacketSave').href,undefined,label);assert.equal(t.s.$('preparedPacketRecovery').classList.contains('hidden'),true,label);assert.deepEqual(t.revoked,[t.created[0].url],label);assert.equal(t.save(),true,label);assert.equal(t.downloads.length,1,label);
  }
+ // When previews fail or the preview quota is reached, the complete packet stays the primary action.
+ const noCharts=setup();noCharts.s.chartsReady=false;noCharts.s.chartError=true;noCharts.s.updateWorkflow();assert.equal(noCharts.s.$('packet').classList.contains('primary'),true);
  const retry=setup();await retry.s.exportFile('zip');const url=retry.s.$('preparedPacketSave').href;retry.s.error=Error('Export service unavailable');await assert.rejects(retry.s.exportFile('zip'),/unavailable/);assert.equal(retry.s.$('preparedPacketSave').href,url);assert.equal(retry.save(),false);assert.equal(retry.created.length,1);
  const stale=setup();stale.s.onRequest=async()=>{stale.s.sourceGeneration++};await stale.s.exportFile('zip');assert.equal(stale.created.length,0);assert.equal(stale.downloads.length,0);
  const conflict=setup();await conflict.s.exportFile('zip');conflict.s.error=Error('context-conflict');await conflict.s.exportFile('zip');assert.equal(conflict.s.$('preparedPacketSave').href,undefined);assert.equal(conflict.created.length,1);
