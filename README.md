@@ -65,3 +65,18 @@ Maintainers can use the [unsigned Windows launcher build](docs/windows-bootstrap
 Copyright 2026 Teal Insights. Application code is open source under the [MIT license](LICENSE). [Third-party notices](THIRD_PARTY.md) distinguish dependency, font and workbook rights. No stakeholder endorsement is implied.
 
 [Help shape the next version](docs/feedback.md), or email [lte@tealinsights.com](mailto:lte@tealinsights.com). Describe what you tried and what would improve your work. Please leave confidential workbooks, analytical data, credentials and private logs out of feedback. Support is best-effort, without a guaranteed response time.
+
+## Recovery in the illustrative hosted source
+
+Failed visit-information or workbook reads keep the current browser workspace and offer **Retry loading**. Save or discard unsaved edits before retrying a workbook switch. The illustrative hosted delete action reports an unconfirmed response and can be retried; it returns to entry only after confirmed deletion. An unavailable or expired visit cannot recover its temporary server work. This source behavior still requires release and live-browser acceptance.
+
+
+## Save a case, then prepare its briefing
+
+**Save scenario** creates a case when a new draft is open and updates the selected case when an existing one is open. Renaming an existing case keeps its identity. To keep another alternative, choose **Start a new scenario** or **Duplicate this scenario**, then give it a distinct workspace name and legend label.
+
+Saving preserves inputs. A new or numerically changed case needs **Calculate and show results** before it can join a comparison. Select current calculated cases in step 4, choose the comparison case, and compare them before downloading a briefing. Existing current calculations remain usable after text-only edits. Chart-text changes pause downloads until they are applied to both views or discarded.
+
+If the packet download does not appear, choose **Save prepared briefing packet** to save the same bytes without preparing another export. The link remains available while that saved comparison is unchanged and the page is open. Input, source, selection or chart-text changes clear it; prepare the current comparison again. A prepared link is not confirmation that a file was saved. Open the ZIP and review its contents before sharing.
+
+Hosted visits remain illustrative and temporary. They expire after one hour; the configured admission limit is twelve visits, or the explicit provisional workshop setting of twenty-five. No workbook upload or private-journal entry is added by this guidance.

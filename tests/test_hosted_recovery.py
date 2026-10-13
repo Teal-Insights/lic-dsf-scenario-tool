@@ -1,0 +1,48 @@
+import unittest
+from lic_dsf.hosted import HostedApplication, hosted_page, landing
+
+class RecoveryBoundary(unittest.TestCase):
+    def call(self, path, accept='text/html', mode='navigate', host='demo.example'):
+        app=HostedApplication.__new__(HostedApplication)
+        app.host='demo.example'; app.origin='https://demo.example'
+        capture=[]
+        env={'REQUEST_METHOD':'GET','PATH_INFO':path,'HTTP_HOST':host,
+             'HTTP_ORIGIN':'https://elsewhere.example','HTTP_SEC_FETCH_SITE':'cross-site',
+             'HTTP_SEC_FETCH_MODE':mode,'HTTP_SEC_FETCH_DEST':'document','HTTP_ACCEPT':accept}
+        body=b''.join(app(env,lambda status,headers:capture.append((status,dict(headers)))))
+        return capture[0],body
+    def test_navigation_recovers_without_admitting_cross_origin_api(self):
+        (status,headers),body=self.call('/app')
+        self.assertTrue(status.startswith('403')); self.assertIn('text/html',headers['Content-Type'])
+        self.assertIn(b'Return to the start',body); self.assertNotIn(b'X-DSF-Token',body)
+        for path,accept,mode,host in [('/api/boot','text/html','navigate','demo.example'),('/app','application/json','navigate','demo.example'),('/app','text/html','cors','demo.example'),('/app','text/html','navigate','wrong.example')]:
+            (status,headers),body=self.call(path,accept,mode,host)
+            self.assertTrue(status.startswith('403')); self.assertEqual(headers['Content-Type'],'application/json')
+    def test_hosted_local_controls_are_inert_and_journal_stays_disabled(self):
+        from html.parser import HTMLParser
+        class Controls(HTMLParser):
+            def __init__(self): super().__init__(); self.stack=[]; self.found={}
+            def handle_starttag(self,tag,attrs):
+                attrs=dict(attrs)
+                if tag in ('fieldset','details','div'): self.stack.append((tag,attrs))
+                if attrs.get('id') in ('reasoning','saveReasoning','file'):
+                    self.found[attrs['id']]=list(self.stack)
+            def handle_endtag(self,tag):
+                if tag in ('fieldset','details','div'):
+                    for i in range(len(self.stack)-1,-1,-1):
+                        if self.stack[i][0]==tag: self.stack=self.stack[:i]; break
+        p=Controls(); p.feed(hosted_page().decode())
+        for key in ('reasoning','saveReasoning'):
+            self.assertTrue(any(tag=='fieldset' and 'disabled' in attrs for tag,attrs in p.found[key]))
+            self.assertTrue(any('hidden' in attrs and 'inert' in attrs for tag,attrs in p.found[key]))
+        self.assertTrue(any('hidden' in attrs and 'inert' in attrs for tag,attrs in p.found['file']))
+    def test_entry_primary_action_precedes_expanded_service_details(self):
+        page=landing(25,50).decode()
+        self.assertLess(page.index('id="begin"'),page.index('<details>'))
+        self.assertIn('25 simultaneous visits and 50 new visits',page)
+        self.assertIn('30 completed exports',page)
+        self.assertNotIn('MAX_VISITS',page)
+
+    def test_entry_download_link_targets_current_alpha2_release(self):
+        page=landing().decode()
+        self.assertIn('<a href="https://github.com/Teal-Insights/lic-dsf-scenario-tool/releases/tag/v0.1.0-alpha.2">Download the local app for your own workbook</a>',page)

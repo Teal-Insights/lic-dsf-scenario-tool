@@ -62,7 +62,7 @@ The useful question is: under these stated assumptions, how do upfront costs and
 
 In **Chart text** beside the previews, use **Illustrative investment: benefits and financing costs** as the heading. Select **Apply to both views** and inspect both charts. You can edit the legend labels here too. Text changes do not change numerical assumptions; unsaved text pauses downloads until you apply or discard it.
 
-Select **Download briefing packet (.zip)**. Open its **READ ME**, then the Standard LIC-DSF and Policy briefing PDF reports. The 35-file packet includes both reports, six PNG and six SVG charts in each style, an Excel workbook, five CSV tables, full-precision comparison data and a file manifest.
+Select **Download briefing packet (.zip)**. If no file appears, select **Save prepared briefing packet** below it to save the same prepared bytes. This does not prepare another export or restart the visit. The link is cleared when the saved comparison changes or the page closes. A prepared link is not proof that the file was saved. Open its **READ ME**, then the Standard LIC-DSF and Policy briefing PDF reports. The 35-file packet includes both reports, six PNG and six SVG charts in each style, an Excel workbook, five CSV tables, full-precision comparison data and a file manifest.
 
 Check the comparator, units, projection years, assumptions, shared explanations and illustrative disclosure. The workbook's **Read me first** sheet explains its tables. The packet excludes your original workbook and private journal. Review actual files before sharing; shared text and assumptions can still contain confidential information in your own analyses.
 
@@ -73,3 +73,12 @@ A file fingerprint identifies the exact source or output, rather like an automat
 Save any private journal edits separately. Wait for jobs to finish, stop the app with **Control-C** in its command or Terminal window, then reopen the same launcher. In step 1, reopen the saved workbook to retrieve the three cases. Unsaved drafts are not retained. A changed calculation runtime may require recalculation.
 
 The built-in examples require no JSON downloads or imports. The optional **Share or reuse a scenario file** controls are for exchanging your own prepared assumptions with a colleague or reusing them in another workspace. They are an advanced route, distinct from the briefing packet. See [exchange and recovery](exchange-recovery.md) when you need them.
+
+
+## Keep another case and resolve a disabled briefing download
+
+When an existing saved case is open, **Save scenario** updates it. Renaming it keeps the same case. Use **Start a new scenario** or **Duplicate this scenario** to keep a separate alternative, and give the draft a distinct workspace name and legend label before saving.
+
+A saved case with new numerical assumptions needs **Calculate and show results**. In step 4, select the current calculated cases and a comparison case, then **Compare selected scenarios**. Step 5 explains any remaining draft, calculation, review or chart-text action beside the briefing downloads. Label/explanation-only edits can retain a current calculation. **Apply to both views** or **Discard edits and keep saved text** resolves pending chart text without recalculating numerical inputs.
+
+The online illustrative route uses a temporary server visit, with no workbook upload or private journal. Access expires after one hour. Download files you intend to keep before the visit ends. Its configured admission limit remains twelve visits, or twenty-five under the explicit provisional workshop setting.

@@ -44,6 +44,7 @@ Copying only the database omits uploaded workbooks and job artifacts. The store 
 | Local workbook missing or changed | Re-upload the original exact file. Do not silently substitute a re-saved or edited copy. |
 | Workspace schema version rejected | Keep an untouched backup and use the compatible application version. Supported migrations are schemas 1 and 2 to schema 3; unknown versions are not rewritten. |
 | Port already in use | Start with another unused `--port`; use its printed loopback address. |
+| Visit information or workbook cannot be loaded | The current browser screen is kept. Use **Retry loading** when the service is available. Save or discard edits before retrying a workbook switch. |
 
 Closing the browser can lose unsaved drafts. A saved journal entry is durable; text still in its editor is not. The preview has no deletion interface or retention scheduler. To remove a workspace, stop the application and deliberately delete its data directory and relevant backups/downloads under your organisation's retention policy. Ordinary deletion does not guarantee forensic erasure.
 
@@ -54,3 +55,7 @@ Shared per-input explanations are intentionally included in PDF annexes and comp
 The inspected local server uses a local HTML interface and loopback requests. Dependency installation and obtaining the official template can require external network access. No complete measured offline/network audit is claimed. Cloud-sync software, browser extensions and operating-system backups can create additional copies outside the application's control.
 
 A future online calculator will process visitor assumptions on its server. Its retention period, deletion behavior, operator access, infrastructure logs and privacy notice must be specified and tested before launch. Local storage assurances do not describe a hosted deployment. Keep confidential workbooks and assumptions out of an unreviewed online service.
+
+### Illustrative hosted source recovery
+
+The optional illustrative source uses temporary one-hour visits. A failed delete response does not prove either that the visit remains stored or that deletion completed. The interface keeps the current screen, reports that deletion was not confirmed and allows a deliberate retry. Confirmed deletion returns to entry. An unavailable or expired visit offers entry but cannot restore its server work. Files already downloaded remain on the device; a “download prepared” message alone does not establish that a file was received. These recovery paths require acceptance on the actual release and browser.

@@ -1,0 +1,14 @@
+{$DSF_HOST} {
+    request_body {
+        max_size 128KB
+    }
+    # Required: inspected current internal container IP and port, e.g. IP:8080.
+    # Validate DSF_UPSTREAM explicitly; never fall back to a published app port.
+    reverse_proxy {$DSF_UPSTREAM} {
+        transport http {
+            response_header_timeout 70s
+            read_timeout 70s
+        }
+    }
+    # No access log directive: do not record cookies, queries or input bodies.
+}

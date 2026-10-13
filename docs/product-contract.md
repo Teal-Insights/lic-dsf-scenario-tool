@@ -46,6 +46,8 @@ The interface uses locally bundled IBM Plex Serif and Inter under the SIL Open F
 
 Download briefing packet (.zip) produces both PDF reports, twelve individual PNG and twelve vector SVG charts, five CSV tables, an Excel workbook with the same tables, full-precision comparison JSON and a SHA-256 file manifest. Tables include results, annual macro adjustments, financing terms, shared explanations and evidence. They carry the workbook identity and verification status. CSV/JSON numbers are not presentation-rounded; Excel retains its native numeric precision. Blank observations stay missing and calculation error strings remain text. CSV user text beginning with a formula character receives a protective apostrophe; the JSON preserves original text.
 
+The browser retains at most one prepared packet and exposes a visible save link to the same bytes. Retrying that link does not call the export service or consume another export slot. The link is bound to the saved comparison, source, context revision, selection and comparator. Existing input/source/comparison invalidation, pending chart text, calculation and page termination clear and revoke it. This browser copy does not extend a hosted visit or prove that a file was downloaded.
+
 The packet is built from one current saved comparison, using the same export field selection as existing JSON. It excludes the original workbook, private journal and internal workspace names. Shared explanations can contain sensitive information: inspect the packet before sharing. It is not a backup or an importable scenario file.
 
 
@@ -63,3 +65,12 @@ A first-time user can start the official example without a file chooser, and loa
 The three prepared cases bind to the exact official workbook and projection years: No investment, Larger assumed benefit and Smaller assumed benefit. Their external financing assumptions match at 8% interest, 4-year grace and 9-year maturity. Load creates an unsaved draft; review, save and calculate remain explicit. Loading must not overwrite saved cases or silently discard drafts. The user chooses No investment as comparator. Shared explanations identify the coordinated fiscal/growth paths and illustrative assumptions, without a promise of returns or independent calibration.
 
 This optional learning route supplements own-workbook intake. Generic sensitivity exercises and advanced scenario-file exchange remain available. It does not expand supported workbook versions or numerical coverage, establish fresh Excel verification, or turn the general tool into an investment-specific product. This reconciled candidate requires fresh source checks and independent artifact review. Final release artifacts, installation and representative offline/connected network observation must be documented separately.
+
+
+## Visible save and export prerequisites
+
+Saving a new draft creates a separate case; saving an existing case updates it. Renaming keeps the selected case identity. Start a new scenario or Duplicate this scenario creates the alternative draft, with a distinct workspace name and legend label before saving.
+
+The editor and briefing section explain the current next action: save or discard a draft, calculate changed numerical inputs, wait for calculation, review findings, select current calculated cases, compare them, or apply/discard chart text. Existing calculation, comparison and export gates remain authoritative. Status help updates only when its message changes. Both chart views and their text-editing/reuse behavior retain the existing contract.
+
+The illustrative hosted path retains its no-upload boundary, one-hour lifetime and configured12/provisional25visit limits. This frontend guidance does not establish live-browser, capacity, Linux, numerical or fresh Excel acceptance.

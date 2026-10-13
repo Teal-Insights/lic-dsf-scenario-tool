@@ -1,0 +1,35 @@
+services:
+  calculator:
+    init: true
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    environment:
+      DSF_ORIGIN: ${DSF_ORIGIN:?Set the exact reviewed HTTPS origin}
+      DSF_PREPARED_CACHE: ${DSF_PREPARED_CACHE:-1}
+      DSF_WORKSHOP_TEST: ${DSF_WORKSHOP_TEST:-0}
+    # Host Caddy uses the inspected address on the dedicated internal bridge.
+    # Install the scoped host firewall policy before starting this service.
+    dns:
+      - "127.0.0.1"
+    read_only: true
+    user: "10001:10001"
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 3500m
+    cpus: 1.5
+    pids_limit: 64
+    ulimits:
+      core: 0
+    tmpfs:
+      - /state:size=134217728,uid=10001,gid=10001,mode=0700
+      - /tmp:size=134217728,uid=10001,gid=10001,mode=0700
+    volumes:
+      - ${DSF_REFERENCE_DIR:?Supply the reviewed official input directory}:/reference:ro
+    logging:
+      driver: none
+    restart: "no"
+
+networks:
+  default:
+    internal: true

@@ -19,7 +19,7 @@ check('actual button loads all prepared inputs without a file object or request'
  s.$('loadBuiltinInvestment').onclick();
  assert.deepEqual(s.draft,cases[1].scenario_file.definition);assert.deepEqual(s.sharedNotes,cases[1].scenario_file.shared_rationale);
  assert.equal(s.active,null);assert.equal(s.currentRun,false);assert(s.dirty);assert.equal(s.comparison,null);
- assert.equal(s.$('shareLabel').value,'Larger assumed benefit');assert.match(s.$('calcState').textContent,/save and calculate/);
+ assert.equal(cases[1].scenario_file.share_label,'Larger assumed benefit');assert.equal(s.$('shareLabel').value,cases[1].scenario_file.share_label);assert.match(s.$('calcState').textContent,/save and calculate/);
  assert.deepEqual(s.ctx.scenarios,saved);s.draft.delta_paths['20'][6]=99;s.sharedNotes['20']='Edited';assert.deepEqual(s.ctx.builtin_investment_cases,original);
 });
 for(const key of ['dirty','journalDirty','contextDirty','calculating'])check('preserve '+key,()=>{
@@ -30,8 +30,21 @@ for(const mutate of [s=>s.ctx.inspection.workbook_sha256='a'.repeat(64),s=>s.ctx
 });
 check('tampered package cannot replace draft',()=>{const s=setup();s.ctx.builtin_investment_cases[1].scenario_file.workbook_sha256='b'.repeat(64);assert.throws(()=>s.loadBuiltinInvestment(),/different workbook/);assert.equal(s.active.id,'saved');});
 check('selector determines each distinct original case',()=>{for(const item of cases){const s=setup();s.$('builtinInvestmentCase').value=item.id;s.loadBuiltinInvestment();assert.deepEqual(s.draft,item.scenario_file.definition);assert.equal(s.$('name').value,item.scenario_file.share_label)}});
-check('source wiring and illustrative disclosures remain present',()=>{
- assert.match(html,/ctx=loaded;renderBuiltinInvestment\(\)/);assert.match(html,/ctx=null;renderBuiltinInvestment\(\)/);
+check('validated prepared context drives teaching choices and disclosures remain present',()=>{
+ const start=html.indexOf('async function loadWorkbook(value){'),end=html.indexOf('function renderEditor',start);assert(start>=0&&end>start);
+ const load=html.slice(start,end),validated=load.indexOf('prepared=validWorkbook(loaded,value);'),commit=load.indexOf('sha=value;ctx=prepared.loaded;'),renderer=load.indexOf('renderBuiltinInvestment();',commit);
+ assert(validated>=0&&validated<commit&&renderer>commit,'validate before committing and rendering the new context');
+ assert(!load.slice(0,commit).includes('ctx=null'),'a pending or refused read must not clear the current context');
+ const obsolete=load.indexOf('if(requestGeneration!==sourceGeneration)return false;');assert(obsolete>=0&&obsolete<commit,'obsolete reads must not commit');
+ const s=setup(),loaded=structuredClone(s.ctx);s.value=inspection.workbook_sha256;
+ s.prepared={loaded,nextContext:{workbook_sha256:s.value,revision:0,label:null},nextDraft:structuredClone(loaded.zero),nextEditor:structuredClone(loaded.zero)};
+ s.knownRuns=new Map([['saved',{current:true}]]);s.selection=new Set(['saved']);
+ // Exercise the actual commit-to-render wiring with the real teaching renderer;
+ // transport refusal/preservation is covered by workspace_recovery.js.
+ vm.runInContext(load.slice(commit,renderer+'renderBuiltinInvestment();'.length),s);
+ assert.strictEqual(s.ctx,loaded);assert.equal(s.hidden,false);assert.equal(s.active,null);assert.equal(s.knownRuns.size,0);assert.equal(s.selection.size,0);
+ for(const item of cases)assert(s.$('builtinInvestmentCase').innerHTML.includes('value="'+item.id+'"'));
+ s.ctx=null;s.renderBuiltinInvestment();assert.equal(s.hidden,true);assert.equal(s.$('builtinInvestmentCase').innerHTML,'');
  assert.match(html,/A teaching example, not real investment modeling/);assert.match(html,/No scenario file is needed/);
  assert.match(html,/First use downloads the official example from the World Bank/);
 });

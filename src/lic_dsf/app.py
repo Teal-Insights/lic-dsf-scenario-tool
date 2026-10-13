@@ -369,6 +369,9 @@ def handler_for(workspace):
                 if self.path == "/api/export":
                     comparison = shareable(workspace.comparison(checked_comparison_request(data, export=True)))
                     fmt = data.get("format", "json")
+                    if hasattr(workspace, "bounded_export"):
+                        body, content_type, name = workspace.bounded_export(comparison, data)
+                        return self.send(200, body, content_type, name)
                     if fmt == "json":
                         return self.send(200, canonical(comparison).encode(), "application/octet-stream", "scenario-comparison.json")
                     if fmt == "zip":

@@ -1,0 +1,11 @@
+*
+!src/
+!src/**
+!pyproject.toml
+!LICENSE
+!THIRD_PARTY.md
+!README.md
+
+**/__pycache__
+**/*.pyc
+**/*.pyo

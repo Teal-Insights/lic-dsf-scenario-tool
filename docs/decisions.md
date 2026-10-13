@@ -157,3 +157,38 @@ Bundled status prose records the evidence available at package assembly. Later p
 A manual, main-only workflow compiles the general launcher with the hosted runner's existing x64 MSVC and Windows SDK. It records exact source, toolchain and PE evidence and uploads the unsigned executable separately from build diagnostics, with seven-day retention. Scoped LF attributes preserve the four pinned bootstrap source inputs during checkout.
 
 This adds a build route and maintainer guidance. It does not change application calculations, teaching resources, existing source-check runners or documentation deployment. The resulting PE still needs artifact review and native process/package acceptance. Signing, Windows11 standard-user launch, Excel acceptance and public release remain separate. No signing credential, cloud resource or release permission is introduced.
+
+## 7 October: recoverable workspace reads and confirmed visit deletion
+
+Visit information and workbook reads must pass HTTP, JSON and response-shape checks before replacing the current browser workspace. A pending workbook request advances the existing source generation immediately; failure never restores an old generation or permits an old callback to land. Failed reads keep the previous workspace and provide an explicit retry. A retry cannot discard an unsaved scenario, journal or chart-text draft.
+
+The illustrative hosted delete action retains confirmation, prevents duplicate in-flight requests, reports refusals or an unconfirmed response, and redirects only after the server confirms deletion. A lost response may follow a completed deletion; the interface must say that uncertainty plainly. If a subsequent response says the visit is unavailable, offer entry without claiming that temporary server work can be recovered. Existing visit limits, illustrative-only intake, calculations, saved cases and sharing boundaries are unchanged. Source and neutral frontend tests do not establish live browser, downloaded-file, numerical or deployment acceptance.
+
+
+## Hosted calculation execution evidence
+
+A successful uncached hosted calculation records `evidence.execution.mode` as
+`fresh_calculation_for_visit` and `fresh_calculation_for_visit` as true after the
+child succeeds, before its result is stored. The original child result hash is
+retained as `calculated_result_hash`; the annotated result receives a new hash.
+All numerical values, scenario/runtime identities, warnings and existing
+revision/workbook/input refusal checks remain unchanged. Prepared teaching
+result reuse continues to record false and its original prepared-result hash.
+Fresh execution is not fresh Excel verification or numerical acceptance.
+Changing package source changes its engine identity, so release preparation
+must produce new identity-matched prepared teaching results; old results are
+not rebaselined or admitted by this evidence-only change.
+
+
+## Save and briefing guidance in the illustrative hosted source
+
+Carry the tested neutral save/export help into the hosted frontend through the help elements and four guarded text updates alone. Preserve the hosted visit/recovery/waiting code, chart editing, both views, calculation/export gates and public teaching assumptions. The local guidance component exercised new save, same-case rename/update, duplicate and new-scenario creation; it did not calculate or establish hosted acceptance. This source port remains unrun and unpublished.
+
+The source-only change leaves all Python engine-identity inputs unchanged. A rebuilt application wheel and image still need their own exact inventory/hash bindings. Live admission requires the approved reproducible build/rollback route and three cold complete visits, including Windows, ending in downloaded packets. Authentication, Linux/base/ABI/runtime, publication and native-device dependencies remain separate. No source receipt substitutes for those observations.
+
+
+## 12 October: recover a prepared briefing download
+
+Keep one completed packet in browser memory for the unchanged saved comparison and show **Save prepared briefing packet** beside the original action. The initial download attempt remains; the visible link can save the same bytes without another render or export slot. Comparison/source/input/chart-text invalidation and page termination revoke the copy. Existing recovery, calculation, sharing and illustrative visit limits remain authoritative. No arbitrary short expiry is added to this recovery action.
+
+The source-visible missing retry control motivated this change. It is not an identified cause of the earlier live error or the observed download-event timeout. Frontend response/DOM tests are component evidence; actual downloaded-and-opened bytes, three cold live visits including Windows, release/image/runtime and fresh Excel evidence remain separate.
