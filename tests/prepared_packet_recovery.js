@@ -39,9 +39,9 @@ function setup(queued=false){
 (async()=>{
  for(const queued of [false,true]){
   const t=setup(queued);t.s.updateWorkflow();assert.equal(t.s.$('packet').classList.contains('primary'),true);await t.s.exportFile('zip');
-  // The ready packet is saved by a trusted user click: a visible, focused, labelled primary link; the packet button steps back.
-  assert.equal(t.s.$('preparedPacketSave').textContent,'Save briefing packet (.zip)');assert.equal(t.s.focused,'preparedPacketSave');
-  t.s.updateWorkflow();assert.equal(t.s.$('packet').classList.contains('primary'),false);assert.match(t.s.lastStatus.text,/choose Save briefing packet \(\.zip\)/);
+  // The ready packet keeps a visible, labelled fallback link for a trusted user click; it is not styled or focused as the next action.
+  assert.equal(t.s.$('preparedPacketSave').textContent,'If no file appeared, save the briefing packet here (.zip)');assert.notEqual(t.s.focused,'preparedPacketSave');
+  t.s.updateWorkflow();assert.equal(t.s.$('packet').classList.contains('primary'),true);assert.match(t.s.lastStatus.text,/If no file appeared, use the link next to the button/);
   assert.equal(t.created.length,1);assert.equal(t.downloads.length,1);assert.equal(t.s.$('preparedPacketRecovery').classList.contains('hidden'),false);
   assert.equal(t.s.$('preparedPacketSave').href,t.created[0].url);assert.equal(t.s.$('preparedPacketSave').download,'lic-dsf-briefing-packet.zip');
   assert.deepEqual(Buffer.from(await t.created[0].blob.arrayBuffer()),Buffer.from(await t.blob.arrayBuffer()));
@@ -61,6 +61,8 @@ function setup(queued=false){
  }
  // When previews fail or the preview quota is reached, the complete packet stays the primary action.
  const noCharts=setup();noCharts.s.chartsReady=false;noCharts.s.chartError=true;noCharts.s.updateWorkflow();assert.equal(noCharts.s.$('packet').classList.contains('primary'),true);
+ // One compared case means every difference is zero; the next step says so instead of pointing at the download.
+ const counted=setup();counted.s.updateWorkflow();assert.match(counted.s.$('nextStepText').textContent,/Only one case is compared/);counted.s.comparison={runs:[{},{}]};counted.s.updateWorkflow();assert.match(counted.s.$('nextStepText').textContent,/^Review both charts/);
  const retry=setup();await retry.s.exportFile('zip');const url=retry.s.$('preparedPacketSave').href;retry.s.error=Error('Export service unavailable');await assert.rejects(retry.s.exportFile('zip'),/unavailable/);assert.equal(retry.s.$('preparedPacketSave').href,url);assert.equal(retry.save(),false);assert.equal(retry.created.length,1);
  const stale=setup();stale.s.onRequest=async()=>{stale.s.sourceGeneration++};await stale.s.exportFile('zip');assert.equal(stale.created.length,0);assert.equal(stale.downloads.length,0);
  const conflict=setup();await conflict.s.exportFile('zip');conflict.s.error=Error('context-conflict');await conflict.s.exportFile('zip');assert.equal(conflict.s.$('preparedPacketSave').href,undefined);assert.equal(conflict.created.length,1);
