@@ -3,7 +3,7 @@
 // and the two chart sets carry their agreed names. Visible text stays the primary guidance.
 const fs=require('fs'),path=require('path'),assert=require('assert/strict');
 const html=fs.readFileSync(path.join(__dirname,'../src/lic_dsf/web.html'),'utf8');
-for(const id of ['loadBuiltinInvestment','save','calculate','compareButton','packet','preview','json'])
+for(const id of ['exampleButton','newZero','loadBuiltinInvestment','save','calculate','compareButton','packet','preview','json'])
  assert(new RegExp(`id="${id}"[^>]*data-hint="[^"]{12,}"`).test(html),'missing hint on #'+id);
 assert(/\[data-hint\]:hover::after,\[data-hint\]:focus-visible::after\{/.test(html),'hint CSS must cover keyboard focus');
 assert(/@media\(hover:none\)\{\[data-hint\]::after\{display:none!important\}\}/.test(html),'hints stay off touch screens');

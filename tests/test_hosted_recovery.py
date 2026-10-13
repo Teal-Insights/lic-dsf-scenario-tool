@@ -98,3 +98,23 @@ class RecoveryBoundary(unittest.TestCase):
         self.assertIn('illustrative online version', callout)
         self.assertIn('Macronia', callout)
         self.assertIn('does not represent any actual country', callout)
+
+    def test_first_steps_are_guided(self):
+        page = hosted_page().decode()
+        def before(a, b): self.assertLess(page.index(a), page.index(b), (a, b))
+        self.assertRegex(page, r'id="exampleButton"[^>]*data-hint="[^"]*Macronia[^"]*step 2')
+        self.assertIn('<h2 tabindex="-1">2. Review the baseline</h2>', page)
+        self.assertIn('These are the Macronia starting debt ratios before any change.', page)
+        self.assertIn('Optional. Ticking it marks step 2 as done; it changes no numbers.', page)
+        self.assertIn("'In step 3, load a teaching case (or edit inputs), then Save scenario and Calculate.'", page)
+        self.assertIn("'Load a teaching case'", page)
+        self.assertIn("'Load teaching case 1'", page)
+        self.assertIn('<strong>New here?</strong>', page)
+        before('<strong>New here?</strong>', 'Customized Scenario</strong> tabs.')
+        self.assertIn("status('Teaching case loaded. Next: scroll to the end of step 3 and choose Save scenario, then Calculate and show results.'", page)
+        self.assertIn('teaching cases take a few seconds', page)
+        self.assertNotIn('startup results', page)
+        self.assertIn('Delete my work and return to the start', page)
+        landing_page = landing().decode()
+        self.assertLess(landing_page.index('You will: start the example'), landing_page.index('id="begin"'))
+
