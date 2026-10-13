@@ -55,6 +55,6 @@ check('entry guidance offers the illustrative example without an upload',()=>{
 check('transient draft notice is cleared on editor transitions and settled state',()=>{
  assert.match(html,/function renderEditor\(\)\{\$\('builtinInvestmentStatus'\)\.textContent='';/);
  const s=setup();s.dirty=false;s.$('builtinInvestmentStatus').textContent='Loaded as a new unsaved draft';
- const resetLine=html.slice(html.indexOf('function updateWorkflow(){')).split('\n')[1];vm.runInContext(resetLine,s);assert.equal(s.$('builtinInvestmentStatus').textContent,'');
+ const resetLine=html.slice(html.indexOf('function updateWorkflow(){')).split('\n').find(l=>l.includes("$('builtinInvestmentStatus').textContent='';"));vm.runInContext(resetLine,s);assert.equal(s.$('builtinInvestmentStatus').textContent,'');
 });
 console.log(count+' built-in investment UI checks passed; actual button handlers, no file import or implicit calculation. Browser acceptance is separate.');
