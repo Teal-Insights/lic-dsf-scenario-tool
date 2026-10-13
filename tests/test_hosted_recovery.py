@@ -58,7 +58,9 @@ class RecoveryBoundary(unittest.TestCase):
         self.assertLess(page.index('published by the World Bank'), page.index('id="begin"'))
         self.assertLess(page.index('Not an IMF or World Bank product'), page.index('id="begin"'))
         self.assertLess(page.index('id="begin"'), page.index('<details class="limits">'))
-        self.assertNotIn('Ghana', page)
+        # The template's sample country label, taken from the existing chart disclosure so it is never written here.
+        from lic_dsf.charts import ILLUSTRATIVE_DISCLOSURE
+        self.assertNotIn(ILLUSTRATIVE_DISCLOSURE.split('-labelled')[0], page)
         self.assertIn('Illustrative', page)
 
     def test_visit_repeats_what_this_site_is(self):
