@@ -10,7 +10,7 @@ const exp=html.slice(html.indexOf('function interruptedComparison('),html.indexO
 function setup(change=false){
  const elements={},calls=[];let downloads=0,created=0;
  const s={sha:'workbook',sourceGeneration:1,comparisonGeneration:0,contextRecord:{revision:2},selection:new Set(['case']),dirty:false,contextDirty:false,boot:{token:'own'},comparison:{runs:[{result_hash:'stable'}]},chartURLs:{},chartsReady:false,chartError:false,exported:false,
- $:id=>elements[id]??={value:id==='comparator'?'case':'ext_pv_gdp',textContent:'',classList:{add(){},remove(){}},decode:async()=>{}},
+ $:id=>elements[id]??={value:id==='comparator'?'case':'ext_pv_gdp',textContent:'',classList:{add(){},remove(){}},focus(){},decode:async()=>{}},
  sourceCurrent:t=>t.sha===s.sha&&t.generation===s.sourceGeneration,comparisonRequest:()=>({scenario_ids:['case'],comparator_id:'case'}),resultSignature:v=>JSON.stringify(v.runs),clearCharts:()=>{s.chartsReady=false},clearComparison:()=>{s.comparison=null},updateWorkflow:()=>{},status:t=>{s.lastStatus=t},contextConflict:async()=>false,
  URL:{createObjectURL:()=> 'blob:result-'+(++created),revokeObjectURL:()=>{}},document:{createElement:()=>({click:()=>downloads++})},
  setTimeout:(f,ms)=>{const t=setTimeout(f,ms);t.unref();return t},clearTimeout,AbortController,Response,Blob,crypto:{randomUUID:()=> 'request-key'},

@@ -17,7 +17,7 @@ function setup(queued=false){
   const classes=new Set(id==='preparedPacketRecovery'?['hidden']:[]),small={textContent:''};
   return {value:id==='comparator'?'case':'ext_pv_gdp',textContent:'',innerHTML:'',dataset:{},disabled:false,checked:false,
    classList:{add:c=>classes.add(c),remove:c=>classes.delete(c),toggle(c,v){if(v)classes.add(c);else classes.delete(c)},contains:c=>classes.has(c)},
-   removeAttribute(name){delete this[name]},setAttribute(name,value){this[name]=value},querySelector:()=>small,querySelectorAll:()=>[]};
+   removeAttribute(name){delete this[name]},setAttribute(name,value){this[name]=value},focus(){s.focused=id},querySelector:()=>small,querySelectorAll:()=>[]};
  }
  const blob=new Blob([Uint8Array.from([80,75,3,4,0,255,9,19])]);
  const s={sha:'public-workbook',sourceGeneration:1,comparisonGeneration:0,contextRecord:{revision:2},selection:new Set(['case']),dirty:false,journalDirty:false,contextDirty:false,calculating:false,uiBusy:false,boot:{token:'own',example_available:true},ctx:{scenarios:[{id:'case'}]},active:{id:'case',revision:1,name:'Neutral'},currentRun:true,knownRuns:new Map([['case',{current:true}]]),baselineAcknowledged:true,chartsReady:true,chartError:false,chartURLs:{},exported:false,comparison:{runs:[{result_hash:'unchanged'}]},
@@ -38,7 +38,10 @@ function setup(queued=false){
 
 (async()=>{
  for(const queued of [false,true]){
-  const t=setup(queued);await t.s.exportFile('zip');
+  const t=setup(queued);t.s.updateWorkflow();assert.equal(t.s.$('packet').classList.contains('primary'),true);await t.s.exportFile('zip');
+  // The ready packet is saved by a trusted user click: a visible, focused, labelled primary link; the packet button steps back.
+  assert.equal(t.s.$('preparedPacketSave').textContent,'Save briefing packet (.zip)');assert.equal(t.s.focused,'preparedPacketSave');
+  t.s.updateWorkflow();assert.equal(t.s.$('packet').classList.contains('primary'),false);assert.match(t.s.lastStatus.text,/choose Save briefing packet \(\.zip\)/);
   assert.equal(t.created.length,1);assert.equal(t.downloads.length,1);assert.equal(t.s.$('preparedPacketRecovery').classList.contains('hidden'),false);
   assert.equal(t.s.$('preparedPacketSave').href,t.created[0].url);assert.equal(t.s.$('preparedPacketSave').download,'lic-dsf-briefing-packet.zip');
   assert.deepEqual(Buffer.from(await t.created[0].blob.arrayBuffer()),Buffer.from(await t.blob.arrayBuffer()));

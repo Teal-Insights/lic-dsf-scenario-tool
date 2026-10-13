@@ -10,7 +10,7 @@ const exp=html.slice(html.indexOf('// Retain one prepared packet'),html.indexOf(
 function setup(failPreview=false){
  const elements={},sequence=[];let active=0,maxActive=0,downloads=0;
  const s={comparison:{runs:[{result_hash:'fixed'}]},chartURLs:{},chartsReady:false,chartError:false,exported:false,
-  $:id=>elements[id]??={value:'ext_pv_gdp',textContent:'',classList:{add(){},remove(){}},decode:async()=>{}},
+  $:id=>elements[id]??={value:'ext_pv_gdp',textContent:'',classList:{add(){},remove(){}},focus(){},decode:async()=>{}},
   comparisonRequest:()=>({scenario_ids:['case']}),comparisonTarget:()=>({}),comparisonCurrent:()=>true,
   resultSignature:v=>JSON.stringify(v.runs),clearCharts:()=>{s.chartsReady=false},updateWorkflow:()=>{},status:()=>{},
   clearComparison:()=>{s.comparison=null},contextConflict:async()=>false,
