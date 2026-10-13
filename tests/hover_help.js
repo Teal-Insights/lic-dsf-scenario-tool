@@ -8,4 +8,7 @@ for(const id of ['exampleButton','newZero','loadBuiltinInvestment','save','calcu
 assert(/\[data-hint\]:hover::after,\[data-hint\]:focus-visible::after\{/.test(html),'hint CSS must cover keyboard focus');
 assert(/@media\(hover:none\)\{\[data-hint\]::after\{display:none!important\}\}/.test(html),'hints stay off touch screens');
 assert(/<h3>Standard LIC-DSF charts<\/h3>/.test(html)&&/<h3>Policy briefing charts<\/h3>/.test(html),'chart set names');
+// Hints never run off the page: capped by the viewport, and right-edge controls open leftwards.
+assert(/max-width:min\(320px,calc\(100vw - 32px\)\)/.test(html),'hint width capped by the viewport');
+assert(/#loadBuiltinInvestment\[data-hint\]::after\{left:auto;right:0\}/.test(html),'right-edge hint opens leftwards');
 console.log('hover_help ok');

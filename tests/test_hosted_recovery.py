@@ -107,6 +107,7 @@ class RecoveryBoundary(unittest.TestCase):
         self.assertIn('These are the Macronia starting debt ratios before any change.', page)
         self.assertIn('Optional. Ticking it marks step 2 as done; it changes no numbers.', page)
         self.assertIn("'In step 3, load a teaching case (or edit inputs), then Save scenario and Calculate.'", page)
+        self.assertIn("'Optional: tick the box in step 2 once you have looked over the Macronia baseline. Then save and calculate a case in step 3.'", page)
         self.assertIn("'Load a teaching case'", page)
         self.assertIn("'Load teaching case 1'", page)
         self.assertIn('<strong>New here?</strong>', page)

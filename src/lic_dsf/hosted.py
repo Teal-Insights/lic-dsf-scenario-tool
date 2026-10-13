@@ -567,7 +567,7 @@ def hosted_page():
     page = required_replace(page, '2. Check your workbook baseline', '2. Review the baseline')
     page = required_replace(page, 'The table shows the baseline values from your workbook. Check that its years and values are the ones you intended to use.', 'These are the Macronia starting debt ratios before any change. With your own workbook, you would check that they match your DSA.')
     page = required_replace(page, 'This records your review for this visit. It is separate from calculation or Excel verification.', 'Optional. Ticking it marks step 2 as done; it changes no numbers.')
-    page = required_replace(page, "'Check that the projection years and baseline values match your workbook.'", "'Look over the Macronia baseline in step 2, tick the box, then go to step 3.'")
+    page = required_replace(page, "'Check that the projection years and baseline values match your workbook.'", "'Optional: tick the box in step 2 once you have looked over the Macronia baseline. Then save and calculate a case in step 3.'")
     page = required_replace(page, 'Continue to create a scenario', 'Continue to step 3: load a teaching case')
     page = required_replace(page, "'Edit an input, save the scenario, then calculate to see both chart views.'", "'In step 3, load a teaching case (or edit inputs), then Save scenario and Calculate.'")
     page = required_replace(page, "'Edit assumptions'", "'Load a teaching case'")
