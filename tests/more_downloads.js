@@ -14,4 +14,6 @@ assert.equal((outside.match(/data-format=/g)||[]).length,1,'only the packet down
 assert.match(outside,/<button id="packet" class="primary" data-format="zip"[^>]*>Download briefing packet \(\.zip\)<\/button><div id="preparedPacketRecovery" class="hidden">/);
 assert(start>briefing.indexOf('id="preparedPacketRecovery"'),'disclosure follows the packet toolbar');
 assert.equal((html.match(/>Download SVG</g)||[]).length,0,'SVG buttons name their chart set');
+// The save link is the primary action once the packet is ready, so it must look like the navy primary button.
+assert.match(html,/#preparedPacketSave\{[^}]*background:var\(--navy\)[^}]*color:white/,'save link must be styled as the primary action');
 console.log('more_downloads ok');
