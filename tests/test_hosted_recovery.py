@@ -88,7 +88,8 @@ class RecoveryBoundary(unittest.TestCase):
         page = hosted_page().decode()
         step1 = page[page.index('<section id="upload"'):page.index('</section>', page.index('<section id="upload"'))]
         self.assertIn('In the desktop version, this is where you would upload your own completed DSA workbook. '
-                      'This online version uses the official illustrative example instead, so nobody uploads private data.', step1)
+                      'This online version uses the official illustrative example instead, so nobody uploads private data. '
+                      'Anything you type is still processed on this server, so keep it illustrative.', step1)
         self.assertNotIn('.xlsm">Download the supported template</a>', page)
 
     def test_landing_names_the_local_tool_and_macronia(self):
@@ -116,6 +117,14 @@ class RecoveryBoundary(unittest.TestCase):
         self.assertIn('teaching cases take a few seconds', page)
         self.assertNotIn('startup results', page)
         self.assertIn('Delete my work and return to the start', page)
+        # After one calculated case every difference is zero: point to teaching case 2 before any download.
+        self.assertIn("'If only one case is compared, every difference is zero: first load and calculate teaching cases 2 and 3 in step 3. Then review both charts and download the briefing.'", page)
+        self.assertIn('In step 3, load teaching case 2, then Save and Calculate it; it joins this comparison automatically.', page)
+        self.assertNotIn('select both in step 4', page)
+        self.assertIn("'Optional, not ticked'", page)
+        self.assertNotIn('Not re-checked this visit', page)
+        self.assertIn('Both chart views are ready. Download the briefing once at least two cases are compared.', page)
         landing_page = landing().decode()
+        self.assertIn('load and calculate at least two teaching cases', landing_page)
         self.assertLess(landing_page.index('You will: start the example'), landing_page.index('id="begin"'))
 
