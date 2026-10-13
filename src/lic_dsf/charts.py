@@ -40,8 +40,8 @@ VIEW_NAMES = {'standard': 'Standard LIC-DSF', 'briefing': 'Policy briefing'}
 THRESHOLD_STYLE = {'color': COLORS['ink'], 'ls': (0, (7, 3)), 'lw': 1.6}
 GRID_STYLE = {'color': COLORS['line'], 'linewidth': .6, 'alpha': .7}
 OFFICIAL_EXAMPLE_SHA = '3a0a0b80c7cbc95ac953f25ecae0b437129d669ceb8aeefb54ab86dc8727ea86'
-ILLUSTRATIVE_DISCLOSURE = ('Ghana-labelled sample is purely illustrative; '
-                           'it is not an official Ghana forecast or DSA.')
+ILLUSTRATIVE_DISCLOSURE = ('Illustrative data from the IMF and World Bank LIC-DSF template. '
+                           'It does not represent any actual country.')
 ERRORS = {'#NULL!', '#DIV/0!', '#VALUE!', '#REF!', '#NAME?', '#NUM!', '#N/A',
           '#GETTING_DATA', '#SPILL!', '#CALC!', '#BLOCKED!', '#CONNECT!'}
 SCOPE = ('Six supported indicators at sampled workbook years. Historical and tailored stress tests '
