@@ -60,3 +60,12 @@ class RecoveryBoundary(unittest.TestCase):
         self.assertLess(page.index('id="begin"'), page.index('<details class="limits">'))
         self.assertNotIn('Ghana', page)
         self.assertIn('Illustrative', page)
+
+    def test_visit_repeats_what_this_site_is(self):
+        page = hosted_page().decode()
+        aside = page[page.index('<aside class="card">'):page.index('</aside>')]
+        self.assertIn('Illustrative walkthrough.', aside)
+        self.assertIn('runs locally on your own computer', aside)
+        self.assertIn('mailto:lte@tealinsights.com', aside)
+        self.assertLess(aside.index('Illustrative walkthrough.'), aside.index('<p>Illustrative online experiment.'))
+

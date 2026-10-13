@@ -11,7 +11,7 @@ for(const id of ['excelTables','json','pdf','png'])assert(more.includes(`id="${i
 for(const view of ['standard','briefing'])for(const format of ['pdf','png','svg'])assert(more.includes(`data-format="${format}" data-view="${view}"`),format+' '+view+' must be inside More download options');
 const outside=briefing.slice(0,start)+briefing.slice(end);
 assert.equal((outside.match(/data-format=/g)||[]).length,1,'only the packet download stays outside the disclosure');
-assert.match(outside,/<button id="packet" class="primary" data-format="zip">Download briefing packet \(\.zip\)<\/button><div id="preparedPacketRecovery" class="hidden">/);
+assert.match(outside,/<button id="packet" class="primary" data-format="zip"[^>]*>Download briefing packet \(\.zip\)<\/button><div id="preparedPacketRecovery" class="hidden">/);
 assert(start>briefing.indexOf('id="preparedPacketRecovery"'),'disclosure follows the packet toolbar');
 assert.equal((html.match(/>Download SVG</g)||[]).length,0,'SVG buttons name their chart set');
 console.log('more_downloads ok');
