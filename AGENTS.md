@@ -6,6 +6,8 @@ This repository contains general reusable software and public documentation only
 
 Use only public-source fixtures with explicit provenance or independently authored neutral synthetic tests. New or changed content requires the release review, including generated artifacts and reachable history. Ignore rules do not authorize publication. Do not bypass local publication hooks or edit review receipts.
 
+Code and history from private repositories, and any confidential workbook or data derived from one, never enter this repository or its issues, pull requests, releases, Pages or CI artifacts. If a change seems to need them, stop and ask the maintainer.
+
 The official template is a separately supplied input. Preserve its bytes. Its embedded worked example is illustrative. Do not claim ownership of the template, present sample labels as official country data, or imply the software MIT license applies to every required external asset.
 
 Keep upload-first operation, numbered analyst steps, template input names/units, recoverable saved work, evidence labels and documented limitations. No numerical or compatibility claim without corresponding reproducible evidence. Never relax the locked comparison tolerance to make a check pass.
