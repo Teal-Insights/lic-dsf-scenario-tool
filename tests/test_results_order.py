@@ -37,6 +37,14 @@ class ResultsOrder(unittest.TestCase):
         self.assertNotIn('complete briefing packet', page)
         self.assertIn('final slot is reserved for Download the briefing packet', page)
 
+class DownloadIsFoundAfterTheCharts(unittest.TestCase):
+    """Both fresh first-time-user sessions hunted for the download: every pointer now says it sits below the charts."""
+    def test_pointers_say_where_the_download_is(self):
+        html = (Path(__file__).resolve().parents[1] / 'src' / 'lic_dsf' / 'web.html').read_text()
+        self.assertIn("Both chart views are ready. Review them, then download the briefing packet below the charts.", html)
+        self.assertIn('review the charts, then download the packet below them.', html)
+        self.assertIn("'Review both charts, then download the briefing packet below them.", html)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -122,13 +122,13 @@ check('Download stays available but secondary while teaching cases remain',()=>{
  }
 });
 check('status banner names the next case instead of inviting a download',()=>{
- const line=lines.find(l=>l.includes("'Both chart views are ready. Review the assumptions and download the briefing.'"));
- const a=line.indexOf('status(typeof teachingProgress'),b=line.indexOf("download the briefing.');",a)+"download the briefing.');".length;assert(a>=0&&b>a);
+ const line=lines.find(l=>l.includes("'Both chart views are ready. Review them, then download the briefing packet below the charts.'"));
+ const a=line.indexOf('status(typeof teachingProgress'),b=line.indexOf("below the charts.');",a)+"below the charts.');".length;assert(a>=0&&b>a);
  const expr=line.slice(a,b);
  const run=(progress,runs)=>{const s={comparison:{runs:Array(runs).fill({})},status(t){s.text=t}};if(progress)s.teachingProgress=()=>progress;vm.createContext(s);if(progress)vm.runInContext(lines.filter(l=>l.startsWith('function teachingNextStep(')).join('\n'),s);vm.runInContext(expr,s);return s.text;};
  const two={show:true,missing:[{label:'Smaller assumed benefit'}]};
  assert.equal(run(two,2),'Both chart views are ready. Next: add Smaller assumed benefit to compare both investment cases with No investment.');
- assert.equal(run({show:false},2),'Both chart views are ready. Review the assumptions and download the briefing.');
+ assert.equal(run({show:false},2),'Both chart views are ready. Review them, then download the briefing packet below the charts.');
  assert.match(run(null,1),/Only one case is compared, so every difference is zero: calculate a second case before downloading\./);
 });
 check('step 5 order: bar, summaries, policy chart, standard chart, download, collapsed wording form',()=>{
