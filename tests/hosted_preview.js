@@ -29,7 +29,7 @@ function setup(failPreview=false){
 (async()=>{
  let t=setup();await t.s.previewBoth();assert.equal(t.maxActive(),1);assert.deepEqual(t.sequence,['svg:standard','svg:briefing']);assert.equal(t.s.chartsReady,true);
  t=setup(true);const original=t.s.comparison;await assert.rejects(t.s.previewBoth(),/reserved final slot/);assert.equal(t.s.comparison,original);assert.equal(t.s.chartsReady,false);
- assert.match(t.s.$('chartsStatus').textContent,/download the complete briefing packet/);
+ assert.match(t.s.$('chartsStatus').textContent,/download the briefing packet instead/);
  await t.s.exportFile('zip');assert.equal(t.downloads(),1);assert.equal(t.s.exported,true);
  console.log('PASS hosted generated-script syntax, sequential preview pair, quota failure preserves comparison, and final ZIP handler remains usable. No browser acceptance.');
 })().catch(e=>{console.error(e);process.exitCode=1});
