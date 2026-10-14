@@ -17,7 +17,8 @@ def verify_payload(root):
     for p in root.rglob('*'):
         if p.is_symlink():raise ValueError('Package contains an unexpected linked path.')
         name=p.relative_to(root).as_posix()
-        if p.is_file() and (name in listed or p.name.lower() not in EXPLORER_FILES):actual.add(name)
+        explorer=p.name.isascii() and p.name.lower() in EXPLORER_FILES
+        if p.is_file() and (name in listed or not explorer):actual.add(name)
     if listed-actual:raise ValueError('A package file is missing or changed. Extract a fresh complete copy.')
     extra=sorted(actual-listed)
     if extra:

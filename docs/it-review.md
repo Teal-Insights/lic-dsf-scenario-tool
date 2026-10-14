@@ -10,7 +10,7 @@ For this version, forward this page or use your browser's print-to-PDF function.
 
 | Question | Answer |
 | --- | --- |
-| Publisher and source | Teal Insights; [public source repository](https://github.com/Teal-Insights/lic-dsf-scenario-tool) |
+| Publisher and source | Teal Insights; Windows code-signing identity TEAL EMERY INC.; [public source repository](https://github.com/Teal-Insights/lic-dsf-scenario-tool) |
 | Intended environment | A trusted single-user desktop. No public proxy, shared server or untrusted concurrent local users/processes. |
 | Runtime | Bundled CPython and pinned dependencies; the interface opens in the default browser. No Python or Excel installation is needed for desktop-package calculations. |
 | Privileges | Extraction and execution under the user's account; no administrator installer, system service or scheduled task is part of the package. Institutional application controls may still restrict execution. |
@@ -43,7 +43,7 @@ The Mac app opens Terminal and starts its bundled interpreter; the Windows comma
 
 The service binds to loopback and checks Host, request Origin and a per-run token. It sends no-store, content-security and anti-framing headers. These protect parts of the browser-request boundary. **They do not authenticate operating-system users.** Any process that can reach the computer's loopback service can obtain the boot token and call its APIs, including a process under another local account. Do not use this alpha on a shared host with untrusted concurrent local users or processes.
 
-The app's workspace is separate from the software bundle. The launchers verify package files and calculation identity before starting. These integrity checks detect missing or changed files against the accompanying inventory; if an attacker can replace both payload and inventory, they do not independently prove publisher authenticity. Verify the release source and published archive fingerprint as separate checks.
+The app's workspace is separate from the software bundle. Before starting, the launcher runs `start_local.py`, which checks every package file against `FILE-MANIFEST.json` and checks the calculation identity. These checks detect damaged or incomplete copies; they are not proof against tampering, because `FILE-MANIFEST.json` and `start_local.py` are not signed. To anchor them, first confirm the ZIP's SHA-256 against the release page (or that the SHA-256 of `FILE-MANIFEST.json` equals `inner_file_manifest_sha256` in the published release manifest).
 
 ## Workbook handling
 

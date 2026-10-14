@@ -4,7 +4,7 @@
 
 The interface is easier to follow. The policy view comes first, one next-step bar shows what to do next, the guidance explains Save then Calculate, the three teaching cases come first, and the wait panel and download wording are plainer. Every export carries an illustrative stamp, and chart styling and footnotes are clearer. Calculations, numerical tolerances and reported years are unchanged, and the plotted chart-data digest is pinned.
 
-Text files are read and written as UTF-8 on every platform. The source also adds an optional [hosted walkthrough mode](hosted-pilot.md). It is not part of the Windows package, and nothing in this repository deploys it.
+Text files are read and written as UTF-8 on every platform. The source also adds an optional hosted walkthrough mode. It is not part of the Windows package, and nothing in this repository deploys it.
 
 Known behaviour, documented rather than changed in this version: closing the browser tab does not stop the local tool (close its command window instead), and a second launch starts a second copy.
 
@@ -17,7 +17,7 @@ Known behaviour, documented rather than changed in this version: closing the bro
 - **Package check:** the tool says it is checking package files before it starts. It ignores the Thumbs.db and desktop.ini files that File Explorer adds. If other files are in the folder, it names them and asks you to move them out; missing or changed package files still ask for a fresh copy.
 - **Manifests:** FILE-MANIFEST.json lists every file with its SHA-256. The release manifest published with the release lists every file in the ZIP, the ZIP, wheel and launcher hashes and the signing certificate's thumbprint.
 
-The Windows helper scripts (`start_local.py` and the two `.cmd` files) are now in this repository under `packaging/windows-package/`. The signed launcher was built from `packaging/windows-bootstrap`, which is unchanged in this release.
+The Windows helper scripts (`start_local.py` and the two `.cmd` files) are now in this repository under `packaging/windows-package/`. The signed launcher was built from `packaging/windows-bootstrap` at commit 02387ad (new since alpha.2); later commits in this release do not change it.
 
 There is no 0.1.0a3 Mac package. Mac users continue with the alpha.2 Mac package, which is unsigned and unnotarized; see the [alpha.2 notes](release-notes-0.1.0a2.md). Windows on Arm, Intel Macs and older macOS versions are not covered.
 
