@@ -30,6 +30,13 @@ class StepThreeOrder(unittest.TestCase):  # S12
         self.assertNotIn('(top of step 3)', page)
         self.assertIn('Discard unsaved edits (under Build your own scenario in step 3)', page)
 
+    def test_teaching_steps_are_lettered_so_they_do_not_clash_with_the_five_step_tracker(self):
+        page = hosted_page().decode()
+        self.assertIn('list-style-type:lower-alpha', page)
+        self.assertIn('repeat a to c for cases 2 and 3', page)
+        self.assertIn('Follow steps a to e in', page)
+        self.assertNotIn('five numbered steps', page)
+
 
 if __name__ == '__main__':
     unittest.main()

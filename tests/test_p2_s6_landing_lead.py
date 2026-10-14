@@ -24,6 +24,10 @@ class LandingLead(unittest.TestCase):  # S6
             self.assertIn(kept, page)
         self.assertNotIn('of GDP', LEAD)
 
+    def test_route_line_reconciles_two_investment_cases_with_three_teaching_cases(self):
+        page = landing().decode()
+        self.assertIn('the three teaching cases (No investment and the two investment cases)', page)
+
 
 if __name__ == '__main__':
     unittest.main()
