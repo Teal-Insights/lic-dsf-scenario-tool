@@ -128,8 +128,8 @@ class RecoveryBoundary(unittest.TestCase):
         self.assertIn('Only one case is compared, so every difference is zero: load and calculate teaching case 2 in step 3 before downloading.', page)
         self.assertIn('Only one case is compared, so every difference is zero. Load and calculate teaching case 2 in step 3 before downloading.', page)
         landing_page = landing().decode()
-        self.assertIn('load and calculate at least two teaching cases', landing_page)
-        self.assertLess(landing_page.index('You will: start the example'), landing_page.index('id="begin"'))
+        self.assertIn('load and calculate the three teaching cases', landing_page)
+        self.assertLess(landing_page.index('You will: load the example'), landing_page.index('id="begin"'))
 
     def test_walkthrough_says_what_each_step_is_for(self):
         page = hosted_page().decode()
