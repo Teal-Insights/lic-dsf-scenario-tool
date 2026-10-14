@@ -413,8 +413,12 @@ def _panel(ax,summary,metric,view,large=False,heading=True):
         handles,labels=ax.get_legend_handles_labels()
         width=ax.get_window_extent().width/max(1,len(handles))-(size-1)*4*ax.figure.dpi/72
         labels=['\n'.join(_header_lines(label,ax.figure.canvas.get_renderer(),font,width)) for label in labels]
-        ax.legend(handles,labels,loc='upper left',bbox_to_anchor=(0,-.09),prop=font,frameon=False,ncol=len(handles))
-    ax.text(0,-.24 if large else -.20,textwrap.fill(('Zero = '+comp+', the comparison case. Each indicator uses its own difference scale. '+SAMPLED_NOTE+' See Standard LIC-DSF for levels and thresholds.') if briefing else _footnote(summary,metric,full=large),120 if large else 85),transform=ax.transAxes,fontsize=9 if large else 7.7,color=COLORS['gray'],va='top')
+        # Measured, not a fixed share of the axes: a taller header shortens the axes, and fixed fractions
+        # would push the legend into the x-axis title and the footnote into the legend.
+        renderer=ax.figure.canvas.get_renderer();to_axes=ax.transAxes.inverted()
+        legend=ax.legend(handles,labels,loc='upper left',bbox_to_anchor=(0,to_axes.transform((0,ax.xaxis.get_tightbbox(renderer).y0-6))[1]),prop=font,frameon=False,ncol=len(handles))
+        footnote_y=to_axes.transform((0,legend.get_window_extent(renderer).y0-8))[1]
+    ax.text(0,footnote_y if large and not briefing else -.24 if large else -.20,textwrap.fill(('Zero = '+comp+', the comparison case. Each indicator uses its own difference scale. '+SAMPLED_NOTE+' See Standard LIC-DSF for levels and thresholds.') if briefing else _footnote(summary,metric,full=large),120 if large else 85),transform=ax.transAxes,fontsize=9 if large else 7.7,color=COLORS['gray'],va='top')
 
 
 def _latest_row(summary, metric):

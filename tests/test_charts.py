@@ -354,5 +354,34 @@ class PolicyWordingTest(unittest.TestCase):
                 self.assertTrue(charts.render_indicator(c,metric,view,'png').startswith(b'\x89PNG'))
             self.assertTrue(charts.render_comparison(c,view,'pdf').startswith(b'%PDF'))
 
+class StandardLegendClearanceTest(unittest.TestCase):
+    """The standard chart's legend sits below the x-axis title and above the footnote, whatever the header height."""
+    def renders(self, comparison, metric):
+        from unittest.mock import patch
+        from matplotlib.figure import Figure
+        real=Figure.savefig;boxes=[]
+        def grab(fig,*a,**k):
+            out=real(fig,*a,**k);r=fig.canvas.get_renderer();ax=fig.axes[0]
+            footnote=[x for x in ax.texts if x.get_position()[1]<0]
+            footers=[x for x in fig.texts if x.get_position()[1]<.1]
+            boxes.append((ax.xaxis.label.get_window_extent(r),ax.get_legend().get_window_extent(r),
+                          [x.get_window_extent(r) for x in footnote],[x.get_window_extent(r) for x in footers]))
+            return out
+        with patch.object(Figure,'savefig',grab):charts.render_indicator(comparison,metric,'standard','png')
+        return boxes[0]
+    def test_legend_clears_axis_title_footnote_and_footer(self):
+        long=fixture()
+        for run,label in zip(long['runs'],('Larger assumed benefit with a long label', 'No investment comparison case long label', 'Smaller assumed benefit with long label!')):run['share_label']=label
+        headed=copy.deepcopy(long);headed['workbook_sha256']=charts.OFFICIAL_EXAMPLE_SHA
+        for run in headed['runs']:run['result']['workbook_sha256']=charts.OFFICIAL_EXAMPLE_SHA
+        headed['chart_context']={'workbook_sha256':charts.OFFICIAL_EXAMPLE_SHA,'label':'H'*80,'revision':1}
+        for name,comparison in (('default',fixture()),('long labels',long),('heading',headed)):
+            for metric,*_ in charts.METRICS:
+                with self.subTest(case=name,metric=metric):
+                    title,legend,footnote,footers=self.renders(comparison,metric)
+                    self.assertLess(legend.y1,title.y0-2,'legend overlaps the x-axis title')
+                    for box in footnote:self.assertLess(box.y1,legend.y0-2,'footnote overlaps the legend')
+                    for box in footers:
+                        for upper in footnote+[legend]:self.assertGreater(upper.y0,box.y1+1,'chart text runs into the footer')
 
 if __name__=='__main__':unittest.main()

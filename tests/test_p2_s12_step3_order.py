@@ -25,6 +25,11 @@ class StepThreeOrder(unittest.TestCase):  # S12
         for button in ('newZero', 'newImported', 'duplicate', 'discard'):
             self.assertEqual(page.count(f'id="{button}"'), 1)
 
+    def test_messages_point_to_where_discard_now_sits(self):
+        page = hosted_page().decode()
+        self.assertNotIn('(top of step 3)', page)
+        self.assertIn('Discard unsaved edits (under Build your own scenario in step 3)', page)
+
 
 if __name__ == '__main__':
     unittest.main()

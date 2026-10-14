@@ -26,12 +26,12 @@ function setup({calculated=[],stale=[],renamed={},teaching=true,own=false}={}){
  const s={$:element,calls,draft,active,dirty:false,journalDirty:false,contextDirty:false,calculating:false,comparison:{runs:[{},{}]},knownRuns,
   ctx:{inspection:{workbook_sha256:SHA,input_years:Array.from({length:21},(_,i)=>2024+i)},builtin_investment_cases:teaching?structuredClone(cases):undefined,scenarios},
   esc:x=>String(x),structuredClone,act:f=>f(),canSwitch:()=>true,clearComparison(){},renderEditor(){},chooseDriver(){},goTo(id){calls.push(['goTo',id])},status(){},
-  validateScenarioFile(){throw Error('Must not load a case')},request(){throw Error('Must not request')}};
+  openCase:async id=>{calls.push(['openCase',id]);return true},validateScenarioFile(){throw Error('Must not load a case')},request(){throw Error('Must not request')}};
  vm.createContext(s);vm.runInContext(code,s);
  s.renderBuiltinInvestment();if(teaching)s.$('builtinInvestmentCase').value=cases[0].id; // a browser selects the first option
  return s;
 }
-let count=0;const check=(name,f)=>{f();count++;};
+let count=0;const pending=[];const check=(name,f)=>{const r=f();if(r&&typeof r.then==='function')pending.push(r.then(()=>{count++;},e=>{e.message=name+': '+e.message;throw e;}));else count++;};
 const sentence=(ready,next)=>ready+' ready. Next: add '+next+' to compare both investment cases with No investment.';
 
 check('no teaching cases: no bar, no change to other guidance',()=>{
@@ -63,9 +63,12 @@ check('all three calculated: bar hidden, tracker text left alone',()=>{
  const s=setup({calculated:['no-investment','earlier-benefit','smaller-benefit']});s.$('teachingNext').classList.remove('hidden');s.$('nextStepText').textContent='Review both charts';
  s.renderTeachingNext();assert(s.$('teachingNext').classList.contains('hidden'));assert.equal(s.$('nextStepText').textContent,'Review both charts');
 });
-check('a saved but not current case is not ready',()=>{
+check('a saved but not calculated case: the bar says to calculate it and opens it, never offers a reload',async()=>{
  const s=setup({calculated:['no-investment'],stale:['earlier-benefit']});s.renderTeachingNext();
- assert.equal(s.$('teachingNextText').textContent,sentence('No investment','Larger assumed benefit'));
+ assert.equal(s.$('teachingNextText').textContent,'No investment ready. Next: Larger assumed benefit is saved but not calculated. Open it, then click Calculate and show results.');
+ assert.equal(s.$('teachingNextGo').textContent,'Open Larger assumed benefit →');assert.equal(s.$('teachingNextGo').dataset.open,'saved-earlier-benefit');
+ await s.openTeachingNext();assert.deepEqual(s.calls.filter(c=>c[0]==='openCase'),[['openCase','saved-earlier-benefit']]);
+ assert(s.calls.some(c=>c[0]==='goTo'&&c[1]==='scenario'),'opening goes to step 3, where Calculate is');
 });
 check('a renamed legend label is still recognised by its workspace name',()=>{
  const s=setup({calculated:['no-investment','earlier-benefit'],renamed:{'earlier-benefit':'Big payoff'}});s.renderTeachingNext();
@@ -139,4 +142,4 @@ check('step 5 order: bar, summaries, policy chart, standard chart, download, col
  assert(section.indexOf('id="teachingNext"')<section.indexOf('id="chartsStatus"'),'the bar is the first thing in step 5');
  assert.doesNotMatch(section,/id="teachingNext"[^>]*\sopen\b/);assert.doesNotMatch(section,/id="labelPanel" open/);
 });
-console.log(count+' next-step bar checks passed; real page functions, synthetic DOM. Browser scrolling and layout acceptance are separate.');
+Promise.all(pending).then(()=>{console.log(count+' next-step bar checks passed; real page functions, synthetic DOM. Browser scrolling and layout acceptance are separate.');}).catch(e=>{console.error(e);process.exitCode=1;});

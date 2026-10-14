@@ -146,6 +146,6 @@ class RecoveryBoundary(unittest.TestCase):
         # Step 3: a numbered path, a Save/Calculate bar that stays in view, and plain unsaved-edit wording.
         self.assertIn('<ol class="teach-steps"', main)
         self.assertRegex(page, r'\.save-bar\{[^}]*position:sticky;bottom:0')
-        self.assertIn('This draft is not saved yet. Click Save scenario (bottom of step 3) to keep it, or Discard unsaved edits (top of step 3) to drop it. Then try again.', page)
+        self.assertIn('This draft is not saved yet. Click Save scenario (bottom of step 3) to keep it, or Discard unsaved edits (under Build your own scenario in step 3) to drop it. Then try again.', page)
         self.assertNotIn('before switching', page)
 
