@@ -637,6 +637,7 @@ def hosted_page():
     page = required_replace(page, 'Choose a workbook to see its projection years and baseline debt indicators.', 'Load the example in step 1 to see its projection years and baseline debt indicators.')  # S11-r
     page = required_replace(page, 'Choose or reopen a workbook in step 1 to see its saved scenarios.', 'Load the example in step 1 to see its saved scenarios.')  # S11-s
     page = required_replace(page, 'Teal Insights · MIT-licensed open-source software · Work in progress', '<p class="end-visit"><button id="deleteVisit" type="button" data-hint="Erases this visit from the server now and returns to the start page. Download anything you want first.">Delete my work and return to the start</button></p>Teal Insights · MIT-licensed open-source software · Work in progress')  # S13-b
+    page = required_replace(page, 'invalidInput(input,`Another case already uses the legend label “${clash.label}”. Choose a distinct label so both can appear on one chart.`)', 'invalidInput(input,`${clash.label} is already saved in this visit. Open step 4 to include it in a comparison. To keep a second copy, give it a different legend label.`)')  # S9-hosted
     page = required_replace(page, '</body>', '<script>' + (Path(__file__).parent / 'hosted_wait.js').read_text() + '</script></body>')
     return page.encode()
 
