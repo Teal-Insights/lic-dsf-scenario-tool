@@ -3,7 +3,7 @@
 // Real page functions in a vm sandbox with synthetic DOM objects. No browser, network or calculation;
 // real scrolling, layout and screen-reader acceptance are separate.
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),assert=require('node:assert/strict');
-const html=fs.readFileSync(path.join(__dirname,'../src/lic_dsf/web.html'),'utf8');
+const html=fs.readFileSync(path.join(__dirname,'../src/lic_dsf/web.html'),'utf8').replace(/\r\n/g,'\n'); // a Windows checkout has CRLF; browsers parse it as LF
 for(const match of html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script\b[^>]*>/gi))new vm.Script(match[1]);
 const start=html.indexOf('// Built-in investment teaching cases:');assert(start>=0);
 const code=html.slice(start,html.indexOf('</script>',start));
