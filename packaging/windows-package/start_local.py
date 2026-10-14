@@ -3,15 +3,26 @@ from pathlib import Path,PurePosixPath
 import hashlib,json,os,platform,runpy,struct,sys
 
 
+# Windows Explorer can add these to any folder; they are not package files.
+EXPLORER_FILES={'thumbs.db','desktop.ini'}
+
+
 def verify_payload(root):
+    print('Checking package files...',flush=True)
     manifest=json.loads((root/'FILE-MANIFEST.json').read_text(encoding='utf-8'))
     expected={entry['path']:entry for entry in manifest}
     if len(expected)!=len(manifest):raise ValueError('Package manifest contains duplicate paths.')
+    listed=set(expected)|{'FILE-MANIFEST.json'}
     actual=set()
     for p in root.rglob('*'):
         if p.is_symlink():raise ValueError('Package contains an unexpected linked path.')
-        if p.is_file():actual.add(p.relative_to(root).as_posix())
-    if actual!=set(expected)|{'FILE-MANIFEST.json'}:raise ValueError('Package files differ from the reviewed inventory. Extract a fresh complete copy.')
+        name=p.relative_to(root).as_posix()
+        if p.is_file() and (name in listed or p.name.lower() not in EXPLORER_FILES):actual.add(name)
+    if listed-actual:raise ValueError('A package file is missing or changed. Extract a fresh complete copy.')
+    extra=sorted(actual-listed)
+    if extra:
+        more=f' and {len(extra)-5} more' if len(extra)>5 else ''
+        raise ValueError('This folder holds files that are not part of the package: '+', '.join(extra[:5])+more+'. Move these out of this folder, then start again.')
     for name,entry in expected.items():
         parts=PurePosixPath(name).parts
         if name.startswith('/') or '\\' in name or '..' in parts or ':' in name:raise ValueError('Package inventory contains an invalid path.')

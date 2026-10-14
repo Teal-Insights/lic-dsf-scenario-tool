@@ -13,8 +13,8 @@ goto app_failed
 echo.
 echo The program files are missing from this folder.
 echo.
-echo Start LIC-DSF.cmd could not find runtime\python.exe beside it, so the
-echo application cannot start. Two things usually cause this:
+echo Start LIC-DSF (fallback).cmd could not find runtime\python.exe beside it,
+echo so the application cannot start. Two things usually cause this:
 echo.
 echo   - The launcher was opened from inside the ZIP. Windows shows the
 echo     inside of a ZIP as though it were an ordinary folder, but nothing
@@ -29,7 +29,7 @@ echo   2. Find the ZIP file you downloaded, usually in your Downloads folder.
 echo   3. Right-click the ZIP file and choose Extract All.
 echo   4. Choose Extract and wait for Windows to finish.
 echo   5. Open the folder that Windows created.
-echo   6. Double-click Start LIC-DSF.cmd inside that folder.
+echo   6. Double-click Start LIC-DSF.exe inside that folder.
 echo.
 echo Keep every extracted file together in one folder.
 echo.
