@@ -115,7 +115,8 @@ class RecoveryBoundary(unittest.TestCase):
         self.assertIn('<strong>New here?</strong>', page)
         before('<strong>New here?</strong>', 'Customized Scenario</strong> tabs.')
         self.assertIn("status('Teaching case loaded but not saved. Next: click Save scenario in the bar at the bottom of the screen, then Calculate and show results.'", page)
-        self.assertIn('teaching cases take a few seconds', page)
+        self.assertNotIn('few seconds', page)  # no unmeasured time promises
+        self.assertNotIn('one to two minutes', page)
         self.assertNotIn('startup results', page)
         self.assertIn('Delete my work and return to the start', page)
         # After one calculated case every difference is zero: point to teaching case 2 before any download.
