@@ -6,3 +6,7 @@ packaging/windows-bootstrap/*.c text eol=lf
 packaging/windows-bootstrap/*.h text eol=lf
 packaging/windows-bootstrap/*.ps1 text eol=lf
 packaging/windows-bootstrap/*.py text eol=lf
+
+# Windows package helpers ship byte-for-byte in the package; the .cmd files keep CRLF.
+packaging/windows-package/*.cmd -text
+packaging/windows-package/*.py text eol=lf
