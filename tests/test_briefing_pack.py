@@ -105,6 +105,37 @@ class BriefingPackTest(unittest.TestCase):
         links=[cell.hyperlink.target for row in wb['Read me first'] for cell in row if cell.hyperlink]
         self.assertTrue(any('#page=38' in url for url in links))
 
+    def test_packet_names_comparison_and_carries_footnote_by_provenance(self):
+        from lic_dsf.charts import OFFICIAL_EXAMPLE_SHA
+        from lic_dsf.reader_guide import comparison_name
+        official=public_fixture();official['workbook_sha256']=OFFICIAL_EXAMPLE_SHA;official['chart_context']['workbook_sha256']=OFFICIAL_EXAMPLE_SHA
+        for run in official['runs']:run['result']['workbook_sha256']=OFFICIAL_EXAMPLE_SHA
+        note='Illustrative example, fictional country. Calculated by this tool from the LIC-DSF template workbook. These cases have not yet been checked against a fresh Excel recalculation.'
+        for c,expected in ((official,note),(public_fixture(),'Calculated by this tool from the supplied LIC-DSF workbook. These cases have not yet been checked against a fresh Excel recalculation.')):
+            with patch('lic_dsf.briefing_pack.render_comparison',return_value=b'PDF'),patch('lic_dsf.briefing_pack.render_indicator',return_value=b'CHART'):
+                blob=render_pack(c)
+            with ZipFile(io.BytesIO(blob)) as z:
+                readme=z.read('READ ME.txt').decode('utf-8');lines=readme.splitlines()
+                self.assertEqual(lines[2],expected)
+                self.assertEqual(lines[lines.index('THIS COMPARISON')+1],'Scenario A and Scenario C compared with Scenario B')
+                self.assertNotIn('Selected scenario comparison',readme)
+                self.assertIn('Exact Excel comparison pending for all 3 cases.',readme)
+                self.assertEqual(json.loads(z.read('manifest.json'))['verification'],expected)
+                packet=b''.join(z.read(n) for n in z.namelist() if not n.endswith(('.pdf','.png','.svg')))
+                self.assertNotIn(b'verification pending',packet)
+                if c is not official:self.assertNotIn(b'fictional',packet)
+            self.assertTrue(all(row[-2]==expected+' Selected workbook years only.' for row in tables(c)['Results'][1:]))
+            guide={row[0].value:row[1].value for row in load_workbook(io.BytesIO(workbook_bytes(tables(c),c)))['Read me first'] if row[0].value}
+            self.assertEqual(guide['Verification'],expected)
+        summary=lambda labels,comp:{'labels':labels,'comparator':comp}
+        self.assertEqual(comparison_name(summary(['No investment'],'No investment')),'No investment compared with itself')
+        self.assertEqual(comparison_name(summary(['No investment','Larger assumed benefit'],'No investment')),'Larger assumed benefit compared with No investment')
+        self.assertEqual(comparison_name(summary(['Smaller assumed benefit','No investment','Larger assumed benefit'],'No investment')),'Larger assumed benefit and Smaller assumed benefit compared with No investment')
+        self.assertEqual(comparison_name(summary(['D','C','B','A'],'A')),'B, C and D compared with A')
+        labelled=public_fixture();labelled['chart_context']={'workbook_sha256':'a'*64,'label':'Growth sensitivity','revision':1}
+        guide={row[0].value:row[1].value for row in load_workbook(io.BytesIO(workbook_bytes(tables(labelled),labelled)))['Read me first'] if row[0].value}
+        self.assertEqual((guide['This comparison'],guide['Cases compared']),('Growth sensitivity','Scenario A and Scenario C compared with Scenario B'))
+
     def test_packet_and_tables_carry_illustrative_stamp(self):
         from lic_dsf.charts import OFFICIAL_EXAMPLE_SHA, STAMP, stamp_line
         from lic_dsf.release import VERSION

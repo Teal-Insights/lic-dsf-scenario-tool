@@ -77,7 +77,7 @@ class ChartsTest(unittest.TestCase):
             texts=[t.get_text() for t in fig.texts]
             self.assertIn('Workbook reference: '+sha[:12]+'… (file fingerprint)',texts)
             self.assertIn(charts.ILLUSTRATIVE_DISCLOSURE,texts)
-            self.assertTrue(any('Exact Excel comparison pending' in t for t in texts))
+            self.assertTrue(any(charts.verification_note(summary) in ' '.join(t.split()) for t in texts))
             boxes=[t.get_window_extent(fig.canvas.get_renderer()) for t in fig.texts]
             self.assertTrue(all(b.x0>=0 and b.x1<=fig.bbox.width and b.y0>bottom*fig.bbox.height for b in boxes))
             self.assertTrue(all(a.y0>b.y1 for a,b in zip(boxes,boxes[1:])))
@@ -138,7 +138,7 @@ class ChartsTest(unittest.TestCase):
             with self.assertRaises(ValueError):charts.comparison_summary(c)
     def test_takeaway_uses_observed_comparator_and_neutral_review(self):
         c=fixture();s=charts.comparison_summary(c)
-        self.assertEqual(charts._title(s,'ext_pv_gdp',True),'How scenarios differ from the comparison case')
+        self.assertEqual(charts._title(s,'ext_pv_gdp',True),'External debt to GDP (present value): difference from Scenario B')
         self.assertEqual(len(charts.summary_lines(s,'ext_pv_gdp')),2)
         self.assertEqual((charts._hundredths(0.25),charts._hundredths(0.15),charts._hundredths(1.05),charts._hundredths(2.949)),('0.25','0.15','1.05','2.95'))
         self.assertEqual(charts._number(1e26), '1.00e+26')
@@ -185,7 +185,7 @@ class ChartsTest(unittest.TestCase):
         summary=charts.comparison_summary(fixture());fig,ax=plt.subplots()
         charts._panel(ax,summary,'public_pv_gdp','briefing',large=True)
         labels=[t for t in ax.texts if hasattr(t,'xy')]
-        baseline=next(t for t in labels if ' '.join(t.get_text().split()).startswith('Reference baseline:'))
+        baseline=next(t for t in labels if ' '.join(t.get_text().split()).startswith('Reference baseline (context only):'))
         self.assertAlmostEqual(baseline.xy[1],summary['rows'][29]['reference_baseline']-summary['rows'][29]['scenarios']['Scenario B'])
         self.assertEqual(baseline.xy[0],2044)
         self.assertIn('pp',baseline.get_text())
@@ -225,7 +225,7 @@ class ChartsTest(unittest.TestCase):
                 for a,e in zip(actual,expected):
                     if e is None:self.assertTrue(np.isnan(a))
                     else:self.assertEqual(a,e)
-            if view=='briefing':self.assertIn('Difference, percentage points',ax.get_ylabel())
+            if view=='briefing':self.assertEqual(' '.join(ax.get_ylabel().split()),'Percentage points (above 0 = higher than Scenario B)')
             else:self.assertEqual(ax.get_ylabel(),'percent of GDP')
             plt.close(fig)
         self.assertEqual(c,before)
@@ -285,5 +285,74 @@ class ChartsTest(unittest.TestCase):
         labels=[tick.get_text() for tick in ax.get_yticklabels() if tick.get_text()]
         self.assertIn('0',labels);self.assertTrue(any(label.startswith('+') for label in labels));self.assertTrue(any(label.startswith('\u2212') for label in labels))
         plt.close(fig)
+
+class PolicyWordingTest(unittest.TestCase):
+    """S1/S5: the chart names its comparison case, units follow the indicator, and the footnote follows provenance."""
+    @staticmethod
+    def official(c):
+        c['workbook_sha256']=charts.OFFICIAL_EXAMPLE_SHA
+        for run in c['runs']:run['result']['workbook_sha256']=charts.OFFICIAL_EXAMPLE_SHA
+        if 'chart_context' in c:c['chart_context']['workbook_sha256']=charts.OFFICIAL_EXAMPLE_SHA
+        return c
+    @staticmethod
+    def figure_texts(comparison,metric,view):
+        from unittest.mock import patch
+        from matplotlib.figure import Figure
+        texts=[];real=Figure.text
+        def spy(self,x,y,s,*args,**kwargs):
+            texts.append(' '.join(str(s).split()));return real(self,x,y,s,*args,**kwargs)
+        with patch.object(Figure,'text',spy):charts.render_indicator(comparison,metric,view,'png')
+        return texts
+    def test_policy_title_axis_and_subtitle_name_comparison_and_own_denominator(self):
+        import matplotlib.pyplot as plt
+        summary=charts.comparison_summary(fixture())
+        for metric,title,units,_ in charts.METRICS:
+            with self.subTest(metric=metric):
+                self.assertEqual(charts._title(summary,metric,True),charts.SHORT_TITLES[metric]+': difference from Scenario B')
+                self.assertEqual(charts._subtitle(summary,metric,True),f'{title} ({units})')
+                fig,ax=plt.subplots(figsize=(12,8.8));charts._panel(ax,summary,metric,'briefing',large=True,heading=False)
+                ylabel=' '.join(ax.get_ylabel().split());plt.close(fig)
+                self.assertEqual(ylabel,'Percentage points (above 0 = higher than Scenario B)')
+                factual=charts._factual_line(summary,metric,True)
+                self.assertIn('percentage points of '+units.replace('percent of ',''),factual)
+                if not units.endswith('GDP'):self.assertNotIn('of GDP',factual+charts._subtitle(summary,metric,True))
+    def test_standard_subtitle_points_to_the_difference_chart(self):
+        summary=charts.comparison_summary(fixture())
+        self.assertEqual(charts._subtitle(summary,'ext_pv_gdp',False),'External debt to GDP (present value) for each case against its LIC-DSF threshold. Where lines overlap, the difference chart shows the gap.')
+        self.assertIn('LIC-DSF benchmark',charts._subtitle(summary,'public_pv_gdp',False))
+        self.assertIn('no LIC-DSF threshold is shown',charts._subtitle(summary,'public_pv_revenue',False))
+    def test_footnote_replaces_pending_line_and_follows_provenance(self):
+        official=' '.join(self.figure_texts(self.official(fixture()),'ext_pv_gdp','briefing'))
+        self.assertIn('Illustrative example, fictional country. Calculated by this tool from the LIC-DSF template workbook. These cases have not yet been checked against a fresh Excel recalculation.',official)
+        self.assertNotIn('verification pending',official)
+        own=' '.join(self.figure_texts(fixture(),'ext_pv_gdp','standard'))
+        self.assertIn('Calculated by this tool from the supplied LIC-DSF workbook. These cases have not yet been checked against a fresh Excel recalculation.',own)
+        for word in ('Illustrative example','fictional','verification pending'):self.assertNotIn(word,own)
+    def test_custom_heading_never_replaces_the_factual_line(self):
+        c=self.official(fixture());c['chart_context']={'workbook_sha256':charts.OFFICIAL_EXAMPLE_SHA,'label':'Investment adds external debt by 2029','revision':1}
+        for view in ('standard','briefing'):
+            texts=self.figure_texts(c,'ext_pv_exports',view)
+            heading=texts.index('Investment adds external debt by 2029')
+            factual=next(i for i,t in enumerate(texts) if t.startswith('Scenario A and Scenario C compared with Scenario B; '))
+            self.assertGreater(factual,heading)
+            self.assertIn('not yet been checked against a fresh Excel recalculation',texts[factual])
+            self.assertIn('exports',texts[factual])
+    def test_policy_legend_says_context_only_without_relabelling_the_series(self):
+        import matplotlib.pyplot as plt
+        summary=charts.comparison_summary(fixture());fig,ax=plt.subplots(figsize=(12,8.8))
+        charts._panel(ax,summary,'public_pv_gdp','briefing',large=True,heading=False)
+        self.assertIn('Reference baseline',[line.get_label() for line in ax.lines])
+        ends=[' '.join(t.get_text().split()) for t in ax.texts if hasattr(t,'xy') and t.get_text()]
+        self.assertTrue(any(t.startswith('Reference baseline (context only): ') for t in ends))
+        self.assertFalse(any(t.startswith('Reference baseline: ') for t in ends))
+        plt.close(fig)
+    def test_long_case_names_still_fit_individual_and_detail_charts(self):
+        c=self.official(fixture());c['chart_context']={'workbook_sha256':charts.OFFICIAL_EXAMPLE_SHA,'label':'W'*80,'revision':1}
+        for i,run in enumerate(c['runs']):run['share_label']=['W'*40,'M'*40,'Q'*40][i]
+        for view in ('standard','briefing'):
+            for metric,*_ in charts.METRICS:
+                self.assertTrue(charts.render_indicator(c,metric,view,'png').startswith(b'\x89PNG'))
+            self.assertTrue(charts.render_comparison(c,view,'pdf').startswith(b'%PDF'))
+
 
 if __name__=='__main__':unittest.main()

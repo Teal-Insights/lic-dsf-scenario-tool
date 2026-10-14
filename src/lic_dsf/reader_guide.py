@@ -79,13 +79,34 @@ def guidance_references():
     ]
 
 
+def join_names(names):
+    names = list(names)
+    if len(names) < 2:
+        return ''.join(names)
+    return ', '.join(names[:-1]) + ' and ' + names[-1]
+
+
+def comparison_name(summary):
+    """Factual default name: the cases joined with 'and', compared with the comparison case."""
+    comparator = summary['comparator']
+    alternatives = sorted(label for label in summary['labels'] if label != comparator)
+    if not alternatives:
+        return comparator + ' compared with itself'
+    return join_names(alternatives) + ' compared with ' + comparator
+
+
 def comparison_orientation(summary):
     official = summary['provenance']['kind'] == 'official_illustrative_template'
     source = ('Official World Bank LIC-DSF template, IDA21 file version 08-12-2025. ' + summary['provenance']['disclosure']) if official else 'Analyst-supplied workbook in the supported LIC-DSF template format.'
-    return [
-        ('This comparison', summary['chart_context']['label'] or 'Selected scenario comparison'),
+    label = summary['chart_context']['label']
+    statuses = [item['status'] for item in summary['evidence']]
+    status = (statuses[0] + ' for all ' + str(len(statuses)) + ' cases.' if len(statuses) > 1 and len(set(statuses)) == 1
+              else '; '.join(item['scenario'] + ': ' + item['status'] for item in summary['evidence']))
+    # A saved heading may name the comparison; the factual case list is kept beside it.
+    return ([('This comparison', label or comparison_name(summary))]
+            + ([('Cases compared', comparison_name(summary))] if label else []) + [
         ('Comparison case', summary['comparator']),
         ('Starting source', source + ' The alternative scenarios use supplied assumptions and are calculated by this tool; they are not forecasts supplied by the World Bank.'),
-        ('Recorded check status', '; '.join(item['scenario'] + ': ' + item['status'] for item in summary['evidence'])),
+        ('Recorded check status', status),
         ('What varies in this comparison', financing_comparison_note([a['financing_terms'] for a in summary['assumptions']])),
-    ]
+    ])

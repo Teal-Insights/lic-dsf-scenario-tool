@@ -184,6 +184,11 @@ class SuccessorRegressionTests(unittest.TestCase):
         for forbidden in ['Local workspace','Upload your completed workbook to get started.','Go to upload','calculations then run locally.','Scenarios are saved separately on this computer.']:
             self.assertNotIn(forbidden,page)
         self.assertIn('final slot is reserved',page)
+        # S5: the baseline explanation sits beside the charts; no 'verification pending' copy online.
+        guide=page.index('id="comparisonGuide"')
+        self.assertLess(guide,page.index('id="chartPair"'))
+        self.assertIn('No investment, the comparison case for the teaching cases, uses this example’s customized projections. Reference baseline is shown for context only: the gap between them reflects starting assumptions, not the investment.',page)
+        self.assertNotIn('verification pending',page)
         self.assertIn('12 simultaneous visits',landing().decode())
         source=(Path(__file__).parents[1]/'src/lic_dsf/web.html').read_text()
         with patch('pathlib.Path.read_text',return_value=source.replace('Local workspace','Unexpected local copy')):

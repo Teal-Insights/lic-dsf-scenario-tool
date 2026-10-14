@@ -7,7 +7,7 @@ import io
 import json
 from zipfile import ZipFile, ZIP_DEFLATED
 
-from .charts import METRICS, comparison_summary, is_illustrative, render_comparison, render_indicator, stamp_line, stamp_notice, _PACKET_WRAP_CACHE
+from .charts import METRICS, comparison_summary, is_illustrative, render_comparison, render_indicator, stamp_line, stamp_notice, verification_note, _PACKET_WRAP_CACHE
 from .release import RELEASE_DATE, VERSION
 from .ida21 import INPUTS
 from .reader_guide import reader_sections, technical_glossary, financing_comparison_note, comparison_orientation, guidance_references
@@ -34,7 +34,7 @@ def _csv(rows):
 
 def tables(comparison):
     summary = comparison_summary(comparison)
-    evidence = 'Calculated by this tool; fresh Excel verification pending. Selected workbook years only.'
+    evidence = verification_note(summary) + ' Selected workbook years only.'
     disclosure = comparison.get('workbook_provenance', {}).get('disclosure', 'Analyst-supplied workbook.')
     sha = comparison['workbook_sha256']
     common_headers = ['workbook_sha256', 'evidence', 'input_disclosure']
@@ -86,7 +86,7 @@ def workbook_bytes(table_map, comparison=None):
     wb = Workbook()
     orientation = comparison_orientation(comparison_summary(comparison)) if comparison is not None else [('Source and comparison', 'See the scenario, comparator, workbook fingerprint and input disclosure columns in Results for this table export.')]
     illustrative = comparison is not None and is_illustrative(comparison_summary(comparison))
-    guide = [['Read me first', 'How to use these tables'], ['Status', stamp_line(illustrative)]] + [list(item) for item in orientation + reader_sections()] + [[title, text] for title, text, url in guidance_references()] + [['Technical field', 'Meaning']] + [list(item) for item in technical_glossary()]
+    guide = [['Read me first', 'How to use these tables'], ['Status', stamp_line(illustrative)]] + ([['Verification', verification_note(comparison_summary(comparison))]] if comparison is not None else []) + [list(item) for item in orientation + reader_sections()] + [[title, text] for title, text, url in guidance_references()] + [['Technical field', 'Meaning']] + [list(item) for item in technical_glossary()]
     table_map = {'Read me first': guide, **table_map}
     wb.remove(wb.active)
     wb.properties.creator = 'LIC-DSF Scenario Analysis Tool'
@@ -155,7 +155,7 @@ def _render_pack(comparison):
             for fmt in ('png', 'svg'):
                 files[f'charts/{label}/{metric}.{fmt}'] = render_indicator(comparison, metric, view, fmt)
     illustrative = is_illustrative(comparison_summary(comparison))
-    reading = ['START HERE: LIC-DSF scenario briefing', stamp_line(illustrative), '',
+    reading = ['START HERE: LIC-DSF scenario briefing', stamp_line(illustrative), verification_note(comparison_summary(comparison)), '',
         'Open reports/policy-report.pdf for the reading guide and comparison.',
         'Open tables.xlsx, starting with Read me first, to inspect or reuse the numbers.', '']
     for heading, body in comparison_orientation(comparison_summary(comparison)) + reader_sections():
@@ -180,7 +180,7 @@ def _render_pack(comparison):
     for field, meaning in technical_glossary():
         reading.append(field + ': ' + meaning)
     files['READ ME.txt'] = ('\n'.join(reading) + '\n').encode('utf-8')
-    manifest = {'format': 'lic-dsf-briefing-packet-v1', 'notice': stamp_notice(illustrative), 'tool_version': VERSION, 'release_date': RELEASE_DATE,
+    manifest = {'format': 'lic-dsf-briefing-packet-v1', 'notice': stamp_notice(illustrative), 'verification': verification_note(comparison_summary(comparison)), 'tool_version': VERSION, 'release_date': RELEASE_DATE,
         'workbook_sha256': comparison['workbook_sha256'],
         'comparator_id': comparison['comparator_id'], 'provenance': comparison.get('workbook_provenance'),
         'files': {name: {'bytes': len(data), 'sha256': hashlib.sha256(data).hexdigest()}

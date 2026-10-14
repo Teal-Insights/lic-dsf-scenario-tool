@@ -14,7 +14,7 @@ import threading
 from copy import deepcopy
 from decimal import Decimal, ROUND_HALF_UP, localcontext
 from .chart_context import validate_chart_context
-from .reader_guide import reader_sections, financing_comparison_note, comparison_orientation, guidance_references
+from .reader_guide import reader_sections, financing_comparison_note, comparison_orientation, guidance_references, comparison_name
 from .rationale import rationale_entries
 from .typography import register_fonts, font_properties, FONT_FAMILY
 from .release import VERSION, RELEASE_DATE
@@ -46,6 +46,24 @@ ERRORS = {'#NULL!', '#DIV/0!', '#VALUE!', '#REF!', '#NAME?', '#NUM!', '#N/A',
           '#GETTING_DATA', '#SPILL!', '#CALC!', '#BLOCKED!', '#CONNECT!'}
 SCOPE = ('Six supported indicators at sampled workbook years. Historical and tailored stress tests '
          'and public debt service/revenue are not included.')
+# Short indicator names for chart titles; the full template name stays in the subtitle.
+SHORT_TITLES = {
+    'ext_pv_gdp': 'External debt to GDP (present value)',
+    'ext_pv_exports': 'External debt to exports (present value)',
+    'ext_ds_exports': 'External debt service to exports',
+    'ext_ds_revenue': 'External debt service to revenue',
+    'public_pv_gdp': 'Public debt to GDP (present value)',
+    'public_pv_revenue': 'Public debt to revenue (present value)',
+}
+# Visible policy-chart name only; the plotted series keeps the data label 'Reference baseline'.
+BASELINE_CONTEXT_LABEL = 'Reference baseline (context only)'
+ILLUSTRATIVE_NOTE = 'Illustrative example, fictional country.'
+# The engine evaluates the workbook's own formulas (excel_grapher dependency graph); it does not re-implement them.
+CALCULATED_NOTES = {True: 'Calculated by this tool from the LIC-DSF template workbook.',
+                    False: 'Calculated by this tool from the supplied LIC-DSF workbook.'}
+CHECK_NOTES = {'pending': 'These cases have not yet been checked against a fresh Excel recalculation.',
+               'recorded': 'An exact Excel comparison is recorded for these cases.',
+               'review': 'These cases need numerical review before use.'}
 
 
 def _numeric(value):
@@ -213,6 +231,42 @@ def is_illustrative(summary):
     return summary['provenance']['kind']=='official_illustrative_template'
 
 
+def verification_note(summary):
+    """One footnote for every chart and the packet; only the official example is called illustrative."""
+    illustrative=is_illustrative(summary)
+    statuses={e['status'] for e in summary['evidence']}
+    check=('review' if 'Review required' in statuses else
+           'pending' if any('pending' in s for s in statuses) else 'recorded')
+    return ' '.join(([ILLUSTRATIVE_NOTE] if illustrative else [])+[CALCULATED_NOTES[illustrative],CHECK_NOTES[check]])
+
+
+def _denominator(metric):
+    units=next(m[2] for m in METRICS if m[0]==metric)
+    if not units.startswith('percent of '):raise ValueError('Unsupported indicator units.')
+    return units[len('percent of '):]
+
+
+def _subtitle(summary,metric,briefing):
+    """Policy: the full indicator name with its own denominator. Standard: what the threshold chart shows."""
+    meta=next(m for m in METRICS if m[0]==metric)
+    if briefing:return f'{meta[1]} ({meta[2]})'
+    rows,_=_series(summary,metric);threshold=rows[0]['threshold'] if rows else None
+    if _numeric(threshold):
+        kind='benchmark' if metric.startswith('public_') else 'threshold'
+        return f'{SHORT_TITLES[metric]} for each case against its LIC-DSF {kind}. Where lines overlap, the difference chart shows the gap.'
+    return f'{SHORT_TITLES[metric]} for each case; no LIC-DSF threshold is shown for this indicator. Where lines overlap, the difference chart shows the gap.'
+
+
+def _difference_axis_label(summary):
+    return f'Percentage points (above 0 = higher than {summary["comparator"]})'
+
+
+def _factual_line(summary,metric,briefing):
+    """Cases, comparison case, units and verification status; a custom heading never replaces it."""
+    units=f'differences in percentage points of {_denominator(metric)}' if briefing else next(m[2] for m in METRICS if m[0]==metric)
+    return f'{comparison_name(summary)}; {units}. {verification_note(summary)}'
+
+
 def _stamp(fig,line):
     """Stamp a finished figure at save time, in the top band every page keeps clear."""
     if any(text.get_gid()=='illustrative-stamp' for text in fig.texts):return
@@ -238,7 +292,7 @@ def _footnote(summary, metric, full=True):
 def _title(summary,metric,briefing):
     if not briefing:return next(m[1] for m in METRICS if m[0]==metric)
     if any(e['status']=='Review required' for e in summary['evidence']):return 'This comparison needs numerical review'
-    return 'How scenarios differ from the comparison case'
+    return f'{SHORT_TITLES[metric]}: difference from {summary["comparator"]}'
 
 
 def _difference(value):
@@ -272,8 +326,12 @@ def _panel(ax,summary,metric,view,large=False,heading=True):
     ax.set_facecolor('white')
     if heading:
         ax.set_title(textwrap.fill(_title(summary,metric,briefing),65 if large else 46),loc='left',fontsize=17 if large else 12,fontweight='bold',pad=25 if briefing else 12,color=COLORS['ink'])
-        if briefing:ax.text(0,1.03,textwrap.fill(meta[1],85 if large else 58),transform=ax.transAxes,fontsize=size-1,color=COLORS['gray'])
-    ax.set_ylabel(('Difference, percentage points '+meta[2].replace('percent ','') if briefing else meta[2]),fontsize=size,color=COLORS['gray']);ax.set_xlabel('Reported workbook year',fontsize=size,color=COLORS['gray'])
+        if briefing:ax.text(0,1.03,textwrap.fill(_subtitle(summary,metric,True),85 if large else 58),transform=ax.transAxes,fontsize=size-1,color=COLORS['gray'])
+    ylabel=meta[2]
+    if briefing:
+        # Name the comparison case; wrap to the axis height so a 40-character label cannot overrun it.
+        ylabel='\n'.join(_header_lines(_difference_axis_label(summary),ax.figure.canvas.get_renderer(),font_properties(family='Inter',size=size),ax.get_window_extent().height*.95))
+    ax.set_ylabel(ylabel,fontsize=size,color=COLORS['gray']);ax.set_xlabel('Reported workbook year',fontsize=size,color=COLORS['gray'])
     if not rows:
         ax.text(.5,.5,'No saved observations',ha='center',transform=ax.transAxes);return
     comp=summary['comparator']
@@ -292,7 +350,9 @@ def _panel(ax,summary,metric,view,large=False,heading=True):
             valid=[(year,value) for year,value in zip(years,values) if _numeric(value)]
             if valid:
                 end_year,end_value=valid[-1]
-                end_label=f'{label}: {_difference(end_value)} pp' if end_year==max(years) else f'{label}: {_difference(end_value)} pp ({end_year})'
+                # Visible text only: the Axes.plot label kwarg stays 'Reference baseline', so the data digest is unchanged.
+                name=BASELINE_CONTEXT_LABEL if label=='Reference baseline' else label
+                end_label=f'{name}: {_difference(end_value)} pp' if end_year==max(years) else f'{name}: {_difference(end_value)} pp ({end_year})'
                 endings.append([end_value,end_label,color,end_year])
     threshold=rows[0]['threshold'];threshold_name='Benchmark' if metric.startswith('public_') else 'Threshold'
     if briefing:
@@ -342,7 +402,7 @@ def _panel(ax,summary,metric,view,large=False,heading=True):
                         arrowprops={'arrowstyle':'->','color':color,'lw':1,
                                     'shrinkA':0,'shrinkB':3}, zorder=2)
         for (value,label,color,end_year),position,text in zip(endings,positions,wrapped):
-            ax.annotate(text,(end_year,value),xytext=(label_x,position),fontsize=size-1,
+            ax.annotate(text,(end_year,value),xytext=(label_x,position),fontproperties=label_font,
                     color=COLORS['navy'] if color==COLORS['cyan'] else COLORS['gray'],
                     va='center',ha='left',parse_math=False,zorder=4,
                     bbox={'facecolor':'white','edgecolor':'none','pad':1.5})
@@ -354,7 +414,7 @@ def _panel(ax,summary,metric,view,large=False,heading=True):
         width=ax.get_window_extent().width/max(1,len(handles))-(size-1)*4*ax.figure.dpi/72
         labels=['\n'.join(_header_lines(label,ax.figure.canvas.get_renderer(),font,width)) for label in labels]
         ax.legend(handles,labels,loc='upper left',bbox_to_anchor=(0,-.09),prop=font,frameon=False,ncol=len(handles))
-    ax.text(0,-.24 if large else -.20,textwrap.fill(('Zero = selected comparison case. Each indicator uses its own difference scale. '+SAMPLED_NOTE+' See Standard LIC-DSF for levels and thresholds.') if briefing else _footnote(summary,metric,full=large),120 if large else 85),transform=ax.transAxes,fontsize=9 if large else 7.7,color=COLORS['gray'],va='top')
+    ax.text(0,-.24 if large else -.20,textwrap.fill(('Zero = '+comp+', the comparison case. Each indicator uses its own difference scale. '+SAMPLED_NOTE+' See Standard LIC-DSF for levels and thresholds.') if briefing else _footnote(summary,metric,full=large),120 if large else 85),transform=ax.transAxes,fontsize=9 if large else 7.7,color=COLORS['gray'],va='top')
 
 
 def _latest_row(summary, metric):
@@ -372,7 +432,7 @@ def _dot_panel(ax,summary,metric):
     comp=row['scenarios'][summary['comparator']]
     alternatives=sorted(label for label in summary['labels'] if label!=summary['comparator'])
     colors=dict(zip(alternatives,[COLORS['cyan'],COLORS['navy'],'#76547E']))
-    entries=[('Reference baseline',row['reference_baseline'],'#7B8790','o')]
+    entries=[(BASELINE_CONTEXT_LABEL,row['reference_baseline'],'#7B8790','o')]
     entries += [(label,row['scenarios'][label],colors.get(label,COLORS['gray']),['s','D','^','v'][i]) for i,label in enumerate([summary['comparator']]+alternatives)]
     nums=[v for _,v,_,_ in entries if _numeric(v)]
     low=min(nums) if nums else 0;high=max(nums) if nums else 1
@@ -470,12 +530,12 @@ def _header(fig, summary, view, *, detail=False):
     else:
         line(VIEW_NAMES[view],18 if detail else 25,COLORS['navy'],'bold')
     line('Workbook reference: '+context['workbook_sha256'][:12]+'… (file fingerprint)',10,COLORS['gray'])
-    line('Selected comparator: '+summary['comparator']+' (a customized scenario) | Reference baseline retained',11,COLORS['gray'])
-    status='Review required' if any(e['status']=='Review required' for e in summary['evidence']) else ('Exact Excel comparison pending' if any('pending' in e['status'] for e in summary['evidence']) else 'Exact Excel comparison recorded')
-    line(status+' | '+summary['year_convention'],10,COLORS['gray'])
+    # Factual lines stay beneath any saved heading: cases, comparison case, verification status.
+    line(comparison_name(summary)+'. Reference baseline is shown for context only.',11,COLORS['gray'])
+    line(verification_note(summary)+' '+summary['year_convention'],10,COLORS['gray'])
     if summary['provenance']['disclosure']:line(summary['provenance']['disclosure'],10,COLORS['navy'])
     if view=='briefing' and not detail:
-        line('Δ: difference versus the selected comparator; ≈0.00 is nonzero but below 0.005 pp. Each panel uses its own zoomed scale; compare the numbers, not lengths across panels.',9,COLORS['gray'])
+        line('Δ: difference from '+summary['comparator']+', in percentage points of each indicator\'s own denominator; ≈0.00 is nonzero but below 0.005 pp. Each panel uses its own zoomed scale; compare the numbers, not lengths across panels.',9,COLORS['gray'])
     return (cursor-(.16 if detail else .32))/height
 
 
@@ -490,8 +550,7 @@ def _detail_layout(fig, summary, metric, view):
     height=fig.get_figheight();cursor=_header(fig,summary,view,detail=True)*height
     renderer=fig.canvas.get_renderer();width=.86*fig.get_figwidth()*fig.dpi
     entries=[(_title(summary,metric,view=='briefing'),17,'bold',COLORS['ink'],'detail-title')]
-    if view=='briefing':
-        entries.append((next(m[1] for m in METRICS if m[0]==metric),11,'normal',COLORS['gray'],'detail-subtitle'))
+    entries.append((_subtitle(summary,metric,view=='briefing'),11,'normal',COLORS['gray'],'detail-subtitle'))
     for text,size,weight,color,gid in entries:
         font=font_properties(family='Inter',size=size,weight=weight)
         lines=_header_lines(text,renderer,font,width)
@@ -653,7 +712,7 @@ def _comparison_pages(pdf, summary, plt):
         nonlocal fig,cursor
         if fig is not None:pdf.savefig(fig);plt.close(fig)
         fig=plt.figure(figsize=(8.27,11.69));cursor=.91
-        for text in ['Comparison case: '+summary['comparator'], ' | '.join(dict.fromkeys(e['status'] for e in summary['evidence']))]:
+        for text in [comparison_name(summary)+'.', verification_note(summary)]:
             font=font_properties(family='Inter',size=10)
             lines=_header_lines(text,fig.canvas.get_renderer(),font,fig.bbox.width*.84)
             fig.text(.08,cursor,'\n'.join(lines),fontproperties=font,va='top',color=COLORS['gray'],parse_math=False)
@@ -770,11 +829,11 @@ def render_indicator(comparison, metric, view='standard', format='svg'):
                 line(summary['chart_context']['label'], 12, COLORS['navy'])
             line(_title(summary, metric, view == 'briefing'), 21, COLORS['navy'],
                  family='IBM Plex Serif', weight='bold', gap=.018)
-            if view == 'briefing':
-                line(next(m[1] for m in METRICS if m[0] == metric), 12, COLORS['gray'])
-            line('Calculated by this tool · Fresh Excel verification pending', 10, COLORS['gray'])
-            if summary['provenance']['disclosure']:
-                line(summary['provenance']['disclosure'], 10, COLORS['navy'])
+            line(_subtitle(summary, metric, view == 'briefing'), 12, COLORS['gray'])
+            # The factual line stays beneath any saved custom heading (drawn above the title). For the
+            # official example it opens 'Illustrative example, fictional country.', which replaces the
+            # separate provenance line here; PDF pages, READ ME, tables and CSVs keep the full disclosure.
+            line(_factual_line(summary, metric, view == 'briefing'), 10, COLORS['gray'])
             fig.subplots_adjust(left=.095, right=.96, top=cursor-.025, bottom=.245)
             if cursor < .54:
                 raise ValueError('Chart headings are too long for an individual chart. Shorten the shared labels.')
