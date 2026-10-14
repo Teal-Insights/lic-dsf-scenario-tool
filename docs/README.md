@@ -1,6 +1,6 @@
 # Find your way around the documentation
 
-Start with the built-in tutorial to compare three illustrative investment cases without workbook or scenario-file selection. The walkthrough describes alpha.2; alpha.1 predates this route. Check [installation and release availability](installation.md) against your installed version. These guides describe the experimental local application and its technical source route. They do not assume access to private workshop instructions or a maintainer's computer.
+Start with the built-in tutorial to compare three illustrative investment cases without workbook or scenario-file selection. The walkthrough describes 0.1.0a3; alpha.1 predates this route. Check [installation and release availability](installation.md) against your installed version. These guides describe the experimental local application and its technical source route. They do not assume access to private workshop instructions or a maintainer's computer.
 
 ## Use the tool
 

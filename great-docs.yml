@@ -51,6 +51,7 @@ user_guide:
   - tutorial.qmd
   - growth-tutorial.qmd
   - reading-briefing.qmd
+  - release-notes-0.1.0a3.qmd
   - release-notes-0.1.0a2.qmd
 - section: Understand the analysis
   contents:

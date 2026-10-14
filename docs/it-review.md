@@ -2,9 +2,9 @@
 
 The LIC-DSF Scenario Analysis Tool is an MIT-licensed local application for comparing alternative macroeconomic and financing assumptions in a supported debt-sustainability workbook. It saves scenarios and produces charts, reports and underlying data. It does not use AI inference or send workbooks to a hosted calculator.
 
-**Version scope: `0.1.0a2`.** At package assembly, Windows execution, downloaded Mac approval and a complete desktop walkthrough were unverified. The [release evidence](release-notes-0.1.0a2.md#release-evidence) explains how to check later results for the exact archive. This is information for an institution's assessment, not a security certification or a claim of universal policy compliance. Consult the release's asset fingerprints and evidence before evaluating a download. Source checks, package inspection and actual desktop execution are distinct evidence; the limitations below remain relevant.
+**Version scope: `0.1.0a3`.** At package assembly, Windows-side signature confirmation, Windows execution and a complete desktop walkthrough were unverified; the Mac package remains the alpha.2 build, whose downloaded approval was also unverified. The [release evidence](release-notes-0.1.0a3.md#release-evidence) explains how to check later results for the exact archive. This is information for an institution's assessment, not a security certification or a claim of universal policy compliance. Consult the release's asset fingerprints and evidence before evaluating a download. Source checks, package inspection and actual desktop execution are distinct evidence; the limitations below remain relevant.
 
-For this version, forward this page or use your browser's print-to-PDF function. See the [release notes](release-notes-0.1.0a2.md) for package scope and evidence limits. The two-page PDF attached to alpha.1 describes that earlier release; it is not the IT summary for alpha.2.
+For this version, forward this page or use your browser's print-to-PDF function. The Windows package also carries **IT-NOTE.txt**, a one-page summary of what is signed, how to check it and how to allow the tool under application control. See the [release notes](release-notes-0.1.0a3.md) for package scope and evidence limits. The two-page PDF attached to alpha.1 describes that earlier release; it is not the IT summary for this version.
 
 ## At a glance
 
@@ -15,7 +15,7 @@ For this version, forward this page or use your browser's print-to-PDF function.
 | Runtime | Bundled CPython and pinned dependencies; the interface opens in the default browser. No Python or Excel installation is needed for desktop-package calculations. |
 | Privileges | Extraction and execution under the user's account; no administrator installer, system service or scheduled task is part of the package. Institutional application controls may still restrict execution. |
 | Local listener | HTTP on `127.0.0.1`, an operating-system-selected port. The launcher prints/opens the address. |
-| Signing | First Mac wrapper is unsigned and unnotarized; Windows launcher is an unsigned script. No publisher-signing or universal SmartScreen/Gatekeeper acceptance claim. |
+| Signing | Windows: only `Start LIC-DSF.exe` is Authenticode-signed, by TEAL EMERY INC. through Microsoft's Artifact Signing service, with an RFC 3161 timestamp. The bundled runtime files keep their upstream bytes: some carry Python Software Foundation or Microsoft signatures and the rest are unsigned. The alpha.2 Mac wrapper is unsigned and unnotarized. No universal SmartScreen or Gatekeeper acceptance claim; a new publisher identity has no SmartScreen reputation at first. |
 | Updates and support | Manual release replacement, best-effort support, no guaranteed response time or automatic updater. |
 
 The [installation guide](installation.md) gives extraction, startup, stopping and removal instructions. Technical users can inspect or install the [source](source-installation.md). This page is designed to be forwarded directly; IT consultation is not an extra application onboarding step for every user.
