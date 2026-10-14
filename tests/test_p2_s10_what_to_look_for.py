@@ -20,7 +20,7 @@ LEAD = ('Using a fictional example country, see how a debt-financed public inves
 class WhatToLookFor(unittest.TestCase):  # S10: every claim in the lines is checked against the teaching inputs
     def test_lines_are_true_for_the_prepared_cases(self):
         cases = {c['id']: c['scenario_file'] for c in builtin_investment_cases(OFFICIAL_SHA256, list(OFFICIAL_YEARS))}
-        web = (files('lic_dsf') / 'web.html').read_text()
+        web = (files('lic_dsf') / 'web.html').read_text(encoding='utf-8')
         table = re.search(r'const BUILTIN_LOOK_FOR=(\{.*?\});\n', web).group(1)
         lines = json.loads(table.replace("'", '"'))
         self.assertEqual(set(lines), set(cases))

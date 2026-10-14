@@ -48,8 +48,8 @@ class NoCountryName(unittest.TestCase):
         from lic_dsf.hosted import DISCLOSURE, hosted_page, landing
         root = Path(__file__).resolve().parents[1] / 'src' / 'lic_dsf'
         surfaces = {'landing': landing().decode(), 'hosted page': hosted_page().decode(), 'hosted disclosure': DISCLOSURE,
-                    'chart disclosure': charts.ILLUSTRATIVE_DISCLOSURE, 'web.html': (root / 'web.html').read_text(),
-                    'hosted_wait.js': (root / 'hosted_wait.js').read_text()}
+                    'chart disclosure': charts.ILLUSTRATIVE_DISCLOSURE, 'web.html': (root / 'web.html').read_text(encoding='utf-8'),
+                    'hosted_wait.js': (root / 'hosted_wait.js').read_text(encoding='utf-8')}
         for name, text in surfaces.items():
             self.assertEqual(named(text), [], name)
         self.assertIn('Macronia', charts.ILLUSTRATIVE_DISCLOSURE)

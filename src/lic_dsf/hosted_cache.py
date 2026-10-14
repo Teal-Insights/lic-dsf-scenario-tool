@@ -76,7 +76,7 @@ def prepare(workbook, root):
             directory = Path(temporary)
             request = directory / 'request.json'
             request.write_text(json.dumps({'workbook': str(workbook), 'workbook_sha256': OFFICIAL_SHA256,
-                'scenario': definition, 'parent_pid': os.getpid(), 'deadline_utc': time.time() + 180}, allow_nan=False))
+                'scenario': definition, 'parent_pid': os.getpid(), 'deadline_utc': time.time() + 180}, allow_nan=False), encoding='utf-8')
             child = subprocess.Popen([sys.executable, '-B', '-m', 'lic_dsf.hosted_worker', str(request)],
                 stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
             try:
@@ -89,7 +89,7 @@ def prepare(workbook, root):
             result = directory / 'result.json'
             if result.stat().st_size > 16 * 1024 * 1024:
                 raise ValueError('Prepared result exceeds the service limit.')
-            results.append(json.loads(result.read_text()))
+            results.append(json.loads(result.read_text(encoding='utf-8')))
     if identity != engine_identity():
         raise ValueError('Calculation runtime changed during preparation.')
     return PreparedCache(results, identity)

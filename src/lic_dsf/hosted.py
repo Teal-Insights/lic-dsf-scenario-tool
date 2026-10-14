@@ -109,7 +109,7 @@ class HostedWorkspace(Workspace):
     def _render_export(self, comparison, data):
         with tempfile.TemporaryDirectory(dir=self.directory, prefix='export-') as temporary:
             directory = Path(temporary)
-            (directory / 'request.json').write_text(canonical({'comparison': comparison, 'data': data, 'parent_pid': os.getpid(), 'deadline_utc': time.time() + 60}))
+            (directory / 'request.json').write_text(canonical({'comparison': comparison, 'data': data, 'parent_pid': os.getpid(), 'deadline_utc': time.time() + 60}), encoding='utf-8')
             child = subprocess.Popen([sys.executable, '-B', '-m', 'lic_dsf.hosted_export', temporary],
                 stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
             self.export_child = child
@@ -129,7 +129,7 @@ class HostedWorkspace(Workspace):
                 raise ValueError('The visit ended while the export was running. Return to the entry page.')
             if child.returncode:
                 raise ValueError('The export could not finish within the service limits.')
-            ctype, name = json.loads((directory / 'meta.json').read_text())
+            ctype, name = json.loads((directory / 'meta.json').read_text(encoding='utf-8'))
             return (directory / 'body').read_bytes(), ctype, name
 
     def path(self, sha):
@@ -188,7 +188,7 @@ class HostedWorkspace(Workspace):
                         return
                     if self.child.returncode:
                         raise ValueError('Calculation could not finish within the service limits.')
-                    result = json.loads((directory / 'result.json').read_text())
+                    result = json.loads((directory / 'result.json').read_text(encoding='utf-8'))
                     source_hash = result.pop('run_hash')
                     result['evidence']['execution'] = {
                         'mode': 'fresh_calculation_for_visit', 'fresh_calculation_for_visit': True,
@@ -543,7 +543,7 @@ def landing(max_sessions=MAX_SESSIONS, max_starts=24):
 
 
 def hosted_page():
-    page = (Path(__file__).parent / 'web.html').read_text()
+    page = (Path(__file__).parent / 'web.html').read_text(encoding='utf-8')
     # Keep inert IDs needed by shared wiring; local controls cannot accept input.
     page = required_replace(page, '<div class="row"><div class="field"><label for="file">', '<div class="row" hidden inert><div class="field"><label for="file">')
     page = required_replace(page, '<details><summary>Private reasoning journal</summary>', '<details id="privateJournal" hidden inert><summary>Private reasoning journal</summary>')
@@ -638,7 +638,7 @@ def hosted_page():
     page = required_replace(page, 'Choose or reopen a workbook in step 1 to see its saved scenarios.', 'Load the example in step 1 to see its saved scenarios.')  # S11-s
     page = required_replace(page, 'Teal Insights · MIT-licensed open-source software · Work in progress', '<p class="end-visit"><button id="deleteVisit" type="button" data-hint="Erases this visit from the server now and returns to the start page. Download anything you want first.">Delete my work and return to the start</button></p>Teal Insights · MIT-licensed open-source software · Work in progress')  # S13-b
     page = required_replace(page, 'invalidInput(input,`Another case already uses the legend label “${clash.label}”. Choose a distinct label so both can appear on one chart.`)', 'invalidInput(input,knownRuns.get(clash.id)?.current?`${clash.label} is already saved in this visit. Open step 4 to include it in a comparison. To keep a second copy, give it a different legend label.`:`${clash.label} is already saved in this visit but not calculated yet. Open it from step 4 and click Calculate and show results. To keep a second copy, give it a different legend label.`)')  # S9-hosted
-    page = required_replace(page, '</body>', '<script>' + (Path(__file__).parent / 'hosted_wait.js').read_text() + '</script></body>')
+    page = required_replace(page, '</body>', '<script>' + (Path(__file__).parent / 'hosted_wait.js').read_text(encoding='utf-8') + '</script></body>')
     return page.encode()
 
 

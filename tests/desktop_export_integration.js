@@ -3,7 +3,7 @@
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),assert=require('node:assert/strict');
 const root=path.join(__dirname,'..');
 const html=fs.readFileSync(path.join(root,'src/lic_dsf/web.html'),'utf8');
-for(const match of html.matchAll(/<script>([\s\S]*?)<\/script>/g))new vm.Script(match[1]);
+for(const match of html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script\b[^>]*>/gi))new vm.Script(match[1]);
 const generations=html.slice(html.indexOf('function comparisonSnapshot('),html.indexOf('async function compare(){'));
 const preview=html.slice(html.indexOf('async function previewBoth(){'),html.indexOf('async function refreshRunStates('));
 const exp=html.slice(html.indexOf('function interruptedComparison('),html.indexOf("$('chartContextLabel').oninput"));

@@ -190,7 +190,7 @@ class SuccessorRegressionTests(unittest.TestCase):
         self.assertIn('No investment, the comparison case for the teaching cases, uses this example’s customized projections. Reference baseline is shown for context only: the gap between them reflects starting assumptions, not the investment.',page)
         self.assertNotIn('verification pending',page)
         self.assertIn('12 simultaneous visits',landing().decode())
-        source=(Path(__file__).parents[1]/'src/lic_dsf/web.html').read_text()
+        source=(Path(__file__).parents[1]/'src/lic_dsf/web.html').read_text(encoding='utf-8')
         with patch('pathlib.Path.read_text',return_value=source.replace('Local workspace','Unexpected local copy')):
             with self.assertRaisesRegex(ValueError,'template changed'):hosted_page()
     def workspace(self):

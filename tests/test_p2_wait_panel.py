@@ -23,7 +23,7 @@ class WaitPanelCopy(unittest.TestCase):
         self.assertIn("format:'svg',metric:$('chartMetric').value},true,'charts');blobs.push(", self.page)
 
     def test_wait_script_never_says_export(self):
-        js = (Path(__import__('lic_dsf').__file__).parent / 'hosted_wait.js').read_text()
+        js = (Path(__import__('lic_dsf').__file__).parent / 'hosted_wait.js').read_text(encoding='utf-8')
         shown = re.findall(r"exportWaitText\('([^']*)'\)", js) + re.findall(r"throw Error\('([^']*)'\)", js)
         self.assertTrue(shown)
         for text in ('Drawing the charts…', 'Preparing your briefing packet…', "'Queued: position '"):

@@ -29,7 +29,7 @@ class ResultsOrder(unittest.TestCase):
             self.assertEqual(section.count(f'id="{id_}"'), 1, id_)
 
     def test_desktop_order(self):
-        self.check(WEB.read_text())
+        self.check(WEB.read_text(encoding='utf-8'))
 
     def test_hosted_order_and_no_complete_packet(self):
         page = hosted_page().decode()
@@ -40,7 +40,7 @@ class ResultsOrder(unittest.TestCase):
 class DownloadIsFoundAfterTheCharts(unittest.TestCase):
     """Both fresh first-time-user sessions hunted for the download: every pointer now says it sits below the charts."""
     def test_pointers_say_where_the_download_is(self):
-        html = (Path(__file__).resolve().parents[1] / 'src' / 'lic_dsf' / 'web.html').read_text()
+        html = (Path(__file__).resolve().parents[1] / 'src' / 'lic_dsf' / 'web.html').read_text(encoding='utf-8')
         self.assertIn("Both chart views are ready. Review them, then download the briefing packet below the charts.", html)
         self.assertIn('review the charts, then download the packet below them.', html)
         self.assertIn("'Review both charts, then download the briefing packet below them.", html)

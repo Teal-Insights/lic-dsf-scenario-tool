@@ -4,7 +4,7 @@ const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),asse
 const root=path.join(__dirname,'..');
 const generated=cp.spawnSync(process.env.DSF_PYTHON||'python',['-B','-c','from lic_dsf.hosted import hosted_page; import sys; sys.stdout.buffer.write(hosted_page())'],{cwd:root,env:{...process.env,PYTHONPATH:path.join(root,'src')},encoding:'utf8'});
 assert.equal(generated.status,0,generated.stderr);const html=generated.stdout;
-for(const match of html.matchAll(/<script>([\s\S]*?)<\/script>/g))new vm.Script(match[1]);
+for(const match of html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script\b[^>]*>/gi))new vm.Script(match[1]);
 const preview=html.slice(html.indexOf('async function previewBoth(){'),html.indexOf('async function refreshRunStates('));
 const exp=html.slice(html.indexOf('// Retain one prepared packet'),html.indexOf("$('chartContextLabel').oninput"));
 function setup(failPreview=false){
