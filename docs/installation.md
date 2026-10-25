@@ -4,6 +4,10 @@
 
 **Version `0.1.0a3`.** This guide describes the built-in walkthrough in 0.1.0a3; the earlier alpha.1 release predates this route. There is no 0.1.0a3 Mac package: the alpha.2 Mac package offers the same route with slightly older wording. Use the assets attached to the matching release. Package-assembly status: Windows-side signature confirmation, final-package Windows execution and the complete desktop walkthrough are unverified in this guide. See the [release notes](release-notes-0.1.0a3.md#release-evidence) for scope and how to find later evidence for the exact download.
 
+**Windows 10/11, Intel or AMD 64-bit:** [Download for Windows — signed alpha.3 ZIP](https://github.com/Teal-Insights/lic-dsf-scenario-tool/releases/download/v0.1.0-alpha.3/LIC-DSF-Tool-0.1.0a3-win64.zip)
+
+Save **LIC-DSF-Tool-0.1.0a3-win64.zip** in **Downloads**, then follow [Windows: download, extract and open](#windows). Python and the calculation dependencies are included; Excel is not required to run the Scenario Tool.
+
 Download the desktop packages from the [releases page](https://github.com/Teal-Insights/lic-dsf-scenario-tool/releases). The [alpha.1 assets](https://github.com/Teal-Insights/lic-dsf-scenario-tool/releases/tag/v0.1.0-alpha.1) predate this built-in walkthrough, so use the 0.1.0a3 Windows asset or the alpha.2 Mac asset for this guide. If no matching download is listed, that package is not available yet and technical users can inspect the source through [source installation](source-installation.md). Use only assets attached to the matching release. Do not use an unrelated repository's files or the GitHub **Code → Download ZIP** button as a desktop installer.
 
 | Your computer | Package | Limits |
@@ -18,13 +22,41 @@ Python and the calculation dependencies are included in the desktop ZIPs. You do
 
 **Extract the ZIP before you open anything inside it.** Windows shows the inside of a ZIP file as though it were an ordinary folder, but the tool cannot run from that view. **Start LIC-DSF.exe** looks for the bundled runtime before it does anything else. If `runtime\python.exe` is not in the same folder as the launcher, it says that the program files are missing from the folder, names the file it could not find, gives the two usual causes and lists the extraction steps. The two usual causes are a launcher opened from inside the ZIP and a ZIP that was only partly extracted. Right-click the ZIP, choose **Extract All**, then open the folder Windows creates and start the tool from there.
 
-1. Download the Windows x64 ZIP (`LIC-DSF-Tool-0.1.0a3-win64.zip`) from the release page. Right-click it and choose **Extract All**, then choose **Extract**. Keep the entire extracted folder together.
-2. Put the folder somewhere you can write, outside an unintended cloud-synced folder. No administrator installation is intended. Organisational application controls may still block execution.
-3. In the extracted folder, double-click **Start LIC-DSF.exe** (in File Explorer its Type is **Application**). A command window checks the package files, then opens your default browser; the first start can take a while. Keep the command window open while using the tool.
-4. Windows will probably show **Windows protected your PC** at first, because the signature is new and has no download reputation yet. Choose **More info** and check the publisher. If the publisher is **TEAL EMERY INC.** and **Run anyway** is offered, choose it if your organisation's rules allow you to run programs you download; if you are not sure, ask your IT team first and send them the **IT-NOTE.txt** file from the extracted folder. If there is no **Run anyway** button, or Windows says your organisation has blocked the program, stop and send your IT team **IT-NOTE.txt**. If it says **Unknown publisher** or any other name, do not run it. If you opened **Start LIC-DSF (fallback).cmd**, go back and open **Start LIC-DSF.exe** instead. Otherwise this is not the signed download; download it again from the [releases page](https://github.com/Teal-Insights/lic-dsf-scenario-tool/releases).
-5. Select **Download and try the official example** for your first run, then follow the [walkthrough](tutorial.md). If the example is already available, select **Try the official illustrative example**. Older builds use the [manual template download](template-source.md) and workbook chooser.
+### 1. Download and find the ZIP
 
-The launcher replaces the bare missing-path error with that explanation and the extraction steps. It cannot tell how the folder came to be incomplete, so it describes both usual causes rather than asserting one. Keep the extracted folder name short and leave it in a normal location such as your Downloads or Documents folder; very long folder paths can exceed the Windows path limit.
+1. Choose [Download for Windows](https://github.com/Teal-Insights/lic-dsf-scenario-tool/releases/download/v0.1.0-alpha.3/LIC-DSF-Tool-0.1.0a3-win64.zip). If a Save window appears, select **Downloads**, then **Save**. Otherwise let the browser finish downloading.
+2. Open **File Explorer** using the yellow folder icon on the Windows taskbar. Select **Downloads** on the left and find **LIC-DSF-Tool-0.1.0a3-win64.zip**.
+3. If it is missing, in Chrome or Edge press **Ctrl+J**, find that exact download and choose **Show in folder**. A missing, unfinished or blocked download is a download problem; do not try another release or script. See [help by stage](#help-by-stage).
+
+### 2. Extract the whole program folder
+
+1. Right-click the ZIP and choose **Extract All**, then **Extract**. Leave the suggested destination unchanged. This makes an ordinary folder beside the ZIP.
+2. Open the ordinary **LIC-DSF-Tool-0.1.0a3-win64** folder. If another folder of the same name is inside, open that too. Stop when you see **Start LIC-DSF.exe**.
+3. Choose **View > Details** if necessary. With file extensions hidden, the correct file is **Start LIC-DSF**, Type **Application**.
+
+Keep the **whole extracted folder in Downloads**. Do not move the EXE out by itself or run it inside the ZIP. Keep workbooks outside this program folder. A replacement/merge prompt means cancel and use a fresh separate folder; do not mix releases.
+
+### 3. Open the signed launcher
+
+1. Double-click **Start LIC-DSF.exe**, Type **Application**. Leave **Start LIC-DSF (fallback).cmd** alone.
+2. If **Windows protected your PC** appears, choose **More info** and check the publisher. Use **Run anyway** only if the publisher is **TEAL EMERY INC.**, the button exists and your organisation permits downloaded programs. If unsure, ask your IT team and provide **IT-NOTE.txt** from the extracted folder.
+3. If the publisher is unknown/different, **Run anyway** is absent, your organisation blocks it or antivirus intervenes, stop. Do not Unblock, disable protections or try the fallback script as a bypass.
+4. The launcher tries to open your default browser automatically. The first start can take up to **three minutes**. Leave its black window open while using the tool; you do not type commands into it. If no page appears, use [help by stage](#help-by-stage).
+
+### 4. Open the official illustrative example
+
+1. On the tool page choose **Download and try the official example**, or **Try the official illustrative example** when it is already available.
+2. Wait for **2. Check your workbook baseline** and **Projection years**. Do not click repeatedly; if it has not finished after about **20 seconds**, distinguish “still waiting” from a displayed error.
+3. Review the years and baseline, then follow the [illustrative walkthrough](tutorial.md). This example contains illustrative data, not an official country forecast.
+
+**If the example download fails:** try once more after checking internet access. On a fresh Windows PC, this download failed on the first attempts in the published alpha.3 acceptance run; see [alpha.3 release notes](https://github.com/Teal-Insights/lic-dsf-scenario-tool/releases/tag/v0.1.0-alpha.3). You can use the browser route instead:
+
+1. Open the [official World Bank template page](https://thedocs.worldbank.org/en/doc/f0ade6bcf85b6f98dbeb2c39a2b7770c-0360012025/new-lic-dsf-template) and download **LIC-DSF-IDA21-Template-08-12-2025-vf.xlsm** to **Downloads**. Do not open or re-save it in Excel.
+2. Return to the tool's first step and use its workbook chooser to select that file from Downloads. The chooser button's label can vary by browser.
+3. Choose **Upload and check** where shown, review the baseline, and continue to the [walkthrough](tutorial.md). If the template is unavailable or refused, stop and report the stage; do not substitute an unrelated file or change Windows security settings.
+
+
+The launcher replaces the bare missing-path error with that explanation and the extraction steps. It cannot tell how the folder came to be incomplete, so it describes both usual causes rather than asserting one. Keep the extracted folder name short and leave it in a normal location such as your Downloads folder; very long folder paths can exceed the Windows path limit.
 
 **Start LIC-DSF (fallback).cmd** is an unsigned script kept as a fallback, and Windows reports it as **Unknown publisher**. It runs the same bundled Python as **Start LIC-DSF.exe** and is not a way around a block.
 
@@ -100,19 +132,30 @@ Deleting the extracted Windows folder or Mac app removes that copy of the softwa
 
 ## If something goes wrong
 
+### Help by stage
+
+For help, report **download**, **extract**, **start**, **browser**, **example**, or **calculate**, then the generic message/code and your Windows version and 32-/64-bit System type. Say whether the launcher is still open if the browser did not appear. Before an error code exists, the stage is enough. Do not send workbooks, economic values, account/device IDs, file paths, screenshots or console logs.
+
+| Before the tool opens | Next step |
+| --- | --- |
+| ZIP absent, downloading or blocked | Use Ctrl+J in Chrome/Edge and Show in folder for the exact Windows ZIP. Stop at an organisation/security block. |
+| ZIP visible but launcher missing | Make sure Extract All finished, then open the ordinary folder and any same-named inner folder; look for Type Application. Do not run another script. |
+| Black launcher window only / no window | Allow up to three minutes; report which of those two states you see and whether a generic error/code appears. |
+
+
 | What you see | Next step |
 | --- | --- |
 | **Start LIC-DSF.exe** says the program files are missing | The bundled runtime is not beside the launcher. Extract the whole ZIP with **Extract All**, keep every extracted file together, then run **Start LIC-DSF.exe** from the extracted folder. |
 | Windows says `The system cannot find the path specified.` | An alpha.1 launcher was started from inside the ZIP. Extract the ZIP first, then run **Start LIC-DSF.exe** from the extracted folder. |
 | Windows says **Unknown publisher** or a publisher other than TEAL EMERY INC. | Do not run it. If you opened **Start LIC-DSF (fallback).cmd**, open **Start LIC-DSF.exe** instead. Otherwise download the ZIP again from the releases page. |
-| **Start LIC-DSF.exe** says the local workspace could not start | Double-click **Verify package.cmd**. If it says the package files match, your organisation may be blocking the bundled Python; send **IT-NOTE.txt** to your IT team. The fallback runs the same Python and is not a way around a block. |
+| **Start LIC-DSF.exe** says the local workspace could not start | Close the failed launcher, extract a fresh complete copy into a separate folder, then open **Start LIC-DSF.exe** from that folder. If it still cannot start, provide **IT-NOTE.txt** to your IT team. Do not try the fallback as a way around a block. |
 | The tool lists files that are not part of the package | Move the named files out of the extracted folder, then start again. Keep your own files elsewhere. |
 | An operating-system security warning | Retain the message; follow the approved review route. Do not weaken security settings. |
 | A missing or changed package-file message | Extract a fresh complete copy. Do not edit the package manifest to make it pass. |
 | A command window closes or shows an error | The launcher reports the problem before it pauses. Keep a non-confidential description of the message, any status number and your OS/architecture for feedback. |
 | Browser connection refused | Check the command window is still running and use its current local address. |
 | No download/example button or prepared teaching cases | Check your release version. Alpha.1 predates the built-in route; it supports manual workbook and scenario-file intake. Use the 0.1.0a3 Windows package or the alpha.2 Mac package for this walkthrough. |
-| Example download fails | Check internet access and retry. A changed or corrupt publisher file is refused. Once the verified example is cached, the exercise can run offline. |
+| Example download fails | Use the browser/template steps under [Open the official illustrative example](#open-the-official-illustrative-example). A changed or corrupt file is refused; do not bypass that check. |
 | A calculation fails | Keep the prior saved case, inspect the error, and check supported workbook/input details. Do not change verification tolerances. |
 
 [Continue to your first scenario](tutorial.md) · [Platform evidence](accessibility-platforms.md) · [Feedback](feedback.md)

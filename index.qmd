@@ -6,6 +6,14 @@ Explore how different macroeconomic and financing assumptions affect debt indica
 
 **Early-stage preview.** We are developing this tool iteratively and welcome co-design with ministries of finance, international financial institutions and other stakeholders. It is not an official IMF or World Bank product. Fresh Microsoft Excel verification remains pending.
 
+## Download and start
+
+**Windows 10/11, Intel or AMD 64-bit:** [Download for Windows — signed alpha.3 ZIP](https://github.com/Teal-Insights/lic-dsf-scenario-tool/releases/download/v0.1.0-alpha.3/LIC-DSF-Tool-0.1.0a3-win64.zip){.btn .btn-primary style="color: #fff;"}
+
+You do not need to install Python or Excel to use the Scenario Tool. Save the ZIP in **Downloads**, extract it, then open **Start LIC-DSF.exe**. [Follow the Windows steps](user-guide/installation.qmd#windows) for the exact clicks, publisher check and help if a step fails.
+
+**Using a Mac?** The Apple Silicon download remains alpha.2. [Read the Mac download and first-open steps](user-guide/installation.qmd#mac).
+
 ## Start with a worked example
 
 [Download and install](user-guide/installation.qmd), then follow the [illustrative walkthrough](user-guide/tutorial.qmd) using the official illustrative workbook. The walkthrough describes 0.1.0a3 for Windows; the Mac package remains alpha.2, which offers the same route with slightly older wording. Published alpha.1 downloads predate the built-in teaching route.
