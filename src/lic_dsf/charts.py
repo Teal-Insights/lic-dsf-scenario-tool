@@ -58,7 +58,7 @@ SHORT_TITLES = {
 # Visible policy-chart name only; the plotted series keeps the data label 'Reference baseline'.
 BASELINE_CONTEXT_LABEL = 'Reference baseline (context only)'
 ILLUSTRATIVE_NOTE = 'Illustrative example, fictional country.'
-# The engine evaluates the workbook's own formulas (excel_grapher dependency graph); it does not re-implement them.
+# The engine samples the generated library's Chart Data series. It does not re-implement the template formulas.
 CALCULATED_NOTES = {True: 'Calculated by this tool from the LIC-DSF template workbook.',
                     False: 'Calculated by this tool from the supplied LIC-DSF workbook.'}
 CHECK_NOTES = {'pending': 'These cases have not yet been checked against a fresh Excel recalculation.',

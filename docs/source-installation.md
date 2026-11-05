@@ -2,11 +2,11 @@
 
 This optional route is for technical users and contributors. Most analysts should use the [Windows or Mac download](installation.md), which includes Python and the application dependencies.
 
-You need Python 3.11 or later, Git for the pinned evaluator dependency, and a modern browser. The minimum Python declaration does not establish that every Python/platform combination supports all pinned dependencies. Installation downloads dependencies; running the app is a separate activity. The desktop downloads bundle their dependencies; this source route downloads them during installation.
+You need Python 3.13 or later, Git for the pinned calculation-library dependency, and a modern browser. The generated library requires Python 3.13. The minimum Python declaration does not establish that every Python/platform combination supports all pinned dependencies. Installation downloads dependencies; running the app is a separate activity. The desktop downloads bundle their dependencies; this source route downloads them during installation. Earlier desktop packages that bundled Python 3.11 do not include this library and were not rebuilt for it.
 
 ## Install
 
-Obtain a reviewed source distribution and open a terminal in its root, where `pyproject.toml` and LICENSE are located. Before creating an environment, select an installed Python interpreter. Python 3.11 is the currently exercised version family; other declared-compatible versions still need their own dependency and platform checks.
+Obtain a reviewed source distribution and open a terminal in its root, where `pyproject.toml` and LICENSE are located. Before creating an environment, select an installed Python interpreter. Python 3.13 is the version family required by the pinned calculation library; other declared-compatible versions still need their own dependency and platform checks.
 
 On macOS or Linux, check the available interpreter:
 
@@ -21,13 +21,13 @@ python3 -m venv .venv
 source .venv/bin/activate
 ```
 
-If your Python 3.11 installation instead uses `python3.11` or a full executable path, use that command in both the version check and environment creation. If no suitable interpreter is installed, install Python first; do not assume the unversioned `python` command exists before activation.
+If your Python 3.13 installation instead uses `python3.13` or a full executable path, use that command in both the version check and environment creation. If no suitable interpreter is installed, install Python first; do not assume the unversioned `python` command exists before activation.
 
-On Windows Command Prompt, select an installed Python 3.11 with the Python launcher:
+On Windows Command Prompt, select an installed Python 3.13 with the Python launcher:
 
 ```bat
-py -3.11 --version
-py -3.11 -m venv .venv
+py -3.13 --version
+py -3.13 -m venv .venv
 .venv\Scripts\activate.bat
 ```
 
@@ -40,9 +40,9 @@ python -m pip install .
 python -m lic_dsf.app --help
 ```
 
-The direct application requirements pin selected packages and the evaluator revision. This source route does not lock every transitive dependency or build tool; those can resolve to newer versions. Record `python -m pip freeze` and the calculation identity when reproducing a result. Use the exact desktop archive and its inventory when you need the distributed desktop environment.
+The direct application requirements pin selected packages and the calculation-library revision. This source route does not lock every transitive dependency or build tool; those can resolve to newer versions. Record `python -m pip freeze` and the calculation identity when reproducing a result. Use the exact desktop archive and its inventory when you need the distributed desktop environment.
 
-If dependency resolution or the help command fails, retain the error and stop. Do not substitute an unpinned evaluator or modify the workbook to make the install pass. A maintainer must resolve the packaging discrepancy before this route can be called reproducible.
+If dependency resolution or the help command fails, retain the error and stop. Do not substitute an unpinned calculation library or modify the workbook to make the install pass. A maintainer must resolve the packaging discrepancy before this route can be called reproducible.
 
 ## Start a workspace
 
@@ -69,7 +69,7 @@ An independent tester must install into an empty environment using only the revi
 | Symptom | What to check |
 | --- | --- |
 | Python command missing | Use the full path to an installed supported interpreter for both version check and environment creation. |
-| Git missing or evaluator fetch fails | The evaluator dependency is pinned to a public Git commit. Check Git and network access. Do not replace the pin with a different package. |
+| Git missing or calculation-library fetch fails | The calculation library is pinned to a public Git commit. Check Git and network access. Do not replace the pin with a different package. |
 | Dependency resolution or download failure | Check connectivity and whether the selected Python/platform has compatible pinned dependencies. Retain the error; a missing download does not establish a source-code defect. |
 | Browser connection refused | Keep the app terminal running and use the exact printed address and port. |
 | Old interface after changing source | A noneditable installation keeps its installed copy. Reinstall the reviewed source, restart the app and reload the browser. |

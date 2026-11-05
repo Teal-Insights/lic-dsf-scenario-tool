@@ -31,7 +31,9 @@ Replace the workbook path with your actual location. Put quotes around a path co
 
 The script calculates a no-change control and a lower-growth case. It compares the complete recorded scenario/output fields with the checked-in reference in `tests/fixtures/official-example-regression.json`. It checks structure, missing values, spreadsheet error strings and finite numerical values. The absolute numerical tolerance is fixed at **0.000001**, with no relative tolerance and no option to loosen it.
 
-A successful run is expected to report:
+On 5 November 2026 the no-change control matched this reference: 606 leaves within the fixed tolerance. The lower-growth case did not finish, because the pinned library rejects a negative customized-scenario delta. The reference was not rebaselined, and that run was not a fresh Excel recalculation. A mismatch or an incomplete case is not a reason to edit the fixture or the tolerance.
+
+When a later revision does reproduce the reference, a successful run reports:
 
 ```text
 PASS control: 606 checked values/fields
@@ -54,7 +56,7 @@ python -m pip install ruff==0.16.7
 python -m ruff check src tests scripts
 ```
 
-The Python tests cover component behavior, including validation, saved-state and export contracts. The JavaScript suites check interface handlers with neutral synthetic data. They do not launch a browser or calculate a real workbook. The initial lint gate targets implementation errors. Installation, actual browser interaction, package downloads and independent numerical checks remain separate evidence.
+The Python tests cover component behavior, including validation, saved-state and export contracts. Three checks of generated-library behavior are expected to fail on the pinned revision: projection-year offsets after a current-year change, import of user-entered financing override cells, and acceptance of a negative growth delta. Those failures stay in the suite until a later library revision makes the assertions true. The JavaScript suites check interface handlers with neutral synthetic data. They do not launch a browser or calculate a real workbook. The initial lint gate targets implementation errors. Installation, actual browser interaction, package downloads and independent numerical checks remain separate evidence.
 
 The [CI workflow](https://github.com/Teal-Insights/lic-dsf-scenario-tool/actions/workflows/checks.yml) runs these checks on Linux, Windows and Mac hosted runners. A workflow file is not proof that a run passed. Release notes must link the actual runs for the published candidate and distinguish source checks from downloadable desktop-package acceptance.
 

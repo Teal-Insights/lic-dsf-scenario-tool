@@ -30,7 +30,7 @@ Select **Download and try the official example** to obtain and check the World B
 | 4. Compare | Select calculated cases and choose the case against which differences should be measured. |
 | 5. Export briefing | Review both chart views, edit titles beside the charts and download the complete packet. |
 
-The app runs in your browser on your own computer. A pinned Python evaluator reads the supported workbook formulas deterministically; it does not use AI inference or random sampling. Installed Excel is not required for calculation. VBA macros do not run and external workbook links do not refresh.
+The app runs in your browser on your own computer. A pinned generated implementation of the LIC-DSF template reads the supported workbook and calculates deterministically; it does not use AI inference or random sampling. Installed Excel is not required for calculation. VBA macros do not run and external workbook links do not refresh.
 
 The supported [World Bank template](docs/template-source.md) contains Ghana-labelled **purely illustrative** data. Those figures are not an official Ghana forecast or DSA. The workbook binary is supplied separately, and the application's license does not grant rights to it. Users can upload their own completed workbook in the supported format; arbitrary template versions are not supported.
 

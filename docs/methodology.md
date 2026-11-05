@@ -1,6 +1,8 @@
 # Methods, compatibility and evidence
 
-The tool exposes a bounded part of the English LIC-DSF IDA21 workbook. It evaluates workbook formulas with a pinned Python evaluator and a version-specific semantic adapter. It does not introduce a separately calibrated economic model, run VBA, refresh external links or use Excel as its calculation runtime.
+The tool exposes a bounded part of the English LIC-DSF IDA21 workbook. It calculates supported outputs with the pinned generated library `lic-dsf-2025-08-12`, loaded from the workbook by `Model.from_workbook`. It does not introduce a separately calibrated economic model, run VBA, refresh external links or use Excel as its calculation runtime.
+
+Three limitations of that pinned revision are unresolved, and they are not product requirements. Projection-year cell bindings stay on the library's 2024 snapshot when the workbook's current year changes. `from_workbook` does not import user-entered override cells, including external financing terms typed over formula cells. The generated domain for `customized_public_delta` also rejects negative adjustments, so a lower-growth path does not calculate. Checks for the correct behavior of these cases fail on this revision and are kept that way. A later library revision should make them pass. Do not treat any of them as a permanent rule, and do not loosen the absolute tolerance of `1e-6` or rewrite the official regression reference to absorb them.
 
 [Documentation index](README.md) · [Full input/output reference](workbooks-inputs-outputs.md) · [Worked exercise](tutorial.md)
 

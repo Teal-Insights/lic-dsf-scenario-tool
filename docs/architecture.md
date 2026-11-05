@@ -31,7 +31,7 @@ The diagram includes the optional external example-download route and the local 
 | `official_example.py` | Fetch the fixed HTTPS publisher file on user action; restrict redirects and verify size and SHA-256 |
 | `illustrative.py` and `illustrative_cases/` | Load integrity-checked teaching inputs only for the exact official workbook and years |
 | `scenarios.py` | Normalize complete customized inputs and financing terms |
-| `engine.py` and semantic adapter | Calculate selected workbook dependencies and attach explicit evidence |
+| `engine.py` | Calculate selected outputs with the generated library and attach explicit evidence |
 | `store.py` | Preserve revisions and reasoning, migrate the known schema, save per-workbook outward context, validate identities and refuse stale runs |
 | `chart_context.py` | Validate explicit outward text and its full source/revision binding |
 | `app.py` and `web.html` | Local interaction, request checks, immutable upload copies and selected export fields |
@@ -66,7 +66,7 @@ The package entry point `lic-dsf-scenario-tool` calls `lic_dsf.app:main`; `pytho
 | Supported workbook geometry | `ida21.py`, `workbooks.py` | Row labels, year mapping, cached values and explicit refusal of unsupported geometry |
 | Example acquisition and teaching cases | `official_example.py`, `illustrative.py`, `app.py`, `web.html` | Explicit download, publisher restriction, exact input identity, unsaved-draft and private-journal preservation |
 | Scenario definitions | `scenarios.py`, `contracts.py` | Complete finite paths, canonical units and financing relations |
-| Numerical behavior | `engine.py`, `excel_semantics.py` | Probe scope, first divergence, exact error classes and absolute tolerance `1e-6` |
+| Numerical behavior | `engine.py` | Probe scope, first divergence, exact error classes and absolute tolerance `1e-6` |
 | Shared explanations | `rationale.py`, `store.py` | Revision binding, integrity and separation from private journals |
 | Comparison | `compare.py`, `store.py` | One workbook, current runs, explicit comparator and separate baseline channels |
 | Browser workflow | `web.html`, `app.py` | Unsaved edits, current calculation state, paired previews and download contents |

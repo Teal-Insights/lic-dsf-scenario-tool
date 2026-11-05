@@ -43,7 +43,7 @@ Optional `workbook_provenance` identifies the exact official illustrative exampl
 
 ## Identities and integrity
 
-Workbook SHA-256 identifies original bytes. Scenario hashes use UTF-8 JSON with sorted keys, compact separators, non-ASCII characters preserved and nonfinite values refused. Runtime identity includes the package's Python source, evaluator revision, relevant dependency versions and platform information. Changed identities invalidate current results rather than silently reusing them.
+Workbook SHA-256 identifies original bytes. Scenario hashes use UTF-8 JSON with sorted keys, compact separators, non-ASCII characters preserved and nonfinite values refused. Runtime identity includes the package's Python source, calculation-library revision, relevant dependency versions and platform information. Changed identities invalidate current results rather than silently reusing them.
 
 A run's exported `result_hash` identifies the original complete saved result, before export-field selection. It is not the hash of the shortened exported `result` object or the downloaded JSON file. Retain the original workspace for full audit/recovery. File hashes are identifiers, not anonymisation or evidence of economic correctness.
 
