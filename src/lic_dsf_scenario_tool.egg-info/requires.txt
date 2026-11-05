@@ -1,0 +1,6 @@
+lic-dsf-2025-08-12 @ git+https://github.com/Teal-Insights/lic-dsf-2025-08-12@121015367f8ca6a6d9dab5fc94bfe9596605fd00
+openpyxl==3.1.5
+numpy==2.4.6
+PyYAML==6.0.3
+matplotlib==3.11.1
+fastpyxl==1.1.0

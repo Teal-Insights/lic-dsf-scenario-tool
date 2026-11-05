@@ -8,17 +8,17 @@ function say(text) {
 }
 
 function fail(error) {
-  const raw = String(error && error.message ? error.message : error);
-  const line = raw.split("\n").map((item) => item.trim()).find((item) => item && !item.startsWith("See:") && !item.startsWith("at ")) || raw;
-  self.postMessage({ type: "error", message: line.replace(/^[\w.]+Error:\s*/, "").slice(0, 400) });
+  const raw = typeof error?.message === "string" ? error.message : "";
+  const detail = raw.split("\n").map((item) => item.trim()).find((item) => item && !item.startsWith("See:") && !item.startsWith("at ") && !item.startsWith("Traceback")) || "";
+  const cleaned = detail.replace(/^[\w.]+Error:\s*/, "").trim();
+  const code = error && (error.code || (error.errno != null ? "errno " + error.errno : ""));
+  const name = error?.constructor?.name;
+  const text = [code, cleaned].filter(Boolean).join(": ") || (name && name !== "Error" ? name : "") || "Calculation failed.";
+  self.postMessage({ type: "error", message: String(text).slice(0, 400) });
 }
 
 function writeWorkbook(buffer) {
-  try {
-    pyodide.FS.mkdir("/work");
-  } catch (error) {
-    if (!String(error).includes("File exists")) throw error;
-  }
+  if (!pyodide.FS.analyzePath("/work").exists) pyodide.FS.mkdir("/work");
   pyodide.FS.writeFile("/work/upload.xlsm", new Uint8Array(buffer));
 }
 

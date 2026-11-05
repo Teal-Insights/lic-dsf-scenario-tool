@@ -195,12 +195,16 @@ caseSelect.addEventListener("change", rememberCase);
 
 calculateButton.addEventListener("click", () => {
   const chosen = selectedCase();
-  if (!workbook || !chosen) return;
+  if (!workbook || !chosen) {
+    show("Choose a supported workbook and a case, then calculate.");
+    return;
+  }
   rememberCase();
   result = null;
   downloadButton.classList.add("hidden");
   table.classList.add("hidden");
   calculateButton.disabled = true;
+  show("Calculating. The first run loads the model and can take several minutes.");
   const started = performance.now();
   clearInterval(timer);
   timer = setInterval(() => {
