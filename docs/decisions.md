@@ -203,3 +203,14 @@ Changing the calculation identity invalidates saved current-run matches. Prepare
 On this revision the official-example no-change control matched the existing regression reference for 606 leaves at tolerance `1e-6`. That comparison was not a fresh Excel recalculation, and the reference was not rewritten. The lower-growth case did not complete.
 
 Three defects in this library revision are unresolved and are not product requirements. Projection-year columns stay bound to the library's 2024 snapshot when the workbook's current year changes. `from_workbook` does not import user-entered override cells, including external financing terms typed over formula cells. `customized_public_delta` rejects negative values, including the lower-growth adjustment of −1 percentage point. Tests that state the correct behavior of these cases are expected to fail until a later library revision fixes them. Do not skip those tests, relax the tolerance, or edit the regression fixture to hide the mismatch.
+
+
+## 6 November 2026: calculation library revision e0f5a8c
+
+The pinned `lic-dsf-2025-08-12` revision is now `e0f5a8c2359e6931bb43adfdcb16a754232b2ffd`. The package version remains 0.1.0. This identity change invalidates saved current-run matches. The official-example regression fixture was not rewritten, and fresh Excel verification was not run.
+
+On this revision the no-change control and the lower-growth case both matched the existing regression reference: 606 leaves each, at tolerance `1e-6`. That comparison was not a fresh Excel recalculation.
+
+`customized_public_delta` accepts a negative growth adjustment, including −1 percentage point. Projection years follow cached formula year headers when those caches move with the workbook's current year. The library does not recalculate the header formulas itself, so a current-year edit whose header caches still say 2024 stays on 2024. Replacing those headers with literals is not the same as a recalculated save.
+
+One defect remains unresolved and is not a product requirement. User-entered financing terms that replace the formulas in Customized Scenario-External C21, C23 and C24 are still ignored. The generated financing series continues to read Input 7. The check for those three cells stays failed. Do not skip it, relax the tolerance, or edit the regression fixture to hide it.
