@@ -16,9 +16,9 @@ ROOT = Path(__file__).resolve().parents[2]
 DEST = Path(__file__).resolve().parent / "wheels"
 LIBRARY = (
     "lic-dsf-2025-08-12 @ git+https://github.com/Teal-Insights/"
-    "lic-dsf-2025-08-12@121015367f8ca6a6d9dab5fc94bfe9596605fd00"
+    "lic-dsf-2025-08-12@e0f5a8c2359e6931bb43adfdcb16a754232b2ffd"
 )
-LIBRARY_COMMIT = "121015367f8ca6a6d9dab5fc94bfe9596605fd00"
+LIBRARY_COMMIT = "e0f5a8c2359e6931bb43adfdcb16a754232b2ffd"
 PROVENANCE = {
     "url": "https://github.com/Teal-Insights/lic-dsf-2025-08-12",
     "vcs_info": {
