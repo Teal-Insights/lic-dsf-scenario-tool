@@ -1,8 +1,10 @@
-"""Copy a workbook and replace selected cells with numbers.
+"""Copy a workbook and edit selected cells.
 
-The original file is not modified. Other cells, including cached formula
-results, stay as they were stored. This is how a scenario reaches
-``Model.from_workbook`` without resaving the analyst's workbook.
+The original file is not modified. ``apply_number_cells`` replaces a cell
+with a numeric literal. ``refresh_cached_numbers`` changes a cached result
+and leaves its formula in place. Scenario adjustments use the literal
+replacement so they reach ``Model.from_workbook`` without resaving the
+analyst's workbook.
 """
 from __future__ import annotations
 
@@ -19,6 +21,20 @@ _CELL = re.compile(
     r'<c\b(?P<pre>[^>]*?)\sr="(?P<addr>[A-Z]+[0-9]+)"(?P<post>[^>]*?)(?P<close>/>|>(?P<body>.*?)</c>)',
     re.DOTALL,
 )
+_CACHED_NUMBER = re.compile(
+    r"<v>(-?[0-9]+(?:\.[0-9]+)?(?:[eE][+-]?[0-9]+)?)</v>"
+)
+
+
+def refresh_cached_numbers(source, dest, edits):
+    """Replace cached numeric results in a copy. Formulas stay in place.
+
+    ``edits`` maps a sheet name to ``{address: number}``. This is how a saved
+    workbook carries a recalculated year header without dropping the formula
+    the generated library uses to recognise that header. A missing sheet,
+    cell, or cached number raises ``IntakeError``.
+    """
+    _write_copy(source, dest, edits, _refresh_numbers)
 
 
 def apply_number_cells(source, dest, edits):
@@ -27,6 +43,10 @@ def apply_number_cells(source, dest, edits):
     ``edits`` maps a sheet name to ``{address: number}``. Missing sheets or
     cells raise ``IntakeError``.
     """
+    _write_copy(source, dest, edits, _set_numbers)
+
+
+def _write_copy(source, dest, edits, rewrite):
     source = Path(source)
     dest = Path(dest)
     with zipfile.ZipFile(source) as book:
@@ -37,7 +57,7 @@ def apply_number_cells(source, dest, edits):
                 raise IntakeError("input_target_missing_from_workbook")
             member = targets[sheet]
             text = book.read(member).decode("utf-8")
-            replaced[member] = _set_numbers(text, cells).encode("utf-8")
+            replaced[member] = rewrite(text, cells).encode("utf-8")
         with zipfile.ZipFile(dest, "w") as out:
             for info in book.infolist():
                 payload = replaced.get(info.filename)
@@ -77,6 +97,29 @@ def _set_numbers(xml, cells):
         post = re.sub(r'\s+t="[^"]*"', "", match.group("post"))
         number = format(pending[address], ".16g")
         return f'<c{pre} r="{address}"{post}><v>{number}</v></c>'
+
+    updated = _CELL.sub(replace, xml)
+    missing = sorted(set(pending) - found)
+    if missing:
+        raise IntakeError("input_target_missing_from_workbook")
+    return updated
+
+
+def _refresh_numbers(xml, cells):
+    pending = {str(address): float(value) for address, value in cells.items()}
+    found = set()
+
+    def replace(match):
+        address = match.group("addr")
+        if address not in pending:
+            return match.group(0)
+        body = match.group("body")
+        if body is None or _CACHED_NUMBER.search(body) is None:
+            return match.group(0)
+        found.add(address)
+        number = format(pending[address], ".16g")
+        body = _CACHED_NUMBER.sub(f"<v>{number}</v>", body, count=1)
+        return f'<c{match.group("pre")} r="{address}"{match.group("post")}>{body}</c>'
 
     updated = _CELL.sub(replace, xml)
     missing = sorted(set(pending) - found)

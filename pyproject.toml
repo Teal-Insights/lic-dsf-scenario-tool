@@ -9,7 +9,7 @@ description = "Local customized scenario analysis for LIC-DSF IDA21 workbooks"
 requires-python = ">=3.13"
 license = {file = "LICENSE"}
 dependencies = [
-  "lic-dsf-2025-08-12 @ git+https://github.com/Teal-Insights/lic-dsf-2025-08-12@121015367f8ca6a6d9dab5fc94bfe9596605fd00",
+  "lic-dsf-2025-08-12 @ git+https://github.com/Teal-Insights/lic-dsf-2025-08-12@e0f5a8c2359e6931bb43adfdcb16a754232b2ffd",
   "openpyxl==3.1.5",
   "numpy==2.4.6",
   "PyYAML==6.0.3",

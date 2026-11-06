@@ -31,7 +31,7 @@ Replace the workbook path with your actual location. Put quotes around a path co
 
 The script calculates a no-change control and a lower-growth case. It compares the complete recorded scenario/output fields with the checked-in reference in `tests/fixtures/official-example-regression.json`. It checks structure, missing values, spreadsheet error strings and finite numerical values. The absolute numerical tolerance is fixed at **0.000001**, with no relative tolerance and no option to loosen it.
 
-On 5 November 2026 the no-change control matched this reference: 606 leaves within the fixed tolerance. The lower-growth case did not finish, because the pinned library rejects a negative customized-scenario delta. The reference was not rebaselined, and that run was not a fresh Excel recalculation. A mismatch or an incomplete case is not a reason to edit the fixture or the tolerance.
+On 5 November 2026 the no-change control matched this reference: 606 leaves within the fixed tolerance. The lower-growth case did not finish on that library revision, because it rejected a negative customized-scenario delta. On 6 November 2026, after the pin moved to `e0f5a8c2359e6931bb43adfdcb16a754232b2ffd`, both the no-change control and the lower-growth case matched the same reference: 606 leaves each. The reference was not rebaselined, and neither run was a fresh Excel recalculation. A mismatch or an incomplete case is not a reason to edit the fixture or the tolerance.
 
 When a later revision does reproduce the reference, a successful run reports:
 
@@ -56,7 +56,7 @@ python -m pip install ruff==0.16.7
 python -m ruff check src tests scripts
 ```
 
-The Python tests cover component behavior, including validation, saved-state and export contracts. Three checks of generated-library behavior are expected to fail on the pinned revision: projection-year offsets after a current-year change, import of user-entered financing override cells, and acceptance of a negative growth delta. Those failures stay in the suite until a later library revision makes the assertions true. The JavaScript suites check interface handlers with neutral synthetic data. They do not launch a browser or calculate a real workbook. The initial lint gate targets implementation errors. Installation, actual browser interaction, package downloads and independent numerical checks remain separate evidence.
+The Python tests cover component behavior, including validation, saved-state and export contracts. One check of generated-library behavior is expected to fail on the pinned revision: import of financing terms typed over Customized Scenario-External C21, C23 and C24. That failure stays in the suite until a later library revision makes the assertion true. A negative growth delta and a projection year carried by cached formula headers are accepted. The JavaScript suites check interface handlers with neutral synthetic data. They do not launch a browser or calculate a real workbook. The initial lint gate targets implementation errors. Installation, actual browser interaction, package downloads and independent numerical checks remain separate evidence.
 
 The [CI workflow](https://github.com/Teal-Insights/lic-dsf-scenario-tool/actions/workflows/checks.yml) runs these checks on Linux, Windows and Mac hosted runners. A workflow file is not proof that a run passed. Release notes must link the actual runs for the published candidate and distinguish source checks from downloadable desktop-package acceptance.
 

@@ -1,11 +1,13 @@
-"""Correct behavior the pinned generated library does not implement yet.
+"""Projection-year, financing-override, and negative-shock behavior.
 
-These checks stay failed on lic-dsf-2025-08-12 121015367f8c. A later library
-revision should make them pass. Do not weaken them, skip them, or retarget
-them at the snapshot year to hide a defect.
+These checks state the correct behavior. Do not weaken them, skip them, or
+retarget a shifted projection year at the 2024 snapshot. On
+lic-dsf-2025-08-12 e0f5a8c2359e, a negative growth delta is accepted and a
+projection year is read from cached formula headers. Financing terms typed
+over Customized Scenario-External C21, C23 and C24 are still ignored.
 
-The workbook is the public library test fixture for that revision. It is
-downloaded when it is not already available. It is not committed here.
+The workbook is the public library test fixture. It is downloaded when it is
+not already available. It is not committed here.
 """
 import os
 from pathlib import Path
@@ -17,9 +19,9 @@ from openpyxl import load_workbook
 
 from lic_dsf.compare import ATOL, compare_one
 from lic_dsf.ida21 import PUBLIC, EXTERNAL, cell
-from lic_dsf.workbook_cells import apply_number_cells
+from lic_dsf.workbook_cells import apply_number_cells, refresh_cached_numbers
 
-PIN = "121015367f8ca6a6d9dab5fc94bfe9596605fd00"
+PIN = "e0f5a8c2359e6931bb43adfdcb16a754232b2ffd"
 FIXTURE_URL = (
     "https://github.com/Teal-Insights/lic-dsf-2025-08-12/raw/"
     f"{PIN}/tests/fixtures/workbook.xlsm"
@@ -47,6 +49,42 @@ def _cached(path, sheet, address):
         book.close()
 
 
+def _formula(path, sheet, address):
+    book = load_workbook(path, read_only=True, data_only=False, keep_links=False)
+    try:
+        return book[sheet][address].value
+    finally:
+        book.close()
+
+
+def _sheet_address(address):
+    if address.startswith("'"):
+        sheet, coord = address[1:].split("'!")
+        return sheet.replace("''", "'"), coord
+    sheet, coord = address.split("!")
+    return sheet, coord
+
+
+def _shifted_year_headers(source, shift):
+    """Move every cached year header the loader reads, by the same amount."""
+    from lic_dsf_2025_08_12 import data
+
+    book = load_workbook(source, read_only=True, data_only=True, keep_links=False)
+    edits = {}
+    try:
+        seen = set()
+        for axes in data.LABEL_CELLS.values():
+            for address in axes.get("TIME_PERIOD", ()):
+                if address in seen:
+                    continue
+                seen.add(address)
+                sheet, coord = _sheet_address(address)
+                edits.setdefault(sheet, {})[coord] = int(book[sheet][coord].value) + shift
+    finally:
+        book.close()
+    return edits
+
+
 class LibraryDefects(unittest.TestCase):
     maxDiff = None
 
@@ -69,15 +107,23 @@ class LibraryDefects(unittest.TestCase):
         """Column E belongs to the workbook's current projection year."""
         self.assertEqual(ATOL, 1e-6)
         source = _workbook()
-        edits = {"Input 1 - Basics": {"C17": SHIFTED_YEAR, "C18": SHIFTED_YEAR}, PUBLIC: {}}
-        for offset in range(21):
-            edits[PUBLIC][cell(5 + offset, 7)] = SHIFTED_YEAR + offset
-            edits[PUBLIC][cell(5 + offset, 20)] = 0
-        edits[PUBLIC]["E20"] = 1.25
+        origin = int(_cached(source, PUBLIC, "E7"))
+        headers = _shifted_year_headers(source, SHIFTED_YEAR - origin)
+        growth = {cell(5 + offset, 20): 0 for offset in range(21)}
+        growth["E20"] = 1.25
         with tempfile.TemporaryDirectory() as root:
-            dest = Path(root) / "shifted.xlsm"
-            apply_number_cells(source, dest, edits)
+            root = Path(root)
+            dated = root / "dated.xlsm"
+            dest = root / "shifted.xlsm"
+            refresh_cached_numbers(source, dated, headers)
+            apply_number_cells(
+                dated,
+                dest,
+                {"Input 1 - Basics": {"C17": SHIFTED_YEAR, "C18": SHIFTED_YEAR}, PUBLIC: growth},
+            )
             self.assertEqual(float(_cached(dest, "Input 1 - Basics", "C17")), float(SHIFTED_YEAR))
+            self.assertEqual(float(_cached(dest, PUBLIC, "E7")), float(SHIFTED_YEAR))
+            self.assertTrue(str(_formula(dest, PUBLIC, "E7")).startswith("="))
             self.assertEqual(float(_cached(dest, PUBLIC, "E20")), 1.25)
             from lic_dsf_2025_08_12 import Model
             model = Model.from_workbook(dest)
