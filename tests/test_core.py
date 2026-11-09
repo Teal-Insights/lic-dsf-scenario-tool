@@ -1,4 +1,4 @@
-"""Neutral contract and spreadsheet-semantics regressions; no workbook fixtures."""
+"""Neutral contract regressions; no workbook fixtures."""
 import hashlib
 import json
 from pathlib import Path
@@ -7,8 +7,8 @@ import unittest
 import zipfile
 
 from lic_dsf.compare import compare_one
-from lic_dsf.engine import digest, _Graph
-from lic_dsf.ida21 import DELTA_ROWS, PUBLIC, EXTERNAL, cell
+from lic_dsf.engine import digest
+from lic_dsf.ida21 import DELTA_ROWS
 from lic_dsf.scenarios import InputError, zero_scenario, normalize_scenario, imported_scenario
 from lic_dsf.workbooks import IntakeError, check_archive, _additive_input
 
@@ -62,44 +62,5 @@ class Contracts(unittest.TestCase):
                 with zipfile.ZipFile(path,'w') as z: z.writestr(name,contents)
                 with self.assertRaises(IntakeError): check_archive(path)
 
-
-class Semantics(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        from lic_dsf.excel_semantics import apply
-        apply()
-    def test_empty_cell_is_zero_empty_text_is_error(self):
-        from excel_grapher.core import operators
-        from excel_grapher.core.types import XlError
-        self.assertEqual(operators.to_number(None),0)
-        self.assertEqual(operators.to_number(''),XlError.VALUE)
-    def test_range_text_ignored_literal_text_coerced(self):
-        from excel_grapher.evaluator.functions import FUNCTIONS
-        self.assertEqual(FUNCTIONS['SUM']([2,'7',True,None]),2)
-        self.assertEqual(FUNCTIONS['SUM'](2,'7',True),10)
-    def test_aggregate_errors_and_sample_stdev(self):
-        from excel_grapher.evaluator.functions import FUNCTIONS
-        from excel_grapher.core.types import XlError
-        self.assertEqual(FUNCTIONS['SUM']([2,XlError.NA]),XlError.NA)
-        self.assertAlmostEqual(FUNCTIONS['STDEV']([1,3]),2**.5)
-        self.assertEqual(FUNCTIONS['STDEV']([1]),XlError.DIV)
-    def test_term_formula_restore_and_full_surface(self):
-        from excel_grapher import create_dependency_graph
-        import openpyxl
-        with tempfile.TemporaryDirectory() as td:
-            p=Path(td)/'neutral.xlsx'; w=openpyxl.Workbook();w.active.title=PUBLIC;s=w.create_sheet(EXTERNAL)
-            for row in DELTA_ROWS:
-                for col in range(5,26):w[PUBLIC].cell(row,col,0)
-            s['C21']='=0.05';s['C23']='=2';s['C24']='=9';w.save(p);w.close()
-            g=_Graph.__new__(_Graph);g.graph=create_dependency_graph(p,[f"'{PUBLIC}'!E10:Y38",f"'{EXTERNAL}'!C21:C24"],load_values=True);g.keys={str(k).upper().replace("'",''):k for k in g.graph.keys()};g.original={}
-            key=g.keys[f'{EXTERNAL}!C21'.upper()];original=g.graph.get_node(key).formula
-            case=zero_scenario({'input_years':list(range(21))});case['delta_paths']['38'][20]=.25
-            g.apply(case);self.assertEqual(g.graph.get_node(key).formula,original)
-            case['terms']={'rate':.07,'grace_years':3,'maturity_years':10};g.apply(case)
-            self.assertIsNone(g.graph.get_node(key).formula);g.restore();self.assertEqual(g.graph.get_node(key).formula,original)
-            self.assertEqual(g.graph.get_node(g.keys[f'{PUBLIC}!Y38'.upper()]).value,0)
-            del g.keys[f'{PUBLIC}!Y38'.upper()]
-            with self.assertRaises(IntakeError): g.apply(case)
-            self.assertEqual(g.original,{})
 
 if __name__ == '__main__': unittest.main()

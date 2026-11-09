@@ -2,7 +2,7 @@
 
 Explore how alternative macroeconomic and financing assumptions change debt indicators in a supported World Bank LIC-DSF workbook. Save separate scenarios and their explanations, compare the results and export a briefing with charts and underlying data.
 
-**Early-stage alpha, developed iteratively.** We welcome co-design with ministries of finance, international financial institutions and other stakeholders. This is not an official IMF or World Bank product. A successful calculation is not independent fresh Excel verification, which remains pending.
+**Early-stage alpha, developed iteratively.** We welcome co-design with ministries of finance, international financial institutions and other stakeholders. This is not an official IMF or World Bank product. A successful calculation is not independent fresh Excel verification. Results stay labelled pending that check. [Verification](docs/verification.md) records a scoped Excel comparison for the official illustrative No investment and Larger assumed benefit cases; other workbooks and outputs remain outside that receipt.
 
 ## Start here
 
@@ -13,6 +13,10 @@ Explore how alternative macroeconomic and financing assumptions change debt indi
 - [Methods and limits](docs/methodology.md), [verification and reproducible checks](docs/verification.md)
 
 Use the assets attached to the alpha release page; if no downloads are listed, the preview is not yet available. Desktop packages include Python and dependencies. The initial packages target Windows x64 and Apple Silicon/macOS 14+. The Mac wrapper is unsigned and unnotarized. See [platform evidence](docs/accessibility-platforms.md) for the distinction between earlier tests and final-package acceptance. Technical users can also [install from source](docs/source-installation.md).
+
+## In-browser proof of concept
+
+From a source checkout, `python poc/browser/serve.py` prints two loopback addresses. `/` is the five-step workspace running in Pyodide in the tab. `/index.html` is the smaller calculation page. The first visit downloads the Python runtime from jsDelivr. An analyst's workbook is not sent to that static server. Choosing the official example asks the local server to fetch the published template, because the publisher's site does not allow the browser to download it. Saved cases and the workbook copy stay in the browser profile for this site. This is not a release, it does not replace the local server, and it does not add Excel verification. The library pin and the scoped 9 November receipt are unchanged. See the [architecture note](docs/architecture.md) and the [decision record](docs/decisions.md).
 
 ## Try the built-in walkthrough
 
@@ -30,7 +34,7 @@ Select **Download and try the official example** to obtain and check the World B
 | 4. Compare | Select calculated cases and choose the case against which differences should be measured. |
 | 5. Export briefing | Review both chart views, edit titles beside the charts and download the complete packet. |
 
-The app runs in your browser on your own computer. A pinned Python evaluator reads the supported workbook formulas deterministically; it does not use AI inference or random sampling. Installed Excel is not required for calculation. VBA macros do not run and external workbook links do not refresh.
+The app runs in your browser on your own computer. A pinned generated implementation of the LIC-DSF template reads the supported workbook and calculates deterministically; it does not use AI inference or random sampling. Installed Excel is not required for calculation. VBA macros do not run and external workbook links do not refresh.
 
 The supported [World Bank template](docs/template-source.md) contains Ghana-labelled **purely illustrative** data. Those figures are not an official Ghana forecast or DSA. The workbook binary is supplied separately, and the application's license does not grant rights to it. Users can upload their own completed workbook in the supported format; arbitrary template versions are not supported.
 

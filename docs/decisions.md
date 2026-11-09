@@ -192,3 +192,52 @@ The source-only change leaves all Python engine-identity inputs unchanged. A reb
 Keep one completed packet in browser memory for the unchanged saved comparison and show **Save prepared briefing packet** beside the original action. The initial download attempt remains; the visible link can save the same bytes without another render or export slot. Comparison/source/input/chart-text invalidation and page termination revoke the copy. Existing recovery, calculation, sharing and illustrative visit limits remain authoritative. No arbitrary short expiry is added to this recovery action.
 
 The source-visible missing retry control motivated this change. It is not an identified cause of the earlier live error or the observed download-event timeout. Frontend response/DOM tests are component evidence; actual downloaded-and-opened bytes, three cold live visits including Windows, release/image/runtime and fresh Excel evidence remain separate.
+
+
+## 5 November 2026: generated library is the calculation backend
+
+Supported outputs are calculated by the pinned `lic-dsf-2025-08-12` package at commit `121015367f8ca6a6d9dab5fc94bfe9596605fd00`, loaded with `Model.from_workbook`. excel-grapher is no longer an application dependency, and the semantic adapter is removed. Source installation requires Python 3.13 because that library requires it. `fastpyxl` is pinned at 1.1.0 for the same reason. The result contract, probe addresses, evidence labels and absolute tolerance `1e-6` stay in place. Sampled values come from the library's Chart Data series that the template displays on Output 3 and Output 7. Thresholds still come from cached CI Summary cells. Scenario adjustments are written into a temporary copy of the workbook; the analyst's file is not saved.
+
+Changing the calculation identity invalidates saved current-run matches. Prepared teaching results from the previous evaluator are not rebaselined, and the official-example regression fixture is not rewritten. Fresh Excel verification was not run. Earlier Mac 3.11 packages and the Windows Server pilot were not rebuilt or rerun against this library.
+
+On this revision the official-example no-change control matched the existing regression reference for 606 leaves at tolerance `1e-6`. That comparison was not a fresh Excel recalculation, and the reference was not rewritten. The lower-growth case did not complete.
+
+Three defects in this library revision are unresolved and are not product requirements. Projection-year columns stay bound to the library's 2024 snapshot when the workbook's current year changes. `from_workbook` does not import user-entered override cells, including external financing terms typed over formula cells. `customized_public_delta` rejects negative values, including the lower-growth adjustment of −1 percentage point. Tests that state the correct behavior of these cases are expected to fail until a later library revision fixes them. Do not skip those tests, relax the tolerance, or edit the regression fixture to hide the mismatch.
+
+
+## 6 November 2026: calculation library revision e0f5a8c
+
+The pinned `lic-dsf-2025-08-12` revision is now `e0f5a8c2359e6931bb43adfdcb16a754232b2ffd`. The package version remains 0.1.0. This identity change invalidates saved current-run matches. The official-example regression fixture was not rewritten, and fresh Excel verification was not run.
+
+On this revision the no-change control and the lower-growth case both matched the existing regression reference: 606 leaves each, at tolerance `1e-6`. That comparison was not a fresh Excel recalculation.
+
+`customized_public_delta` accepts a negative growth adjustment, including −1 percentage point. Projection years follow cached formula year headers when those caches move with the workbook's current year. The library does not recalculate the header formulas itself, so a current-year edit whose header caches still say 2024 stays on 2024. Replacing those headers with literals is not the same as a recalculated save.
+
+One defect remains unresolved and is not a product requirement. User-entered financing terms that replace the formulas in Customized Scenario-External C21, C23 and C24 are still ignored. The generated financing series continues to read Input 7. The check for those three cells stays failed. Do not skip it, relax the tolerance, or edit the regression fixture to hide it.
+
+
+## 8 November 2026: calculation library revision 05d7f03
+
+The pinned `lic-dsf-2025-08-12` revision is now `05d7f03862348df18d2b45a5d4a86152836edda4`. That generated package records excel-grapher 24.1.16. The package version remains 0.1.0. This identity change invalidates saved current-run matches. The official-example regression fixture was not rewritten, that regression was not rerun, and fresh Excel verification was not run.
+
+`from_workbook` imports financing terms typed over the formulas in Customized Scenario-External C21, C23 and C24. The check for those three cells passed, at tolerance `1e-6`, as did the checks for a negative growth adjustment and for a projection year carried by cached formula headers. Projection years still follow those cached headers. The library does not recalculate the header formulas, so a current-year edit whose header caches still say 2024 stays on 2024.
+
+
+## 9 November 2026: fresh Excel comparison of two illustrative cases
+
+Desktop Excel 16.0.20527.20112 on 64-bit Windows recalculated byte copies of the official illustrative workbook for No investment and Larger assumed benefit. Macros stayed disabled and external links were not refreshed. The publisher file hash remained `3a0a0b80c7cbc95ac953f25ecae0b437129d669ceb8aeefb54ab86dc8727ea86`.
+
+The library was `lic-dsf-2025-08-12` 0.1.0 at `05d7f03862348df18d2b45a5d4a86152836edda4`, using `generated_library_chart_series`. Both application runs were `computed_unverified` and matched the saved workbook cache on 76 of 76 probes. Excel's values for those probes agreed with the library samples. The largest absolute difference was `5.684341886080802e-14`, inside the locked tolerance `1e-6`. There was no first divergence. The four text sentinels matched exactly, and the public-debt benchmark cell stayed 55.
+
+The application still labels these results `exact_excel: pending`. The receipt covers this workbook, these two built-in definitions, this engine revision and these 76 probes. Smaller assumed benefit, other outputs and other workbooks are outside it. The input mapping, procedure and recalculated fingerprints are in [verification](verification.md).
+
+
+## 9 November 2026: in-browser application proof of concept
+
+The five-step workspace can run in the browser. `python poc/browser/serve.py` serves the existing page at `/` with a same-origin bridge. Pyodide, in a worker in that tab, answers the application routes and calls the same `calculate` function. There is no calculation subprocess. The smaller calculation page remains at `/index.html`.
+
+The pinned library stays `lic-dsf-2025-08-12` 0.1.0 at `05d7f03862348df18d2b45a5d4a86152836edda4`. This session module is loaded as source by the worker and is not part of the installed package, so the calculation identity is unchanged. The result contract, probe addresses, evidence labels and absolute tolerance `1e-6` stay in place. `exact_excel` remains pending. The Excel receipt above is not extended to the browser, to Smaller assumed benefit, or to other workbooks.
+
+The analyst's workbook is not sent to the static server. The official illustrative template is an exception: the publisher's host does not allow the browser to download it, so the local server fetches that fixed public file only after the analyst asks, checks its size and SHA-256, and gives those bytes to the tab. Saved scenarios and the workbook copy then remain in the browser profile for this site. Clearing the site's data removes them. A refresh during a calculation can lose that unfinished run; the saved inputs remain.
+
+The desktop time limit and subprocess lease are not available in the tab. One calculation occupies the worker until it returns, so a save or poll waits behind it. The page already shows that a calculation is running. Chart images use Pyodide's matplotlib and the package fonts. This page is not a release and does not replace the local server.

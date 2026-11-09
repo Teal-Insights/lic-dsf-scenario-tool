@@ -1,12 +1,14 @@
-"""Serialized, reversible evaluation over an immutable workbook identity."""
+"""Serialized evaluation through the generated LIC-DSF library."""
 from __future__ import annotations
 
 import hashlib
 from importlib.metadata import version, distribution
 import json
 import math
+import os
 from pathlib import Path
 import platform
+import tempfile
 import threading
 from datetime import datetime, timezone
 
@@ -14,10 +16,28 @@ from .contracts import CONTRACT_VERSION
 from .ida21 import PUBLIC, EXTERNAL, DELTA_ROWS, TERMS, METRICS, OFFSETS, probes, cell
 from .compare import compare_one
 from .workbooks import inspect_workbook, file_hash, IntakeError
+from .workbook_cells import apply_number_cells
 from .scenarios import normalize_scenario
 
-ENGINE_VERSION = '3.7.0'
-ENGINE_REVISION = '15c51591b73b1dfb97088d46c6c0741bc59769b4'
+LIBRARY_DISTRIBUTION = "lic-dsf-2025-08-12"
+ENGINE_VERSION = "0.1.0"
+ENGINE_REVISION = "05d7f03862348df18d2b45a5d4a86152836edda4"
+_A2 = "A2. Alternative Scenario :[Customize, enter title]"
+# attribute, scenario key for the reference baseline, attribute, scenario key for customized
+_SERIES = {
+    "ext_pv_gdp": ("chart_output_pv_debt_gdp_ratio", "Baseline", "chart_pv_debt_gdp_ratio_custom_alternative_scenario", None),
+    "ext_pv_exports": ("chart_output_pv_debt_to_exports", "Baseline", "chart_pv_debt_to_exports_custom_alternative_scenario", None),
+    "ext_ds_exports": ("chart_output_debt_service_to_exports", "Baseline", "chart_debt_service_to_exports_custom_alternative_scenario", None),
+    "ext_ds_revenue": ("chart_output_debt_service_to_revenue", "Baseline", "chart_debt_service_to_revenue_custom_alternative_scenario", None),
+    "public_pv_gdp": ("chart_output_chart_data_pv_of_debt_to_gdp_ratio_pv_debt_to_gdp", "Baseline", "chart_output_chart_data_pv_of_debt_to_gdp_ratio_pv_debt_to_gdp", _A2),
+    "public_pv_revenue": ("chart_output_chart_data_pv_of_debt_to_revenue_ratio_pv_debt_to_revenue", "Baseline", "chart_output_chart_data_pv_of_debt_to_revenue_ratio_pv_debt_to_revenue", _A2),
+}
+_SENTINELS = {
+    "external_rating": "external_dsa_risk_rating_signal",
+    "overall_rating": "overall_risk_rating_signal",
+    "external_signal": "external_dsa_risk_rating_signal",
+    "selected_shock": "external_pv_debt_to_gdp_mx_shock",
+}
 _LOCK = threading.RLock()
 _CACHE = {}
 
@@ -27,10 +47,10 @@ def digest(value):
 
 
 def engine_identity():
-    versions = {name: version(name) for name in ('excel-grapher', 'fastpyxl', 'numpy', 'openpyxl', 'PyYAML')}
-    if versions['excel-grapher'] != ENGINE_VERSION:
+    versions = {name: version(name) for name in (LIBRARY_DISTRIBUTION, 'fastpyxl', 'numpy', 'openpyxl', 'PyYAML')}
+    if versions[LIBRARY_DISTRIBUTION] != ENGINE_VERSION:
         raise IntakeError('unsupported_engine_version')
-    direct = distribution('excel-grapher').read_text('direct_url.json')
+    direct = distribution(LIBRARY_DISTRIBUTION).read_text('direct_url.json')
     recorded_revision = json.loads(direct).get('vcs_info', {}).get('commit_id') if direct else None
     if recorded_revision != ENGINE_REVISION:
         raise IntakeError('engine_source_revision_unverified')
@@ -39,7 +59,7 @@ def engine_identity():
     return {'python': platform.python_version(), 'implementation': platform.python_implementation(),
             'platform': platform.system(), 'machine': platform.machine(), 'versions': versions,
             'engine_revision': ENGINE_REVISION, 'core_sha256': digest(code),
-            'contract_version': CONTRACT_VERSION, 'dynamic_references': 'cached_geometry_with_sentinel_checks'}
+            'contract_version': CONTRACT_VERSION, 'dynamic_references': 'generated_library_chart_series'}
 
 
 def _plain(value):
@@ -54,52 +74,51 @@ def _plain(value):
     raise IntakeError('unsupported_engine_output_type')
 
 
-class _Graph:
-    def __init__(self, path):
-        from excel_grapher import create_dependency_graph
-        from .excel_semantics import apply
-        apply()
-        self.probes = probes()
-        targets = [f"{p['sheet']}!{p['cell']}" for p in self.probes]
-        targets += [f"'{PUBLIC}'!E10:Y38", f"'{EXTERNAL}'!C21:C24"]
-        self.graph = create_dependency_graph(path, targets, load_values=True, use_cached_dynamic_refs=True)
-        self.keys = {str(k).upper().replace("'", ''): k for k in self.graph.keys()}
-        self.original = {}
+def load_model(path):
+    """Bind workbook input cells through the generated library."""
+    from lic_dsf_2025_08_12 import Model
+    return Model.from_workbook(path)
 
-    def restore(self):
-        for key, (value, formula, normalized) in self.original.items():
-            self.graph.set_node_formula(key, formula, normalized)
-            self.graph.set_node_value(key, value)
-        self.original.clear()
 
-    def apply(self, scenario):
-        writes = [(PUBLIC, cell(5 + offset, row), value)
-                  for row in DELTA_ROWS for offset, value in enumerate(scenario['delta_paths'][str(row)])]
-        writes += [(EXTERNAL, TERMS[key], value) for key, value in (scenario['terms'] or {}).items()]
-        keyed = [(self.keys.get(f'{sheet}!{address}'.upper()), value) for sheet, address, value in writes]
-        if any(key is None for key, value in keyed):
-            raise IntakeError('input_target_missing_from_graph')
-        for key, value in keyed:
-            node = self.graph.get_node(key)
-            if key not in self.original:
-                self.original[key] = (node.value, node.formula, node.normalized_formula)
-            if node.formula:
-                self.graph.set_node_formula(key, None, None)
-            self.graph.set_node_value(key, value)
+def _at(series, year, scenario):
+    # The workbook's projection year, not the library snapshot's 2024 column.
+    if scenario is None:
+        return series.sel(TIME_PERIOD=year)
+    return series.sel(SCENARIO=scenario, TIME_PERIOD=year)
 
-    def evaluate(self):
-        from excel_grapher import FormulaEvaluator
-        targets = [f"{p['sheet']}!{p['cell']}" for p in self.probes]
-        with FormulaEvaluator(self.graph) as evaluator:
-            values = evaluator.evaluate(targets)
-        normalized = {str(k).upper().replace("'", ''): value for k, value in values.items()}
-        result = {}
-        for p, target in zip(self.probes, targets):
-            key = target.upper().replace("'", '')
-            if key not in normalized:
-                raise IntakeError('output_probe_missing_from_evaluator')
-            result[p['id']] = _plain(normalized[key])
-        return result
+
+def _sample(model, first_projection_year):
+    result = {}
+    for metric, _title, _units, _sheet, _base, _custom, _col, _header in METRICS:
+        baseline_attr, baseline_scenario, custom_attr, custom_scenario = _SERIES[metric]
+        baseline = getattr(model, baseline_attr)
+        custom = getattr(model, custom_attr)
+        for offset in OFFSETS:
+            year = first_projection_year + offset
+            result[f'{metric}:{offset}:reference_baseline'] = _plain(_at(baseline, year, baseline_scenario))
+            result[f'{metric}:{offset}:customized'] = _plain(_at(custom, year, custom_scenario))
+    for name, attr in _SENTINELS.items():
+        result[f'sentinel:{name}'] = _plain(getattr(model, attr))
+    return result
+
+
+def _scenario_edits(definition):
+    public = {}
+    for row in DELTA_ROWS:
+        for offset, value in enumerate(definition['delta_paths'][str(row)]):
+            public[cell(5 + offset, row)] = value
+    edits = {PUBLIC: public}
+    terms = definition['terms']
+    if terms:
+        edits[EXTERNAL] = {TERMS[key]: value for key, value in terms.items()}
+    return edits
+
+
+def _scenario_workbook(path, definition):
+    handle, name = tempfile.mkstemp(suffix='.xlsm')
+    os.close(handle)
+    apply_number_cells(path, name, _scenario_edits(definition))
+    return name
 
 
 def calculate(path, scenario=None, expected_sha256=None):
@@ -130,23 +149,24 @@ def _calculate(path, scenario=None, expected_sha256=None):
     finally:
         cached.close()
     key = (sha, digest(identity))
+    scenario_path = None
     with _LOCK:
-        graph = _CACHE.get(key)
-        if graph is None:
-            graph = _Graph(path)
-            _CACHE[key] = graph
+        model = _CACHE.get(key)
+        if model is None:
+            model = load_model(path)
+            _CACHE[key] = model
             while len(_CACHE) > 2:
                 del _CACHE[next(iter(_CACHE))]
         try:
-            graph.restore()
-            supplied = graph.evaluate()
+            supplied = _sample(model, info['first_projection_year'])
             if definition is not None:
-                graph.apply(definition)
-                computed = graph.evaluate()
+                scenario_path = _scenario_workbook(path, definition)
+                computed = _sample(load_model(scenario_path), info['first_projection_year'])
             else:
                 computed = dict(supplied)
         finally:
-            graph.restore()
+            if scenario_path is not None:
+                Path(scenario_path).unlink(missing_ok=True)
     if file_hash(path) != sha:
         _CACHE.pop(key, None)
         raise IntakeError('workbook_changed_during_calculation')
@@ -167,7 +187,7 @@ def _calculate(path, scenario=None, expected_sha256=None):
                 'review_probes': sorted(set(dynamic + degradation + baseline_changed)),
                 'calculation': 'review_required' if mismatches or dynamic or degradation or baseline_changed else 'computed_unverified'}
     points = []
-    for metric, title, units, sheet, base, custom, col, header in METRICS:
+    for metric, _title, units, sheet, base, custom, col, _header in METRICS:
         for offset in OFFSETS:
             points.append({'metric': metric, 'year': info['first_projection_year'] + offset, 'units': units,
                            'reference_baseline': supplied[f'{metric}:{offset}:reference_baseline'],

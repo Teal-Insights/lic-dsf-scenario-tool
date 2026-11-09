@@ -49,7 +49,7 @@ The app's workspace is separate from the software bundle. Before starting, the l
 
 The supported file is an `.xlsx` or `.xlsm` ZIP package. Browser uploads are limited to 25 MiB. The lower-level intake independently checks the compressed size (32 MiB), expanded size (256 MiB), member size (64 MiB), member count (4,000), compression ratio and member paths. It refuses encrypted entries and links. Declaration-aware XML parsing rejects DTDs and entities across encodings and part names before downstream workbook reading.
 
-Workbook intake does not execute VBA or refresh external workbook links. The evaluator implements a bounded supported formula/geometry profile, not every Excel feature. Original files and numerical evidence remain distinct. See [methods](methodology.md), [input contracts](workbooks-inputs-outputs.md) and [verification](verification.md).
+Workbook intake does not execute VBA or refresh external workbook links. Calculation uses the pinned generated library for the supported template geometry, not every Excel feature. Original files and numerical evidence remain distinct. See [methods](methodology.md), [input contracts](workbooks-inputs-outputs.md) and [verification](verification.md).
 
 ## Network behavior and dependencies
 
@@ -59,20 +59,20 @@ Alpha.2 adds the one-click example route. Its verified cache supports reuse with
 | --- | --- |
 | Get the desktop package | Browser connects to GitHub and its release-asset delivery infrastructure. |
 | Get the reference workbook | On the built-in example action, the local app downloads the pinned HTTPS World Bank file, checks its identity and caches it. No private workbook or scenario inputs are sent. The publisher sees ordinary connection information, such as IP address. The workbook is not bundled. Older builds use the browser download route. |
-| Install from source | Python tooling fetches the pinned evaluator from GitHub and dependencies from package repositories. The desktop ZIP avoids this installation step. |
+| Install from source | Python tooling fetches the pinned calculation library from GitHub and dependencies from package repositories. The desktop ZIP avoids this installation step. |
 | Use the local interface | Browser connects to loopback. Interface fonts and chart resources are bundled. |
 | Calculate and export | Local Python processing; no hosted calculation API or telemetry service is required by the application. |
 | Follow help links or send feedback | The user deliberately opens external documentation/GitHub/World Bank/IMF links or an email application. |
 
 These statements describe the application and intended workflow. Browser extensions, operating-system services, cloud sync and endpoint software have their own network behavior. Representative offline analysis and observation of connected outbound attempts, including errors and diagnostics, remain distinct acceptance evidence. Do not interpret the table as an unconditional no-egress guarantee.
 
-A 13 September 2026 `pip-audit` 2.10.1 query of the PyPI vulnerability service reported no known vulnerabilities for the 22 pinned Python dependency versions inspected across the two package runtimes. It queried public names and versions, not workbook contents. That finding is time-limited and does not cover all bundled native libraries, unknown vulnerabilities, the correctness of the evaluator's pinned source revision or the application itself. Inspect the [machine-readable advisory lookup](dependency-audit.json). Dependency/license inventories and exact package integrity remain separate checks.
+A 13 September 2026 `pip-audit` 2.10.1 query of the PyPI vulnerability service reported no known vulnerabilities for the 22 pinned Python dependency versions inspected across the two package runtimes. It queried public names and versions, not workbook contents. That finding is time-limited and does not cover all bundled native libraries, unknown vulnerabilities, the correctness of a pinned source revision or the application itself. It also does not cover the generated library `lic-dsf-2025-08-12` or the `fastpyxl` 1.1.0 pin adopted with that library; no new audit was run for this dependency change. Inspect the [machine-readable advisory lookup](dependency-audit.json). Dependency/license inventories and exact package integrity remain separate checks.
 
 ## What has and has not been tested
 
 A prior application build completed a Windows Server 2022 x64, Administrator-account pilot with Python 3.13.15 and no Excel. It exercised startup, workbook upload, two calculations, both chart views, packet download, scenario re-import and restart. Its 1,212 comparison fields agreed with a Mac reference within the fixed `1e-6` tolerance. This is not final-alpha, ordinary-user or managed Windows 11 laptop acceptance.
 
-The Mac packaging work uses Apple Silicon and a fresh relocatable CPython 3.11.16 runtime. Its selected NumPy dependency requires macOS 14 or later. Intel Mac and older macOS coverage are not claimed. Final downloaded/quarantined Finder launch is a separate check from a local terminal calculation.
+The Mac packaging work uses Apple Silicon and a fresh relocatable CPython 3.11.16 runtime. Its selected NumPy dependency requires macOS 14 or later. Intel Mac and older macOS coverage are not claimed. Final downloaded/quarantined Finder launch is a separate check from a local terminal calculation. Source installation now requires Python 3.13 because the generated library requires it. The earlier Mac 3.11 package and the Windows Server 2022 pilot were not rebuilt or rerun against this library.
 
 The alpha.2 source checks and their limits are listed in [verification](verification.md). Rebuilt artifacts require independent review. Desktop launch checks were unverified at package assembly; later results must identify the tested archive. Earlier locale and XML intake regressions reproduced failures before their fixes. This is bounded testing, not penetration testing, WCAG certification, formal DPG recognition or independent fresh Excel verification. [Platform status](accessibility-platforms.md) records historical evidence separately.
 

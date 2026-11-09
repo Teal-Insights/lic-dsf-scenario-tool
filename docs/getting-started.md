@@ -4,7 +4,7 @@ Start with a question: what changes if growth is a little lower, financing costs
 
 This tool lets you explore those assumptions through the customized-scenario mechanism in a supported LIC-DSF workbook. It keeps separate cases and your explanations, then produces charts and data you can share. It does not estimate a programme's returns or decide which assumptions are credible.
 
-**This is an early-stage preview.** We welcome iterative co-design with ministries of finance, international financial institutions and other stakeholders. Calculations are deterministic and local, without AI inference. Fresh Microsoft Excel verification remains pending.
+**This is an early-stage preview.** We welcome iterative co-design with ministries of finance, international financial institutions and other stakeholders. Calculations are deterministic and local, without AI inference. Results stay labelled pending a fresh Microsoft Excel comparison. A scoped receipt for two official illustrative cases is in [verification](verification.md).
 
 ## Make your first comparison
 

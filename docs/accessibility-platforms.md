@@ -14,7 +14,7 @@ PNG is a raster image. PDF contains vector text and plots but is not certified a
 
 | Area | Status recorded at package assembly |
 | --- | --- |
-| Python requirement | Source declares Python 3.11 or later; dependency/platform compatibility still needs verification |
+| Python requirement | Source declares Python 3.13 or later because the pinned calculation library requires it. Earlier Python 3.11 desktop-package evidence does not cover this library. Dependency and platform compatibility still need verification |
 | Excel installation | Not required by the Python calculation route; exact Excel verification is a separate pending activity |
 | Browser | Local HTML interface implemented; no complete accepted browser matrix |
 | macOS | Earlier installed browser/calculation/packet checks passed on Apple Silicon. Separate relocation and worker checks exist for earlier macOS14+ arm64 bundles; final downloaded Finder launch and a complete final-package walkthrough were unverified at assembly |
