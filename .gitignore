@@ -16,6 +16,8 @@ poc/browser/manifest.json
 *.log
 __pycache__/
 *.pyc
+*.egg-info/
+/build/
 .venv/
 node_modules/
 uploads/
