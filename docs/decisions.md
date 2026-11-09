@@ -214,3 +214,10 @@ On this revision the no-change control and the lower-growth case both matched th
 `customized_public_delta` accepts a negative growth adjustment, including −1 percentage point. Projection years follow cached formula year headers when those caches move with the workbook's current year. The library does not recalculate the header formulas itself, so a current-year edit whose header caches still say 2024 stays on 2024. Replacing those headers with literals is not the same as a recalculated save.
 
 One defect remains unresolved and is not a product requirement. User-entered financing terms that replace the formulas in Customized Scenario-External C21, C23 and C24 are still ignored. The generated financing series continues to read Input 7. The check for those three cells stays failed. Do not skip it, relax the tolerance, or edit the regression fixture to hide it.
+
+
+## 8 November 2026: calculation library revision 05d7f03
+
+The pinned `lic-dsf-2025-08-12` revision is now `05d7f03862348df18d2b45a5d4a86152836edda4`. That generated package records excel-grapher 24.1.16. The package version remains 0.1.0. This identity change invalidates saved current-run matches. The official-example regression fixture was not rewritten, that regression was not rerun, and fresh Excel verification was not run.
+
+`from_workbook` imports financing terms typed over the formulas in Customized Scenario-External C21, C23 and C24. The check for those three cells passed, at tolerance `1e-6`, as did the checks for a negative growth adjustment and for a projection year carried by cached formula headers. Projection years still follow those cached headers. The library does not recalculate the header formulas, so a current-year edit whose header caches still say 2024 stays on 2024.

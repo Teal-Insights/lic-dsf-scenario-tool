@@ -21,7 +21,7 @@ from .scenarios import normalize_scenario
 
 LIBRARY_DISTRIBUTION = "lic-dsf-2025-08-12"
 ENGINE_VERSION = "0.1.0"
-ENGINE_REVISION = "e0f5a8c2359e6931bb43adfdcb16a754232b2ffd"
+ENGINE_REVISION = "05d7f03862348df18d2b45a5d4a86152836edda4"
 _A2 = "A2. Alternative Scenario :[Customize, enter title]"
 # attribute, scenario key for the reference baseline, attribute, scenario key for customized
 _SERIES = {

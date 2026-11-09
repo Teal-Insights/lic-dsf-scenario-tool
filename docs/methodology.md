@@ -2,7 +2,7 @@
 
 The tool exposes a bounded part of the English LIC-DSF IDA21 workbook. It calculates supported outputs with the pinned generated library `lic-dsf-2025-08-12`, loaded from the workbook by `Model.from_workbook`. It does not introduce a separately calibrated economic model, run VBA, refresh external links or use Excel as its calculation runtime.
 
-The pinned revision reads projection years from cached formula year headers. It does not recalculate those formulas, so a current-year edit whose header caches still say 2024 stays on 2024. A negative customized-scenario growth adjustment is accepted. One limitation remains unresolved and is not a product requirement: financing terms typed over the formulas in Customized Scenario-External C21, C23 and C24 are not imported, and the generated financing series still reads Input 7. The check for that behavior stays failed. Do not treat it as a permanent rule, and do not loosen the absolute tolerance of `1e-6` or rewrite the official regression reference to absorb it.
+The pinned revision reads projection years from cached formula year headers. It does not recalculate those formulas, so a current-year edit whose header caches still say 2024 stays on 2024. A negative customized-scenario growth adjustment is accepted. Financing terms typed over the formulas in Customized Scenario-External C21, C23 and C24 are imported. Do not loosen the absolute tolerance of `1e-6` or rewrite the official regression reference to absorb a later mismatch.
 
 [Documentation index](README.md) · [Full input/output reference](workbooks-inputs-outputs.md) · [Worked exercise](tutorial.md)
 

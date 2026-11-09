@@ -250,7 +250,7 @@ wheels = [
 [[package]]
 name = "lic-dsf-2025-08-12"
 version = "0.1.0"
-source = { git = "https://github.com/Teal-Insights/lic-dsf-2025-08-12?rev=e0f5a8c2359e6931bb43adfdcb16a754232b2ffd#e0f5a8c2359e6931bb43adfdcb16a754232b2ffd" }
+source = { git = "https://github.com/Teal-Insights/lic-dsf-2025-08-12?rev=05d7f03862348df18d2b45a5d4a86152836edda4#05d7f03862348df18d2b45a5d4a86152836edda4" }
 dependencies = [
     { name = "fastpyxl" },
     { name = "numpy" },
@@ -272,7 +272,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "fastpyxl", specifier = "==1.1.0" },
-    { name = "lic-dsf-2025-08-12", git = "https://github.com/Teal-Insights/lic-dsf-2025-08-12?rev=e0f5a8c2359e6931bb43adfdcb16a754232b2ffd" },
+    { name = "lic-dsf-2025-08-12", git = "https://github.com/Teal-Insights/lic-dsf-2025-08-12?rev=05d7f03862348df18d2b45a5d4a86152836edda4" },
     { name = "matplotlib", specifier = "==3.11.1" },
     { name = "numpy", specifier = "==2.4.6" },
     { name = "openpyxl", specifier = "==3.1.5" },
