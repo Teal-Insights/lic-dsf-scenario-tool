@@ -14,6 +14,10 @@ Explore how alternative macroeconomic and financing assumptions change debt indi
 
 Use the assets attached to the alpha release page; if no downloads are listed, the preview is not yet available. Desktop packages include Python and dependencies. The initial packages target Windows x64 and Apple Silicon/macOS 14+. The Mac wrapper is unsigned and unnotarized. See [platform evidence](docs/accessibility-platforms.md) for the distinction between earlier tests and final-package acceptance. Technical users can also [install from source](docs/source-installation.md).
 
+## In-browser proof of concept
+
+From a source checkout, `python poc/browser/serve.py` prints two loopback addresses. `/` is the five-step workspace running in Pyodide in the tab. `/index.html` is the smaller calculation page. The first visit downloads the Python runtime from jsDelivr. An analyst's workbook is not sent to that static server. Choosing the official example asks the local server to fetch the published template, because the publisher's site does not allow the browser to download it. Saved cases and the workbook copy stay in the browser profile for this site. This is not a release, it does not replace the local server, and it does not add Excel verification. The library pin and the scoped 9 November receipt are unchanged. See the [architecture note](docs/architecture.md) and the [decision record](docs/decisions.md).
+
 ## Try the built-in walkthrough
 
 **Version `0.1.0a3`.** This guide describes the built-in walkthrough in 0.1.0a3; the earlier alpha.1 release predates this route. There is no 0.1.0a3 Mac package: the alpha.2 Mac package offers the same route with slightly older wording. Use the assets attached to the matching release. Package-assembly status: Windows-side signature confirmation, final-package Windows execution and the complete desktop walkthrough are unverified in this guide. See the [release notes](docs/release-notes-0.1.0a3.md#release-evidence) for scope and how to find later evidence for the exact download.

@@ -36,6 +36,7 @@ The diagram includes the optional external example-download route and the local 
 | `chart_context.py` | Validate explicit outward text and its full source/revision binding |
 | `app.py` and `web.html` | Local interaction, request checks, immutable upload copies and selected export fields |
 | `worker.py` | Foreground calculation with parent-liveness and deadline checks |
+| `poc/browser/` | In-browser proof of concept. Pyodide runs the same page and `calculate` function in the tab. The static server does not receive the analyst's workbook |
 | `charts.py` | Two presentation views over the same saved numerical record; no recalculation |
 
 The original source workbook is not overwritten. Runtime data and diagnostic records belong outside source and package directories. A saved revision binds its workbook and complete inputs; a worker completing after an edit cannot attach its result to the new revision. Chart view and saved context-label changes do not change calculations. Comparison/export reads the saved context and numerical records from the same database snapshot and checks the client’s expected source and context revision. No label is inferred from an internal filename or journal.

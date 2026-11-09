@@ -230,3 +230,14 @@ Desktop Excel 16.0.20527.20112 on 64-bit Windows recalculated byte copies of the
 The library was `lic-dsf-2025-08-12` 0.1.0 at `05d7f03862348df18d2b45a5d4a86152836edda4`, using `generated_library_chart_series`. Both application runs were `computed_unverified` and matched the saved workbook cache on 76 of 76 probes. Excel's values for those probes agreed with the library samples. The largest absolute difference was `5.684341886080802e-14`, inside the locked tolerance `1e-6`. There was no first divergence. The four text sentinels matched exactly, and the public-debt benchmark cell stayed 55.
 
 The application still labels these results `exact_excel: pending`. The receipt covers this workbook, these two built-in definitions, this engine revision and these 76 probes. Smaller assumed benefit, other outputs and other workbooks are outside it. The input mapping, procedure and recalculated fingerprints are in [verification](verification.md).
+
+
+## 9 November 2026: in-browser application proof of concept
+
+The five-step workspace can run in the browser. `python poc/browser/serve.py` serves the existing page at `/` with a same-origin bridge. Pyodide, in a worker in that tab, answers the application routes and calls the same `calculate` function. There is no calculation subprocess. The smaller calculation page remains at `/index.html`.
+
+The pinned library stays `lic-dsf-2025-08-12` 0.1.0 at `05d7f03862348df18d2b45a5d4a86152836edda4`. This session module is loaded as source by the worker and is not part of the installed package, so the calculation identity is unchanged. The result contract, probe addresses, evidence labels and absolute tolerance `1e-6` stay in place. `exact_excel` remains pending. The Excel receipt above is not extended to the browser, to Smaller assumed benefit, or to other workbooks.
+
+The analyst's workbook is not sent to the static server. The official illustrative template is an exception: the publisher's host does not allow the browser to download it, so the local server fetches that fixed public file only after the analyst asks, checks its size and SHA-256, and gives those bytes to the tab. Saved scenarios and the workbook copy then remain in the browser profile for this site. Clearing the site's data removes them. A refresh during a calculation can lose that unfinished run; the saved inputs remain.
+
+The desktop time limit and subprocess lease are not available in the tab. One calculation occupies the worker until it returns, so a save or poll waits behind it. The page already shows that a calculation is running. Chart images use Pyodide's matplotlib and the package fonts. This page is not a release and does not replace the local server.
