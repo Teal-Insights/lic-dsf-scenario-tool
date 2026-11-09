@@ -221,3 +221,12 @@ One defect remains unresolved and is not a product requirement. User-entered fin
 The pinned `lic-dsf-2025-08-12` revision is now `05d7f03862348df18d2b45a5d4a86152836edda4`. That generated package records excel-grapher 24.1.16. The package version remains 0.1.0. This identity change invalidates saved current-run matches. The official-example regression fixture was not rewritten, that regression was not rerun, and fresh Excel verification was not run.
 
 `from_workbook` imports financing terms typed over the formulas in Customized Scenario-External C21, C23 and C24. The check for those three cells passed, at tolerance `1e-6`, as did the checks for a negative growth adjustment and for a projection year carried by cached formula headers. Projection years still follow those cached headers. The library does not recalculate the header formulas, so a current-year edit whose header caches still say 2024 stays on 2024.
+
+
+## 9 November 2026: fresh Excel comparison of two illustrative cases
+
+Desktop Excel 16.0.20527.20112 on 64-bit Windows recalculated byte copies of the official illustrative workbook for No investment and Larger assumed benefit. Macros stayed disabled and external links were not refreshed. The publisher file hash remained `3a0a0b80c7cbc95ac953f25ecae0b437129d669ceb8aeefb54ab86dc8727ea86`.
+
+The library was `lic-dsf-2025-08-12` 0.1.0 at `05d7f03862348df18d2b45a5d4a86152836edda4`, using `generated_library_chart_series`. Both application runs were `computed_unverified` and matched the saved workbook cache on 76 of 76 probes. Excel's values for those probes agreed with the library samples. The largest absolute difference was `5.684341886080802e-14`, inside the locked tolerance `1e-6`. There was no first divergence. The four text sentinels matched exactly, and the public-debt benchmark cell stayed 55.
+
+The application still labels these results `exact_excel: pending`. The receipt covers this workbook, these two built-in definitions, this engine revision and these 76 probes. Smaller assumed benefit, other outputs and other workbooks are outside it. The input mapping, procedure and recalculated fingerprints are in [verification](verification.md).

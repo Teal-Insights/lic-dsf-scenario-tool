@@ -53,7 +53,7 @@ Historical and tailored stress tests, public debt service/revenue, all annual ou
 | Review required | A reported inconsistency needs investigation | Permission to treat the result as verified |
 | Exact Excel comparison | Only the exact workbook, inputs, engine and probes covered by its receipt | Other revisions, machines, formulas or unsupported outputs |
 
-Fresh Excel acceptance is not established for this preview. Hash and sentinel checks must not be presented as substitutes. A valid numerical check retains absolute tolerance `1e-6`, exact error-class comparison and first-divergence reporting; coverage must name the actual probes.
+A scoped Excel receipt for the official illustrative No investment and Larger assumed benefit cases is recorded in [verification](verification.md#compare-a-scenario-with-excel). It establishes agreement for that workbook, those inputs, that engine revision and the named probes. Hash and sentinel checks must not be presented as substitutes. A valid numerical check retains absolute tolerance `1e-6`, exact error-class comparison and first-divergence reporting; coverage must name the actual probes.
 
 ## Saved records and portability
 

@@ -13,7 +13,7 @@ A calculation can complete before it has been independently verified against Mic
 | Cross-platform comparison | Whether tested Mac and Windows runs agree within the fixed tolerance | Acceptance on every laptop or institutional configuration |
 | Fresh Excel comparison | Whether the same inputs agree with a separately recalculated Excel workbook | Economic plausibility or official endorsement |
 
-**Fresh Excel verification remains pending.** Do not describe this preview as fully Excel-verified. The scenario assumptions still require an analyst's judgment even if a numerical comparison passes.
+**This preview is not fully Excel-verified.** One scoped comparison is recorded below. A successful calculation remains labelled pending that check. The scenario assumptions still require an analyst's judgment even if a numerical comparison passes.
 
 ## Reproduce the official-example regression check
 
@@ -87,7 +87,30 @@ A fresh Excel comparison requires the exact workbook and complete scenario defin
 
 The [input/output reference](workbooks-inputs-outputs.md) identifies the supported rows, years and indicators. The exported comparison JSON includes the input definition and output cell references. Compare the same cells and units; do not compare rounded chart labels. Keep missing values and spreadsheet error classes distinct from numbers.
 
-Retain the original and recalculated workbook fingerprints, Excel version/platform, input mapping, recalculation procedure, result differences and fixed tolerance. Record the first divergence and investigate it. This describes the evidence needed; it is not a completed or fully automated Excel-verification procedure for this release.
+Retain the original and recalculated workbook fingerprints, Excel version/platform, input mapping, recalculation procedure, result differences and fixed tolerance. Record the first divergence and investigate it. This describes the evidence needed. The receipt below is one such comparison. This release has no automated Excel-verification procedure.
+
+### 9 November 2026: official illustrative cases
+
+Desktop Microsoft Excel recalculated a separate byte copy of the official illustrative workbook for **No investment** and for **Larger assumed benefit**. The publisher file kept its original bytes. Its SHA-256 is `3a0a0b80c7cbc95ac953f25ecae0b437129d669ceb8aeefb54ab86dc8727ea86` (5,504,930 bytes).
+
+Excel was 16.0.20527.20112, 64-bit, on 64-bit Windows. Macros were disabled, workbook events did not run, and external links were not updated. Calculation stayed manual while the inputs were entered. `CalculateFullRebuild` then finished with calculation state done. Input 1 - Basics C18 stayed 2024.
+
+Each copy received the cells the application writes: all 13 customized-scenario delta paths across the 21 projection years, and Customized Scenario-External C21, C23 and C24. Both cases enter interest 0.08, grace 4 and maturity 9, in place of the formulas that reference Input 7. No investment enters an explicit zero on every delta cell. Larger assumed benefit enters the built-in investment paths. The scenario definition hashes are `41bce725bd01d9d0e3a1ab6221918659222f365014c6a85ff1d049958dae6185` and `2631b5f012cb7b812ec340346dc891e652d4fb2d062ed32f7f726c93a2f3a7a6`.
+
+On CPython 3.13.5, `lic-dsf-2025-08-12` 0.1.0 at `05d7f03862348df18d2b45a5d4a86152836edda4` with `generated_library_chart_series` calculated both cases as `computed_unverified`. Each matched the publisher's saved cache on 76 of 76 probes. The application still records `exact_excel: pending` for those runs. This receipt does not change that label.
+
+Excel's calculated values were compared with the library samples for the same inputs. The check used absolute tolerance `1e-6`, exact error-class equality, and the 76 probes from the supported geometry: six indicators at offsets 0, 2, 5, 10, 15 and 20, for the reference-baseline row and the customized row, plus the four sentinels. There was no first divergence.
+
+| Case | Probes within tolerance | Largest absolute difference |
+| --- | --- | --- |
+| No investment | 76 of 76 | 5.684341886080802e-14 |
+| Larger assumed benefit | 76 of 76 | 5.684341886080802e-14 |
+
+The four sentinels matched as text. The publisher cache of C21 is the formula result 0.07982399291786421. For No investment, the largest absolute difference between the library samples and that saved cache was also 5.684341886080802e-14. For Larger assumed benefit, 24 customized probes moved away from the publisher cache. The largest move was 7.946210060606688, on public PV of debt to revenue at the offset-5 customized cell. Those moved cells are inside the Excel pass above.
+
+After both recalculations, CI Summary I11, I10, I13, I14 and L9 were 40, 180, 15, 18 and 55. The public-debt benchmark stayed 55. The library reads these cached threshold cells and does not recalculate them. The saved recalculated copies have SHA-256 `fc7fdec406494e87d577caf5fe76b14b4c6c36d55d6ce4f3bde9183b75dc9739` (No investment) and `c79049e05f4fbf30a477dd5664730ada9d11094d833e668c8566e4b073395142` (Larger assumed benefit).
+
+The receipt covers this workbook, these two built-in definitions, this engine revision and these probes. Smaller assumed benefit, other outputs, other workbooks and other machines are outside it.
 
 ## If a check fails
 

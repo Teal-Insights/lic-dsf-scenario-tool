@@ -2,7 +2,7 @@
 
 Explore how alternative macroeconomic and financing assumptions change debt indicators in a supported World Bank LIC-DSF workbook. Save separate scenarios and their explanations, compare the results and export a briefing with charts and underlying data.
 
-**Early-stage alpha, developed iteratively.** We welcome co-design with ministries of finance, international financial institutions and other stakeholders. This is not an official IMF or World Bank product. A successful calculation is not independent fresh Excel verification, which remains pending.
+**Early-stage alpha, developed iteratively.** We welcome co-design with ministries of finance, international financial institutions and other stakeholders. This is not an official IMF or World Bank product. A successful calculation is not independent fresh Excel verification. Results stay labelled pending that check. [Verification](docs/verification.md) records a scoped Excel comparison for the official illustrative No investment and Larger assumed benefit cases; other workbooks and outputs remain outside that receipt.
 
 ## Start here
 
