@@ -2,9 +2,10 @@
 
 These checks state the correct behavior. Do not weaken them, skip them, or
 retarget a shifted projection year at the 2024 snapshot. On
-lic-dsf-2025-08-12 e0f5a8c2359e, a negative growth delta is accepted and a
-projection year is read from cached formula headers. Financing terms typed
-over Customized Scenario-External C21, C23 and C24 are still ignored.
+lic-dsf-2025-08-12 722504c5caac, a negative growth delta is accepted, a
+projection year is read from cached formula headers, and financing terms
+typed over Customized Scenario-External C21, C23 and C24 replace the
+formula defaults.
 
 The workbook is the public library test fixture. It is downloaded when it is
 not already available. It is not committed here.
@@ -21,7 +22,7 @@ from lic_dsf.compare import ATOL, compare_one
 from lic_dsf.ida21 import PUBLIC, EXTERNAL, cell
 from lic_dsf.workbook_cells import apply_number_cells, refresh_cached_numbers
 
-PIN = "e0f5a8c2359e6931bb43adfdcb16a754232b2ffd"
+PIN = "722504c5caac3d8318dc46ee0fbb9ff568b87c18"
 FIXTURE_URL = (
     "https://github.com/Teal-Insights/lic-dsf-2025-08-12/raw/"
     f"{PIN}/tests/fixtures/workbook.xlsm"

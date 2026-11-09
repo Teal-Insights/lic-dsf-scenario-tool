@@ -214,3 +214,12 @@ On this revision the no-change control and the lower-growth case both matched th
 `customized_public_delta` accepts a negative growth adjustment, including −1 percentage point. Projection years follow cached formula year headers when those caches move with the workbook's current year. The library does not recalculate the header formulas itself, so a current-year edit whose header caches still say 2024 stays on 2024. Replacing those headers with literals is not the same as a recalculated save.
 
 One defect remains unresolved and is not a product requirement. User-entered financing terms that replace the formulas in Customized Scenario-External C21, C23 and C24 are still ignored. The generated financing series continues to read Input 7. The check for those three cells stays failed. Do not skip it, relax the tolerance, or edit the regression fixture to hide it.
+
+
+## 9 November 2026: calculation library revision 722504c
+
+The pinned `lic-dsf-2025-08-12` revision is now `722504c5caac3d8318dc46ee0fbb9ff568b87c18`. The package version remains 0.1.0. This identity change invalidates saved current-run matches. The official-example regression fixture was not rewritten, and fresh Excel verification was not run.
+
+On this revision the no-change control and the lower-growth case both matched the existing regression reference again: 606 leaves each, at tolerance `1e-6`.
+
+`from_workbook` now imports financing terms typed over Customized Scenario-External C21, C23 and C24. The check that those cells replace the formula defaults passes: interest rate 0.125, grace 7 years, maturity 40 years. The new-debt interest series that reads those terms changes with them. On the official illustrative workbook, a zero-delta scenario with those three terms left all 36 sampled chart indicators inside the same tolerance. That observation is not a new product requirement, and it was not a fresh Excel comparison.
