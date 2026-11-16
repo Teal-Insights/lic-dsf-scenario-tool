@@ -245,3 +245,15 @@ The desktop time limit and subprocess lease are not available in the tab. One ca
 ## 16 November 2026: in-browser application
 
 This supersedes the 9 November 2026 label "proof of concept" for the in-browser workspace. `poc/browser/` serves the existing five-step page and answers its routes with Pyodide in the tab. That is the in-browser application. The desktop application remains available through the local server. The directory name `poc` is unchanged. The library pin, result contract, evidence labels, absolute tolerance `1e-6`, and the 9 November Excel receipt are unchanged.
+
+## 16 November 2026: public in-browser address
+
+The supported public address of the in-browser application is `https://d3iptw2fvdc3fp.cloudfront.net/`. `/` is the five-step workspace. The desktop application remains available through the local server. This address is the static in-browser application. The illustrative hosted server in [the hosted-pilot note](hosted-pilot.md) is a separate service.
+
+CloudFront terminates HTTPS for that hostname. Its origin is the instance public DNS name, reached over HTTP on port 80, with an origin response timeout of 60 seconds. CloudFront requires that DNS name; a raw IP address is rejected as an origin. If the instance public address changes, the origin hostname has to be updated to match. The distribution ID is `E17B33HD6XO4KP`.
+
+The origin sends `Cache-Control: no-store`. Cache policy `lic-dsf-browser-trial` (`08eaaa2f-248d-4827-9cdf-3f98beef0938`) sets a minimum and default TTL of 86400 seconds and a maximum of 31536000 seconds. The minimum TTL is what keeps those responses cached. Cookies, query strings and request headers are outside the cache key. Gzip and Brotli are enabled. Paths are reused across versions, so a query string does not select a new version.
+
+After the origin is serving the new files, invalidate `/*` on `E17B33HD6XO4KP` and wait until that invalidation is completed. The next request for a URL is a miss, and the request after that is a hit. On 16 November 2026, invalidation `I4R42TUIO7JGCIZZVCC137Y5I9` completed. `/` and `/app-worker.js` each then returned a miss followed by a hit. `/` was 165,590 bytes and `/app-worker.js` was 4,999 bytes.
+
+The page answers `/api/` in the browser. The origin receives GET and HEAD for the page, scripts, wheels, fonts and, when the analyst asks, the official template. Saved scenarios and the workbook copy belong to this hostname. The Python runtime is downloaded from jsDelivr. The library pin, result contract, evidence labels, absolute tolerance `1e-6`, and the 9 November Excel receipt are unchanged.

@@ -2,6 +2,8 @@
 
 The application runs on one computer. A loopback-only HTTP service serves the bundled browser page; workbook intake, scenario persistence, calculations and chart exports run locally. There is no required application account, hosted upload or telemetry service.
 
+The public in-browser application is served at `https://d3iptw2fvdc3fp.cloudfront.net/`. CloudFront serves the `poc/browser/` files over HTTPS. Pyodide in the tab runs the page and `calculate`. The analyst's workbook and saved scenarios stay in the browser profile for that address. The origin receives requests for those files and, when asked, fetches the official template.
+
 ```mermaid
 flowchart TD
     D[User selects official example] --> K{Verified local copy?}
@@ -36,7 +38,7 @@ The diagram includes the optional external example-download route and the local 
 | `chart_context.py` | Validate explicit outward text and its full source/revision binding |
 | `app.py` and `web.html` | Local interaction, request checks, immutable upload copies and selected export fields |
 | `worker.py` | Foreground calculation with parent-liveness and deadline checks |
-| `poc/browser/` | In-browser application. Pyodide runs the same page and `calculate` function in the tab. The static server does not receive the analyst's workbook |
+| `poc/browser/` | In-browser application, including the public address `https://d3iptw2fvdc3fp.cloudfront.net/`. Pyodide runs the same page and `calculate` function in the tab. The static server does not receive the analyst's workbook |
 | `charts.py` | Two presentation views over the same saved numerical record; no recalculation |
 
 The original source workbook is not overwritten. Runtime data and diagnostic records belong outside source and package directories. A saved revision binds its workbook and complete inputs; a worker completing after an edit cannot attach its result to the new revision. Chart view and saved context-label changes do not change calculations. Comparison/export reads the saved context and numerical records from the same database snapshot and checks the client’s expected source and context revision. No label is inferred from an internal filename or journal.

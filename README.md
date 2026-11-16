@@ -6,6 +6,7 @@ Explore how alternative macroeconomic and financing assumptions change debt indi
 
 ## Start here
 
+- [Open the in-browser application](https://d3iptw2fvdc3fp.cloudfront.net/)
 - [Documentation and walkthroughs](https://teal-insights.github.io/lic-dsf-scenario-tool/)
 - [Releases: Windows and Mac downloads](https://github.com/Teal-Insights/lic-dsf-scenario-tool/releases)
 - [Installation guide](docs/installation.md) and [first scenario walkthrough](docs/tutorial.md)
@@ -16,7 +17,7 @@ Use the assets attached to the alpha release page; if no downloads are listed, t
 
 ## In-browser application
 
-From a source checkout, `python poc/browser/serve.py` prints two loopback addresses. `/` is the five-step workspace running in Pyodide in the tab. `/index.html` is the smaller calculation page. The first visit downloads the Python runtime from jsDelivr. An analyst's workbook is not sent to that static server. Choosing the official example asks the local server to fetch the published template, because the publisher's site does not allow the browser to download it. Saved cases and the workbook copy stay in the browser profile for this site. This does not add Excel verification. The library pin and the scoped 9 November receipt are unchanged. See the [architecture note](docs/architecture.md) and the [decision record](docs/decisions.md).
+The supported public address is [https://d3iptw2fvdc3fp.cloudfront.net/](https://d3iptw2fvdc3fp.cloudfront.net/). `/` is the five-step workspace running in Pyodide in the tab. `/index.html` is the smaller calculation page. The first visit downloads the Python runtime from jsDelivr. An analyst's workbook is not sent to that server. Choosing the official example asks the server to fetch the published template, because the publisher's site does not allow the browser to download it. Saved cases and the workbook copy stay in the browser profile for this address. From a source checkout, `python poc/browser/serve.py` prints two loopback addresses for the same pages. This does not add Excel verification. The library pin and the scoped 9 November receipt are unchanged. See the [architecture note](docs/architecture.md) and the [decision record](docs/decisions.md).
 
 ## Try the built-in walkthrough
 

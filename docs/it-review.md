@@ -11,7 +11,8 @@ For this version, forward this page or use your browser's print-to-PDF function.
 | Question | Answer |
 | --- | --- |
 | Publisher and source | Teal Insights; Windows code-signing identity TEAL EMERY INC.; [public source repository](https://github.com/Teal-Insights/lic-dsf-scenario-tool) |
-| Intended environment | A trusted single-user desktop. No public proxy, shared server or untrusted concurrent local users/processes. |
+| Intended environment | A trusted single-user desktop for the installed application. No public proxy, shared server or untrusted concurrent local users/processes for that local service. |
+| Public in-browser application | [https://d3iptw2fvdc3fp.cloudfront.net/](https://d3iptw2fvdc3fp.cloudfront.net/). Calculation runs in the visitor's browser. The service receives requests for the page, scripts, wheels and fonts, and fetches the official template when the visitor asks. |
 | Runtime | Bundled CPython and pinned dependencies; the interface opens in the default browser. No Python or Excel installation is needed for desktop-package calculations. |
 | Privileges | Extraction and execution under the user's account; no administrator installer, system service or scheduled task is part of the package. Institutional application controls may still restrict execution. |
 | Local listener | HTTP on `127.0.0.1`, an operating-system-selected port. The launcher prints/opens the address. |
@@ -61,7 +62,8 @@ Alpha.2 adds the one-click example route. Its verified cache supports reuse with
 | Get the reference workbook | On the built-in example action, the local app downloads the pinned HTTPS World Bank file, checks its identity and caches it. No private workbook or scenario inputs are sent. The publisher sees ordinary connection information, such as IP address. The workbook is not bundled. Older builds use the browser download route. |
 | Install from source | Python tooling fetches the pinned calculation library from GitHub and dependencies from package repositories. The desktop ZIP avoids this installation step. |
 | Use the local interface | Browser connects to loopback. Interface fonts and chart resources are bundled. |
-| Calculate and export | Local Python processing; no hosted calculation API or telemetry service is required by the application. |
+| Use the public in-browser application | The browser loads the page from CloudFront over HTTPS. The first visit also downloads the Python runtime from jsDelivr. Application routes stay in the browser. The official-example action causes the origin to fetch the pinned World Bank file. Saved work remains in the browser profile for that hostname. CloudFront reaches the origin over HTTP on port 80. Responses are cached for at least one day despite the origin `Cache-Control: no-store` header. |
+| Calculate and export | Local Python processing for the desktop application, and in-browser processing for the public address. No hosted calculation API or telemetry service is required by the application. |
 | Follow help links or send feedback | The user deliberately opens external documentation/GitHub/World Bank/IMF links or an email application. |
 
 These statements describe the application and intended workflow. Browser extensions, operating-system services, cloud sync and endpoint software have their own network behavior. Representative offline analysis and observation of connected outbound attempts, including errors and diagnostics, remain distinct acceptance evidence. Do not interpret the table as an unconditional no-egress guarantee.

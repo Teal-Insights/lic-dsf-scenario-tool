@@ -2,6 +2,8 @@
 
 The application reads a selected workbook and keeps a separate copy in the chosen data directory. It stores scenarios, results and journal entries locally. The original selected file is not overwritten. The local service binds to `127.0.0.1`; it has no hosted upload service or account system. These design choices do not constitute a completed network or security audit.
 
+The public in-browser application at `https://d3iptw2fvdc3fp.cloudfront.net/` keeps the workbook copy and saved scenarios in the browser profile for that address. Clearing the site's data removes them. The server receives requests for the application files and fetches the official template when the analyst asks. A workbook the analyst supplies stays in the browser. Saved work at that address is separate from a desktop data directory.
+
 The new built-in example route downloads the exact official template directly from the World Bank when you request it. Internet is needed for the first download; a verified local copy supports later offline use. The request carries no private workbook or scenario inputs, though the publisher receives ordinary connection information such as IP address. Prepared teaching assumptions are local application files. This route is included in the alpha.2 source. Check [installation](installation.md) for matching download availability. Source checks do not establish desktop launch acceptance or a completed offline/network audit.
 
 ## Know what is retained
