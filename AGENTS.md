@@ -4,7 +4,7 @@ Read `README.md`, `docs/product-contract.md`, `docs/decisions.md`, and `docs/pri
 
 This repository contains general reusable software and public documentation only. Do not import private-project history, customer files, country-specific examples or plans, correspondence, analyst records, exports, logs, screenshots, caches or local provenance paths. Do not copy an existing mixed-purpose repository to seed this one.
 
-Use only public-source fixtures with explicit provenance or independently authored neutral synthetic tests. New or changed content requires the release review, including generated artifacts and reachable history. Ignore rules do not authorize publication. Do not bypass local publication hooks or edit review receipts.
+Use only public-source fixtures with explicit provenance or independently authored neutral synthetic tests. New or changed content requires the release review, including generated artifacts and reachable history. Ignore rules do not authorize publication. Do not bypass local publication hooks or edit review receipts. AI agents should never assign code reviewers; this is strictly a human responsibility.
 
 Code and history from private repositories, and any confidential workbook or data derived from one, never enter this repository or its issues, pull requests, releases, Pages or CI artifacts. If a change seems to need them, stop and ask the maintainer.
 
