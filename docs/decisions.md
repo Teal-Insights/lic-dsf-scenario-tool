@@ -250,10 +250,18 @@ This supersedes the 9 November 2026 label "proof of concept" for the in-browser 
 
 The supported public address of the in-browser application is `https://d3iptw2fvdc3fp.cloudfront.net/`. `/` is the five-step workspace. The desktop application remains available through the local server. This address is the static in-browser application. The illustrative hosted server in [the hosted-pilot note](hosted-pilot.md) is a separate service.
 
-CloudFront terminates HTTPS for that hostname. Its origin is the instance public DNS name, reached over HTTP on port 80, with an origin response timeout of 60 seconds. CloudFront requires that DNS name; a raw IP address is rejected as an origin. If the instance public address changes, the origin hostname has to be updated to match. The distribution ID is `E17B33HD6XO4KP`.
+CloudFront terminates HTTPS for that hostname. The distribution ID is `E17B33HD6XO4KP`. Its first origin was the instance public DNS name over HTTP on port 80. The private S3 origin below supersedes that origin.
 
 The origin sends `Cache-Control: no-store`. Cache policy `lic-dsf-browser-trial` (`08eaaa2f-248d-4827-9cdf-3f98beef0938`) sets a minimum and default TTL of 86400 seconds and a maximum of 31536000 seconds. The minimum TTL is what keeps those responses cached. Cookies, query strings and request headers are outside the cache key. Gzip and Brotli are enabled. Paths are reused across versions, so a query string does not select a new version.
 
 After the origin is serving the new files, invalidate `/*` on `E17B33HD6XO4KP` and wait until that invalidation is completed. The next request for a URL is a miss, and the request after that is a hit. On 16 November 2026, invalidation `I4R42TUIO7JGCIZZVCC137Y5I9` completed. `/` and `/app-worker.js` each then returned a miss followed by a hit. `/` was 165,590 bytes and `/app-worker.js` was 4,999 bytes.
 
-The page answers `/api/` in the browser. The origin receives GET and HEAD for the page, scripts, wheels, fonts and, when the analyst asks, the official template. Saved scenarios and the workbook copy belong to this hostname. The Python runtime is downloaded from jsDelivr. The library pin, result contract, evidence labels, absolute tolerance `1e-6`, and the 9 November Excel receipt are unchanged.
+The page answers `/api/` in the browser. Saved scenarios and the workbook copy belong to this hostname. The Python runtime is downloaded from jsDelivr. The library pin, result contract, evidence labels, absolute tolerance `1e-6`, and the 9 November Excel receipt are unchanged.
+
+## 16 November 2026: private S3 origin
+
+This supersedes the EC2 origin in the public in-browser address decision above. Distribution `E17B33HD6XO4KP` reads a private S3 bucket through origin access control. The bucket does not allow public reads. Objects carry `Cache-Control: no-store`, and the cache policy above still keeps CloudFront copies for at least one day.
+
+`/` and `/app` are rewritten to the stored five-step page. `/index.html` remains the smaller calculation page. The checked official template is stored with the site files. A publish uploads the new objects and then invalidates `/*`. On 16 November 2026, invalidation `I2M9LGL2DFGAL4T84WS7OZZBWO` completed after the origin change. `/` was a miss and the following request was a hit. `/` and `/app` were 165,590 bytes. `/index.html` was 9,501 bytes. The template object was 5,504,930 bytes and its SHA-256 remained `3a0a0b80c7cbc95ac953f25ecae0b437129d669ceb8aeefb54ab86dc8727ea86`.
+
+The bucket, access-control, and route-function identifiers are kept in the ignored `.env` file. They are not part of the public source. The template object is not part of the source either.

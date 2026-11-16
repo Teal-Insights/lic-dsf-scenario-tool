@@ -2,7 +2,7 @@
 
 The application runs on one computer. A loopback-only HTTP service serves the bundled browser page; workbook intake, scenario persistence, calculations and chart exports run locally. There is no required application account, hosted upload or telemetry service.
 
-The public in-browser application is served at `https://d3iptw2fvdc3fp.cloudfront.net/`. CloudFront serves the `poc/browser/` files over HTTPS. Pyodide in the tab runs the page and `calculate`. The analyst's workbook and saved scenarios stay in the browser profile for that address. The origin receives requests for those files and, when asked, fetches the official template.
+The public in-browser application is served at `https://d3iptw2fvdc3fp.cloudfront.net/`. CloudFront reads a private S3 bucket over HTTPS. `/` and `/app` are the five-step workspace, and `/index.html` is the smaller calculation page. Pyodide in the tab runs the page and `calculate`. The analyst's workbook and saved scenarios stay in the browser profile for that address. The checked official template is one of the stored files.
 
 ```mermaid
 flowchart TD

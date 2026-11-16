@@ -18,4 +18,4 @@ The [release-control procedure](release-controls.md) distinguishes source admiss
 
 The local preview has no public feed or automated content moderation. Project maintainers still need reporting and removal arrangements for public contributor/support surfaces. Any future hosted content feature must define operator responsibilities, retention and safe handling before launch. See the [DPG evidence register](dpg-evidence.md) and [security policy](../SECURITY.md).
 
-The public in-browser application at `https://d3iptw2fvdc3fp.cloudfront.net/` serves the application files and, on request, the official template. Analyst workbooks, scenarios and notes remain in the visitor's browser profile for that address. Publishing the address does not publish a visitor's workbook.
+The public in-browser application at `https://d3iptw2fvdc3fp.cloudfront.net/` serves the application files and the checked official template from a private S3 bucket. Analyst workbooks, scenarios and notes remain in the visitor's browser profile for that address. Publishing the address does not publish a visitor's workbook. The template object is not part of the source repository.
