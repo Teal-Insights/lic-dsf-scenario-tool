@@ -241,3 +241,7 @@ The pinned library stays `lic-dsf-2025-08-12` 0.1.0 at `05d7f03862348df18d2b45a5
 The analyst's workbook is not sent to the static server. The official illustrative template is an exception: the publisher's host does not allow the browser to download it, so the local server fetches that fixed public file only after the analyst asks, checks its size and SHA-256, and gives those bytes to the tab. Saved scenarios and the workbook copy then remain in the browser profile for this site. Clearing the site's data removes them. A refresh during a calculation can lose that unfinished run; the saved inputs remain.
 
 The desktop time limit and subprocess lease are not available in the tab. One calculation occupies the worker until it returns, so a save or poll waits behind it. The page already shows that a calculation is running. Chart images use Pyodide's matplotlib and the package fonts. This page is not a release and does not replace the local server.
+
+## 16 November 2026: in-browser application
+
+This supersedes the 9 November 2026 label "proof of concept" for the in-browser workspace. `poc/browser/` serves the existing five-step page and answers its routes with Pyodide in the tab. That is the in-browser application. The desktop application remains available through the local server. The directory name `poc` is unchanged. The library pin, result contract, evidence labels, absolute tolerance `1e-6`, and the 9 November Excel receipt are unchanged.

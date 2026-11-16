@@ -1,4 +1,4 @@
-"""Build the pure-Python wheels this proof of concept loads in Pyodide.
+"""Build the pure-Python wheels the in-browser application loads in Pyodide.
 
 NumPy and PyYAML come from the Pyodide build. These wheels are generated
 locally and are not part of the application archive.

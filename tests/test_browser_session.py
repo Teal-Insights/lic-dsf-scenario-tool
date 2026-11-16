@@ -1,9 +1,13 @@
-"""Route checks for the in-browser workspace. No Pyodide, network or calculation."""
+"""Route checks for the in-browser workspace. No Pyodide, external network or calculation."""
+import http.client
 import importlib.util
 import json
 import sys
 import tempfile
+import threading
 import unittest
+from functools import partial
+from http.server import ThreadingHTTPServer
 from pathlib import Path
 from unittest.mock import patch
 
@@ -149,11 +153,71 @@ class BrowserSessionTests(unittest.TestCase):
         page = serve.application_page().decode()
         self.assertIn('<script src="/browser-bridge.js"></script>', page)
         self.assertIn('id="browserRuntime"', page)
-        self.assertIn(">In-browser proof of concept<", page)
+        self.assertIn(">In-browser application<", page)
         self.assertIn('src:url(\'/fonts/Inter-Regular.otf\')', page)
         source = (ROOT / "src" / "lic_dsf" / "web.html").read_text(encoding="utf-8")
         self.assertNotIn("browser-bridge.js", source)
         self.assertIn(">Local workspace<", source)
+
+
+class HeadMatchesGetTests(unittest.TestCase):
+    def setUp(self):
+        self.server = ThreadingHTTPServer(
+            ("127.0.0.1", 0), partial(serve.Handler, directory=str(serve.HERE)))
+        self.thread = threading.Thread(target=self.server.serve_forever, daemon=True)
+        self.thread.start()
+
+    def tearDown(self):
+        self.server.shutdown()
+        self.server.server_close()
+        self.thread.join(timeout=5)
+
+    def exchange(self, method, target):
+        host, port = self.server.server_address
+        connection = http.client.HTTPConnection(host, port, timeout=10)
+        connection.request(method, target)
+        response = connection.getresponse()
+        body = response.read()
+        headers = {key.lower(): value for key, value in response.getheaders()}
+        result = response.status, headers, body
+        connection.close()
+        return result
+
+    def assert_head_matches_get(self, target):
+        status, headers, body = self.exchange("HEAD", target)
+        get_status, get_headers, get_body = self.exchange("GET", target)
+        self.assertEqual(status, get_status)
+        self.assertEqual(headers["content-type"], get_headers["content-type"])
+        self.assertEqual(headers["content-length"], get_headers["content-length"])
+        self.assertEqual(int(headers["content-length"]), len(get_body))
+        self.assertEqual(body, b"")
+
+    def test_head_matches_the_generated_page_font_and_static_file(self):
+        self.assert_head_matches_get("/")
+        self.assert_head_matches_get("/app")
+        self.assert_head_matches_get("/fonts/Inter-Regular.otf")
+        self.assert_head_matches_get("/fonts/missing.otf")
+        self.assert_head_matches_get("/index.html")
+        status, _, body = self.exchange("GET", "/")
+        self.assertEqual(status, 200)
+        self.assertIn(b">In-browser application<", body)
+        page_length = len(body)
+        _, _, index_body = self.exchange("GET", "/index.html")
+        self.assertNotEqual(page_length, len(index_body))
+
+    def test_head_official_example_reports_the_generated_bytes(self):
+        payload = b"example-bytes"
+        with patch.object(serve, "official_example_bytes", return_value=payload) as generated:
+            status, headers, body = self.exchange("HEAD", "/official-example.xlsm")
+            get_status, get_headers, get_body = self.exchange("GET", "/official-example.xlsm")
+        self.assertEqual(generated.call_count, 2)
+        self.assertEqual(status, 200)
+        self.assertEqual(get_status, 200)
+        self.assertEqual(body, b"")
+        self.assertEqual(get_body, payload)
+        self.assertEqual(headers["content-length"], str(len(payload)))
+        self.assertEqual(headers["content-type"], get_headers["content-type"])
+        self.assertEqual(headers["content-type"], "application/vnd.ms-excel.sheet.macroEnabled.12")
 
 
 if __name__ == "__main__":
