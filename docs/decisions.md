@@ -248,7 +248,7 @@ This supersedes the 9 November 2026 label "proof of concept" for the in-browser 
 
 ## 16 November 2026: public in-browser address
 
-The supported public address of the in-browser application is `https://d3iptw2fvdc3fp.cloudfront.net/`. `/` is the five-step workspace. The desktop application remains available through the local server. This address is the static in-browser application. The illustrative hosted server in [the hosted-pilot note](hosted-pilot.md) is a separate service.
+The supported public address of the in-browser application is `https://d3iptw2fvdc3fp.cloudfront.net/`. `/` is the five-step workspace. The desktop application remains available through the local server. This address is the static in-browser application. The illustrative hosted server described in `docs/hosted-pilot.md` is a separate service.
 
 CloudFront terminates HTTPS for that hostname. The distribution ID is `E17B33HD6XO4KP`. Its first origin was the instance public DNS name over HTTP on port 80. The private S3 origin below supersedes that origin.
 
