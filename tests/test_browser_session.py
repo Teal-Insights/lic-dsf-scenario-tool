@@ -149,7 +149,7 @@ class BrowserSessionTests(unittest.TestCase):
         page = serve.application_page().decode()
         self.assertIn('<script src="/browser-bridge.js"></script>', page)
         self.assertIn('id="browserRuntime"', page)
-        self.assertIn(">In-browser proof of concept<", page)
+        self.assertIn(">In-browser application<", page)
         self.assertIn('src:url(\'/fonts/Inter-Regular.otf\')', page)
         source = (ROOT / "src" / "lic_dsf" / "web.html").read_text(encoding="utf-8")
         self.assertNotIn("browser-bridge.js", source)

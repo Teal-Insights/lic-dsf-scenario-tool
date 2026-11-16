@@ -1,4 +1,4 @@
-"""Application routes for the in-browser proof of concept.
+"""Application routes for the in-browser application.
 
 The desktop application calculates in a subprocess. Pyodide has no
 subprocess, so this module answers the same routes in the calling
@@ -168,7 +168,7 @@ class BrowserSession:
             example_label="Official IDA21 illustrative example",
             illustrative_example=False,
             edition_title="LIC-DSF Scenario Analysis Tool",
-            edition_note=("In-browser proof of concept. Calculation runs in this tab with the "
+            edition_note=("In-browser application. Calculation runs in this tab with the "
                           "generated library. Saved work stays in this browser profile. "
                           "Fresh Excel verification remains pending."),
         ))

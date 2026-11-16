@@ -1,4 +1,4 @@
-"""Serve the in-browser proof of concept on loopback.
+"""Serve the in-browser application on loopback.
 
     python poc/browser/serve.py
 
@@ -40,7 +40,7 @@ def application_page() -> bytes:
         1,
     )
     page = page.replace("<body>\n", "<body>\n" + BANNER, 1)
-    page = page.replace(">Local workspace<", ">In-browser proof of concept<", 1)
+    page = page.replace(">Local workspace<", ">In-browser application<", 1)
     return page.encode("utf-8")
 
 
@@ -59,7 +59,7 @@ def official_example_bytes() -> bytes:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Serve the in-browser LIC-DSF proof of concept.")
+    parser = argparse.ArgumentParser(description="Serve the in-browser LIC-DSF application.")
     parser.add_argument("--port", type=int, default=8765)
     parser.add_argument("--rebuild", action="store_true")
     args = parser.parse_args()
