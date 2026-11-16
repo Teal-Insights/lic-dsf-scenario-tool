@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LIC-DSF browser proof of concept</title>
+  <style>
+    :root { color-scheme: light; --navy: #143E5A; --cyan: #0094BC; --ink: #2A2A2A; --muted: #5C6770; --line: #D4D0CA; --ivory: #FAFAF7; --paper: #fff; }
+    body { margin: 0; background: var(--ivory); color: var(--ink); font: 16px/1.45 "Segoe UI", sans-serif; }
+    main { max-width: 52rem; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+    h1 { margin: 0 0 .25rem; color: var(--navy); font-size: 1.6rem; font-weight: 650; }
+    h2 { margin: 0 0 .5rem; color: var(--navy); font-size: 1.05rem; }
+    p { margin: .4rem 0; }
+    .kicker { color: var(--muted); font-size: .85rem; letter-spacing: .04em; text-transform: uppercase; }
+    .banner, section { background: var(--paper); border: 1px solid var(--line); padding: .9rem 1rem; margin: 1rem 0; }
+    .banner { border-left: 4px solid var(--cyan); }
+    label { display: block; font-weight: 650; margin-bottom: .35rem; }
+    select, button, input { font: inherit; }
+    select { min-width: 18rem; padding: .35rem; }
+    button { background: var(--navy); color: #fff; border: 0; padding: .5rem .9rem; margin-right: .5rem; }
+    button:disabled { opacity: .45; }
+    button.secondary { background: transparent; color: var(--navy); border: 1px solid var(--navy); }
+    #status { min-height: 1.4em; color: var(--navy); }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: .4rem .5rem; border-bottom: 1px solid var(--line); text-align: left; }
+    td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+    .meta { color: var(--muted); font-size: .92rem; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+<main>
+  <p class="kicker">Proof of concept</p>
+  <h1>LIC-DSF calculation in the browser</h1>
+  <p>This page runs the pinned <code>lic-dsf-2025-08-12</code> library on your computer. It is not a release and it is not an Excel verification.</p>
+  <div class="banner">
+    <p>Choose the workbook each visit. The file stays in this tab's memory and is not uploaded or saved by the page. The case you pick is remembered in local storage for that workbook's fingerprint.</p>
+    <p>The Python runtime is downloaded from jsDelivr. That request does not include the workbook.</p>
+    <p><a href="/">Open the full application</a>. It uses this same in-browser library for the five-step workspace. Saved cases stay in this browser profile.</p>
+  </div>
+  <p id="status" role="status">Starting.</p>
+
+  <section>
+    <h2>1. Workbook</h2>
+    <label for="file">Supported LIC-DSF workbook</label>
+    <input id="file" type="file" accept=".xlsx,.xlsm,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel.sheet.macroEnabled.12">
+    <p id="identity" class="meta"></p>
+  </section>
+
+  <section>
+    <h2>2. Case</h2>
+    <label for="case">Saved inputs for this fingerprint</label>
+    <select id="case" disabled></select>
+    <p class="meta">Zero adjustment and No investment calculate on the official example. The two investment cases include a small negative revenue adjustment, which this library revision rejects. No investment did not move the sampled external debt-to-GDP figures relative to the workbook's own customized values.</p>
+  </section>
+
+  <section>
+    <h2>3. Calculate</h2>
+    <button id="calculate" type="button" disabled>Calculate</button>
+    <button id="download" class="secondary hidden" type="button">Download result JSON</button>
+    <p id="evidence" class="meta"></p>
+    <table id="points" class="hidden">
+      <caption class="meta">External debt to GDP, present value, at the sampled years.</caption>
+      <thead><tr><th>Year</th><th class="num">Reference baseline</th><th class="num">This case</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </section>
+</main>
+<script type="module">
+const status = document.querySelector("#status");
+const fileInput = document.querySelector("#file");
+const identity = document.querySelector("#identity");
+const caseSelect = document.querySelector("#case");
+const calculateButton = document.querySelector("#calculate");
+const downloadButton = document.querySelector("#download");
+const evidence = document.querySelector("#evidence");
+const table = document.querySelector("#points");
+const worker = new Worker(new URL("./worker.js", import.meta.url), { type: "module" });
+
+let ready = false;
+let inspection = null;
+let workbook = null;
+let result = null;
+let timer = null;
+
+function storageKey(sha) {
+  return "lic-dsf-browser-poc:" + sha;
+}
+
+function show(text) {
+  status.textContent = text;
+}
+
+function formatNumber(value) {
+  if (typeof value !== "number" || !Number.isFinite(value)) return "";
+  if (value === 0) return "0.00";
+  const rounded = value.toFixed(2);
+  return rounded === "0.00" || rounded === "-0.00" ? "≈0.00" : rounded;
+}
+
+function selectedCase() {
+  return inspection?.cases.find((item) => item.id === caseSelect.value) || null;
+}
+
+function rememberCase() {
+  if (!inspection || !caseSelect.value) return;
+  localStorage.setItem(storageKey(inspection.sha), JSON.stringify({ caseId: caseSelect.value }));
+}
+
+function fillCases() {
+  caseSelect.replaceChildren();
+  for (const item of inspection.cases) {
+    const option = document.createElement("option");
+    option.value = item.id;
+    option.textContent = item.title;
+    caseSelect.append(option);
+  }
+  const saved = localStorage.getItem(storageKey(inspection.sha));
+  if (saved) {
+    try {
+      const choice = JSON.parse(saved).caseId;
+      if (inspection.cases.some((item) => item.id === choice)) caseSelect.value = choice;
+    } catch { /* an unreadable local value falls back to the first case */ }
+  }
+  const enabled = inspection.status === "supported" && inspection.cases.length > 0;
+  caseSelect.disabled = !enabled;
+  calculateButton.disabled = !enabled;
+}
+
+worker.onmessage = (event) => {
+  const message = event.data;
+  if (message.type === "status") show(message.text);
+  if (message.type === "ready") ready = true;
+  if (message.type === "error") {
+    clearInterval(timer);
+    calculateButton.disabled = !inspection || inspection.status !== "supported";
+    show(message.message);
+  }
+  if (message.type === "inspected") {
+    inspection = message.payload;
+    identity.textContent = inspection.sha + (inspection.first_year ? " · first projection year " + inspection.first_year : "");
+    fillCases();
+    if (inspection.errors?.length) show(inspection.errors.join(" "));
+  }
+  if (message.type === "result") {
+    clearInterval(timer);
+    result = message.payload;
+    calculateButton.disabled = false;
+    downloadButton.classList.remove("hidden");
+    const found = result.evidence || {};
+    evidence.textContent = [
+      found.calculation,
+      found.saved_cache ? "saved cache " + found.saved_cache : "",
+      found.cache_total != null ? found.cache_passed + "/" + found.cache_total + " probes" : "",
+      message.seconds.toFixed(1) + " seconds",
+    ].filter(Boolean).join(" · ");
+    const rows = (result.points || []).filter((point) => point.metric === "ext_pv_gdp");
+    const body = table.querySelector("tbody");
+    body.replaceChildren();
+    for (const point of rows) {
+      const row = document.createElement("tr");
+      for (const [className, text] of [["", point.year], ["num", formatNumber(point.reference_baseline)], ["num", formatNumber(point.scenario)]]) {
+        const cell = document.createElement("td");
+        if (className) cell.className = className;
+        cell.textContent = text;
+        row.append(cell);
+      }
+      body.append(row);
+    }
+    table.classList.toggle("hidden", rows.length === 0);
+    show("Calculation finished. The workbook was not stored.");
+  }
+};
+
+fileInput.addEventListener("change", async () => {
+  const file = fileInput.files && fileInput.files[0];
+  inspection = null;
+  result = null;
+  downloadButton.classList.add("hidden");
+  table.classList.add("hidden");
+  evidence.textContent = "";
+  if (!file) return;
+  if (file.size > 25 * 1024 * 1024) {
+    show("Choose a workbook smaller than 25 MB.");
+    return;
+  }
+  if (!ready) {
+    show("The runtime is still loading.");
+    return;
+  }
+  workbook = await file.arrayBuffer();
+  worker.postMessage({ type: "inspect", buffer: workbook });
+});
+
+caseSelect.addEventListener("change", rememberCase);
+
+calculateButton.addEventListener("click", () => {
+  const chosen = selectedCase();
+  if (!workbook || !chosen) {
+    show("Choose a supported workbook and a case, then calculate.");
+    return;
+  }
+  rememberCase();
+  result = null;
+  downloadButton.classList.add("hidden");
+  table.classList.add("hidden");
+  calculateButton.disabled = true;
+  show("Calculating. The first run loads the model and can take several minutes.");
+  const started = performance.now();
+  clearInterval(timer);
+  timer = setInterval(() => {
+    show("Calculating… " + Math.round((performance.now() - started) / 1000) + " seconds");
+  }, 1000);
+  worker.postMessage({ type: "calculate", buffer: workbook, definition: chosen.definition });
+});
+
+downloadButton.addEventListener("click", () => {
+  if (!result) return;
+  const url = URL.createObjectURL(new Blob([JSON.stringify(result, null, 2)], { type: "application/json" }));
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "scenario-calculation.json";
+  link.click();
+  URL.revokeObjectURL(url);
+});
+</script>
+</body>
+</html>

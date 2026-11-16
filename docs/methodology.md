@@ -1,6 +1,8 @@
 # Methods, compatibility and evidence
 
-The tool exposes a bounded part of the English LIC-DSF IDA21 workbook. It evaluates workbook formulas with a pinned Python evaluator and a version-specific semantic adapter. It does not introduce a separately calibrated economic model, run VBA, refresh external links or use Excel as its calculation runtime.
+The tool exposes a bounded part of the English LIC-DSF IDA21 workbook. It calculates supported outputs with the pinned generated library `lic-dsf-2025-08-12`, loaded from the workbook by `Model.from_workbook`. It does not introduce a separately calibrated economic model, run VBA, refresh external links or use Excel as its calculation runtime.
+
+The pinned revision reads projection years from cached formula year headers. It does not recalculate those formulas, so a current-year edit whose header caches still say 2024 stays on 2024. A negative customized-scenario growth adjustment is accepted. Financing terms typed over the formulas in Customized Scenario-External C21, C23 and C24 are imported. Do not loosen the absolute tolerance of `1e-6` or rewrite the official regression reference to absorb a later mismatch.
 
 [Documentation index](README.md) · [Full input/output reference](workbooks-inputs-outputs.md) · [Worked exercise](tutorial.md)
 
@@ -51,7 +53,7 @@ Historical and tailored stress tests, public debt service/revenue, all annual ou
 | Review required | A reported inconsistency needs investigation | Permission to treat the result as verified |
 | Exact Excel comparison | Only the exact workbook, inputs, engine and probes covered by its receipt | Other revisions, machines, formulas or unsupported outputs |
 
-Fresh Excel acceptance is not established for this preview. Hash and sentinel checks must not be presented as substitutes. A valid numerical check retains absolute tolerance `1e-6`, exact error-class comparison and first-divergence reporting; coverage must name the actual probes.
+A scoped Excel receipt for the official illustrative No investment and Larger assumed benefit cases is recorded in [verification](verification.md#compare-a-scenario-with-excel). It establishes agreement for that workbook, those inputs, that engine revision and the named probes. Hash and sentinel checks must not be presented as substitutes. A valid numerical check retains absolute tolerance `1e-6`, exact error-class comparison and first-divergence reporting; coverage must name the actual probes.
 
 ## Saved records and portability
 

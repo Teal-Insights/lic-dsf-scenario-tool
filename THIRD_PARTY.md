@@ -2,7 +2,7 @@
 
 Application code is provided under the repository's MIT LICENSE. Dependencies and separately obtained assets retain their own ownership and license terms. The application license does not relicense the LIC-DSF template or any user workbook.
 
-The declared direct runtime dependencies are the pinned public `excel-grapher` revision, `openpyxl`, `numpy`, `PyYAML`, `matplotlib` and the tested `fastpyxl` version. The exact versions are in `pyproject.toml`; the installed calculation identity records the evaluator revision and relevant numerical dependency versions. Do not silently replace them when reproducing results.
+The declared direct runtime dependencies are the pinned public `lic-dsf-2025-08-12` revision, `openpyxl`, `numpy`, `PyYAML`, `matplotlib` and `fastpyxl` 1.1.0. The exact versions are in `pyproject.toml`; the installed calculation identity records the library revision and relevant numerical dependency versions. Do not silently replace them when reproducing results. `fastpyxl` moved from 1.0.12 to 1.1.0 because the generated library requires `fastpyxl` 1.1.0 or later.
 
 Matplotlib renders charts with locally bundled IBM Plex Serif and Inter open fonts. No separate proprietary font file or private brand asset is required. A binary distribution must retain the complete license and notice files supplied by its Python runtime, wheels, fonts and bundled libraries. Wheel contents and dependency closure require inspection for each target platform; a source dependency declaration is not a complete binary notice inventory.
 
@@ -15,7 +15,7 @@ Before release, retain a versioned inventory of exact runtime archives and wheel
 | Component | Evidence available in the assessed build | Release requirement |
 | --- | --- | --- |
 | Application source and documentation | MIT LICENSE with Teal Insights copyright | Confirm provenance and licensing authority for every newly admitted file. |
-| `excel-grapher` | Exact public Git revision in `pyproject.toml`; installed evaluator includes an MIT license | Retain the revision, origin and full notice. Verify the public source remains obtainable during a clean install. |
+| `lic-dsf-2025-08-12` | Exact public Git revision in `pyproject.toml`; the library is MIT-licensed and carries its own NOTICE for material it contains | Retain the revision, origin and full notice. This application does not redistribute the library's workbook fixture. Verify the public source remains obtainable during a clean install. The 13 September 2026 dependency audit does not cover this package. |
 | Python packages and native libraries | Direct dependency pins and installed package metadata/notices | Capture the complete platform-specific resolved dependency inventory and exact archives. Retain full embedded license texts, including vendored/native components. |
 | IBM Plex Serif and Inter | Unmodified OFL1.1 font files and copyright/license notices bundled in the source and wheel; no proprietary brand font required | Verify the exact font inventory and retain both OFL notices in each package. Matplotlib retains its own bundled fonts/notices as dependencies. |
 | Official LIC-DSF template | Publisher page, external URL, hash and illustrative disclosure in `docs/template-source.json`; no workbook in the source/wheel | Confirm terms for the exact workbook, embedded content, hosted use and any redistribution before packaging or deployment. |

@@ -1,4 +1,6 @@
 # Local inputs and outputs never belong in source history.
+poc/browser/wheels/
+poc/browser/manifest.json
 .env
 .env.*
 *.xlsm

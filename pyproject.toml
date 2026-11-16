@@ -6,15 +6,15 @@ build-backend = "setuptools.build_meta"
 name = "lic-dsf-scenario-tool"
 version = "0.1.0a3"
 description = "Local customized scenario analysis for LIC-DSF IDA21 workbooks"
-requires-python = ">=3.11"
+requires-python = ">=3.13"
 license = {file = "LICENSE"}
 dependencies = [
-  "excel-grapher @ git+https://github.com/Teal-Insights/excel-grapher@15c51591b73b1dfb97088d46c6c0741bc59769b4",
+  "lic-dsf-2025-08-12 @ git+https://github.com/Teal-Insights/lic-dsf-2025-08-12@05d7f03862348df18d2b45a5d4a86152836edda4",
   "openpyxl==3.1.5",
   "numpy==2.4.6",
   "PyYAML==6.0.3",
   "matplotlib==3.11.1",
-  "fastpyxl==1.0.12",
+  "fastpyxl==1.1.0",
 ]
 
 [tool.setuptools.packages.find]
@@ -27,7 +27,7 @@ lic-dsf-scenario-tool = "lic_dsf.app:main"
 lic_dsf = ["web.html", "hosted_wait.js", "illustrative_cases/*.json", "fonts/*.otf", "fonts/*.txt", "fonts/README.md"]
 
 [tool.ruff]
-target-version = "py311"
+target-version = "py313"
 
 [tool.ruff.lint]
 # The first preview gates implementation errors. A broad formatting rewrite is
