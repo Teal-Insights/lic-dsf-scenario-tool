@@ -1,6 +1,6 @@
 # Illustrative hosted pilot candidate
 
-This optional mode is under review. An illustrative, unaccepted pilot instance is running for demonstration; it rejects workbook uploads. The acceptance gates below still apply. Own-workbook operation stays in the local app. The hosted operator must separately obtain the exact official template and review its hosting rights; no workbook is included in source or image.
+This optional mode is under review. It is separate from the public in-browser application at `https://d3iptw2fvdc3fp.cloudfront.net/`, which serves the static pages and calculates in the visitor's browser. An illustrative, unaccepted pilot instance is running for demonstration; it rejects workbook uploads. The acceptance gates below still apply. Own-workbook operation stays in the local app. The hosted operator must separately obtain the exact official template and review its hosting rights; no workbook is included in source or image.
 
 `python -m lic_dsf.hosted_server` uses Waitress 3.0.2. Configure DSF_ORIGIN to one HTTPS origin, DSF_DATA_DIR to a disposable dedicated state directory, and DSF_OFFICIAL_WORKBOOK to the read-only official file. Start only one process/replica. A process lease rejects a second instance. Never expose the desktop HTTP server for this purpose. The explicit loopback-only HTTP constructor option exists for development tests; the production factory never enables it.
 

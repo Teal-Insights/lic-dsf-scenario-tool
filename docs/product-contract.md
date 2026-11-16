@@ -66,6 +66,10 @@ The three prepared cases bind to the exact official workbook and projection year
 
 This optional learning route supplements own-workbook intake. Generic sensitivity exercises and advanced scenario-file exchange remain available. It does not expand supported workbook versions or numerical coverage, establish fresh Excel verification, or turn the general tool into an investment-specific product. This reconciled candidate requires fresh source checks and independent artifact review. Final release artifacts, installation and representative offline/connected network observation must be documented separately.
 
+## Public in-browser application
+
+The in-browser application is a supported path at `https://d3iptw2fvdc3fp.cloudfront.net/`. The five-step workspace runs in the visitor's browser. The site supplies the page, scripts, wheels, fonts, and the checked official template from a private S3 bucket. Saved work stays in the browser profile for that address. The desktop local server remains available. The separate illustrative hosted server keeps its own visit limits and no-upload boundary. This address does not extend the 9 November Excel receipt.
+
 
 ## Visible save and export prerequisites
 

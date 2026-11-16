@@ -6,13 +6,13 @@ Learn the tool without choosing a workbook file or importing a scenario file. Th
 
 **These are illustrative assumptions, not real investment modeling or estimated returns.** The app calculates what follows from the assumptions; it does not estimate whether an investment will deliver them. The workbook's Ghana-labelled sample data are not an official Ghana forecast or DSA. Investment is one use of this general scenario analysis tool.
 
-[Install first](installation.md) · [Methods and limits](methodology.md) · [Optional growth exercise](growth-tutorial.md)
+[Open the in-browser application](https://d3iptw2fvdc3fp.cloudfront.net/) · [Install the desktop application](installation.md) · [Methods and limits](methodology.md) · [Optional growth exercise](growth-tutorial.md)
 
 ## 1. Start the official example
 
-In step 1, select **Download and try the official example**. This downloads the unchanged template directly from the World Bank, checks its file fingerprint and stores it locally. Allow internet access for this first download. No private workbook or scenario inputs are sent in that request. The World Bank's download service receives the usual connection information, such as your IP address.
+In step 1, select **Download and try the official example**. This obtains the unchanged template from the World Bank, checks its file fingerprint and stores a copy for reuse. On the public in-browser application, the site serves the checked template and the copy stays in the browser profile for `https://d3iptw2fvdc3fp.cloudfront.net/`. On the desktop application, this computer downloads the template, the publisher sees this computer's address, and the verified copy can be used offline. Allow internet access for this first download. No private workbook or scenario inputs are sent in that request. The World Bank's download service receives the usual connection information for whichever machine fetches the file.
 
-When the verified example is already available, select **Try the official illustrative example**. You can use the cached workbook and the prepared cases offline. The template is obtained separately from the publisher; it is not included in the application download or covered by the app's MIT license. [Template source](template-source.md) records its origin and exact identity.
+When the verified example is already available, select **Try the official illustrative example**. On the desktop application, the cached workbook and the prepared cases can then be used offline. The template is obtained separately from the publisher; it is not included in the application download or covered by the app's MIT license. [Template source](template-source.md) records its origin and exact identity.
 
 If the download fails, check your connection and retry. A changed or damaged file is refused rather than silently substituted. A manual workbook chooser remains available for your own supported workbook, but it is not needed for this exercise.
 

@@ -17,3 +17,5 @@ Deliberately shared driver explanations accompany comparison-v3 JSON and PDF ann
 The [release-control procedure](release-controls.md) distinguishes source admission, Git history, packaged files, local hooks and proposed hosted enforcement. Every materially changed source/documentation/package candidate needs fresh exact review. Reusing a version number, old approval or filename is insufficient.
 
 The local preview has no public feed or automated content moderation. Project maintainers still need reporting and removal arrangements for public contributor/support surfaces. Any future hosted content feature must define operator responsibilities, retention and safe handling before launch. See the [DPG evidence register](dpg-evidence.md) and [security policy](../SECURITY.md).
+
+The public in-browser application at `https://d3iptw2fvdc3fp.cloudfront.net/` serves the application files and the checked official template from a private S3 bucket. Analyst workbooks, scenarios and notes remain in the visitor's browser profile for that address. Publishing the address does not publish a visitor's workbook. The template object is not part of the source repository.

@@ -1,5 +1,7 @@
 # Single-host deployment prerequisites
 
+These templates deploy the server-side illustrative pilot. The public in-browser application at `https://d3iptw2fvdc3fp.cloudfront.net/` is served from CloudFront and a private S3 bucket. It is not started from these files.
+
 These templates require an operator-reviewed Linux host, exact image/input inventory and host-specific acceptance. They do not authorize public deployment, extra resources or DNS changes. Supply the official illustrative workbook separately after rights review; it is not part of the image.
 
 The app runs once on a dedicated internal Docker bridge. The host Caddy process initiates connections to the inspected container address. There is no published app port. Port publication on an internal bridge was unreliable in the tested Docker 29 configuration; this procedure does not depend on it. Verify the actual Docker/network behavior on every target host.

@@ -1,6 +1,6 @@
 # Download, start and reopen the tool
 
-**Preview guide: 0.1.0a3.** Start with the official illustrative workbook and the [walkthrough](tutorial.md). The application is developed iteratively with stakeholder feedback; it is not an official IMF or World Bank product.
+**Preview guide: 0.1.0a3.** Start with the official illustrative workbook and the [walkthrough](tutorial.md). The same walkthrough is available in the [in-browser application](https://d3iptw2fvdc3fp.cloudfront.net/) without installing a desktop package. The application is developed iteratively with stakeholder feedback; it is not an official IMF or World Bank product.
 
 **Version `0.1.0a3`.** This guide describes the built-in walkthrough in 0.1.0a3; the earlier alpha.1 release predates this route. There is no 0.1.0a3 Mac package: the alpha.2 Mac package offers the same route with slightly older wording. Use the assets attached to the matching release. Package-assembly status: Windows-side signature confirmation, final-package Windows execution and the complete desktop walkthrough are unverified in this guide. See the [release notes](release-notes-0.1.0a3.md#release-evidence) for scope and how to find later evidence for the exact download.
 

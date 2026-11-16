@@ -1,11 +1,12 @@
 # Find your way around the documentation
 
-Start with the built-in tutorial to compare three illustrative investment cases without workbook or scenario-file selection. The walkthrough describes 0.1.0a3; alpha.1 predates this route. Check [installation and release availability](installation.md) against your installed version. These guides describe the experimental local application and its technical source route. They do not assume access to private workshop instructions or a maintainer's computer.
+Start with the built-in tutorial to compare three illustrative investment cases without workbook or scenario-file selection. The walkthrough describes 0.1.0a3; alpha.1 predates this route. Open the [public in-browser application](https://d3iptw2fvdc3fp.cloudfront.net/), or check [installation and release availability](installation.md) against your installed version. These guides describe that public address, the experimental local application and its technical source route. They do not assume access to private workshop instructions or a maintainer's computer.
 
 ## Use the tool
 
 | Your task | Guide |
 | --- | --- |
+| Open the public in-browser application | [https://d3iptw2fvdc3fp.cloudfront.net/](https://d3iptw2fvdc3fp.cloudfront.net/) |
 | Install, start, stop or reopen | [Installation](installation.md) |
 | Compare prepared investment assumptions without file handling | [Built-in walkthrough](tutorial.md) |
 | Explore a simple growth sensitivity | [Optional growth exercise](growth-tutorial.md) |

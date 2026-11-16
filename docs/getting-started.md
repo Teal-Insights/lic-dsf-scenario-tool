@@ -8,7 +8,7 @@ This tool lets you explore those assumptions through the customized-scenario mec
 
 ## Make your first comparison
 
-1. [Download and start](installation.md) the Windows or Mac application.
+1. Open the [in-browser application](https://d3iptw2fvdc3fp.cloudfront.net/), or [download and start](installation.md) the Windows or Mac application.
 2. Load the [official illustrative workbook](template-source.md). Its Ghana-labelled figures are an example, not an official country forecast or DSA.
 3. Follow the [illustrative investment walkthrough](tutorial.md): review the baseline, then load, review, save and calculate **No investment**, **Larger assumed benefit** and **Smaller assumed benefit**. No scenario-file import is needed.
 4. Compare the three cases against **No investment**, using the familiar LIC-DSF charts and policy briefing charts together.
