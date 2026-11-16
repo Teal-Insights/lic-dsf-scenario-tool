@@ -6,7 +6,8 @@
 page. Both run the pinned library in Pyodide. Workbook bytes chosen by the
 analyst are not received by this server. The official illustrative template
 is fetched here only after the analyst asks for it, because the publisher
-does not allow that download from the browser.
+does not allow that download from the browser. HEAD uses the same generated
+page, fonts and official example as GET, and omits the body.
 """
 from __future__ import annotations
 
@@ -58,6 +59,56 @@ def official_example_bytes() -> bytes:
     return payload
 
 
+class Handler(SimpleHTTPRequestHandler):
+    def end_headers(self):
+        self.send_header("Cache-Control", "no-store")
+        super().end_headers()
+
+    def _send(self, status, content_type, body):
+        payload = body if isinstance(body, bytes) else body.encode("utf-8")
+        self.send_response(status)
+        self.send_header("Content-Type", content_type)
+        self.send_header("Content-Length", str(len(payload)))
+        self.send_header("X-Content-Type-Options", "nosniff")
+        self.end_headers()
+        if self.command != "HEAD":
+            self.wfile.write(payload)
+
+    def _dynamic(self):
+        path = urlsplit(self.path).path
+        if path in ("/", "/app"):
+            self._send(200, "text/html; charset=utf-8", application_page())
+            return True
+        if path.startswith("/fonts/"):
+            name = path.rsplit("/", 1)[-1]
+            font = FONTS / name
+            if name not in FONT_NAMES or not font.is_file():
+                self._send(404, "text/plain; charset=utf-8", "Not found.")
+            else:
+                self._send(200, "font/otf", font.read_bytes())
+            return True
+        if path == "/official-example.xlsm":
+            try:
+                payload = official_example_bytes()
+            except ValueError as exc:
+                message = str(exc)
+                if len(message) > 400 or "/" in message or "\\" in message:
+                    message = "The official example could not be downloaded."
+                self._send(400, "application/json", '{"error":"' + message.replace('"', "") + '"}')
+            else:
+                self._send(200, "application/vnd.ms-excel.sheet.macroEnabled.12", payload)
+            return True
+        return False
+
+    def do_HEAD(self):
+        if not self._dynamic():
+            super().do_HEAD()
+
+    def do_GET(self):
+        if not self._dynamic():
+            super().do_GET()
+
+
 def main():
     parser = argparse.ArgumentParser(description="Serve the in-browser LIC-DSF application.")
     parser.add_argument("--port", type=int, default=8765)
@@ -65,41 +116,6 @@ def main():
     args = parser.parse_args()
     if args.rebuild or not any(DEST.glob("*.whl")) or not (HERE / "manifest.json").is_file():
         build()
-
-    class Handler(SimpleHTTPRequestHandler):
-        def end_headers(self):
-            self.send_header("Cache-Control", "no-store")
-            super().end_headers()
-
-        def _send(self, status, content_type, body):
-            payload = body if isinstance(body, bytes) else body.encode("utf-8")
-            self.send_response(status)
-            self.send_header("Content-Type", content_type)
-            self.send_header("Content-Length", str(len(payload)))
-            self.send_header("X-Content-Type-Options", "nosniff")
-            self.end_headers()
-            self.wfile.write(payload)
-
-        def do_GET(self):
-            path = urlsplit(self.path).path
-            if path in ("/", "/app"):
-                return self._send(200, "text/html; charset=utf-8", application_page())
-            if path.startswith("/fonts/"):
-                name = path.rsplit("/", 1)[-1]
-                font = FONTS / name
-                if name not in FONT_NAMES or not font.is_file():
-                    return self._send(404, "text/plain; charset=utf-8", "Not found.")
-                return self._send(200, "font/otf", font.read_bytes())
-            if path == "/official-example.xlsm":
-                try:
-                    payload = official_example_bytes()
-                except ValueError as exc:
-                    message = str(exc)
-                    if len(message) > 400 or "/" in message or "\\" in message:
-                        message = "The official example could not be downloaded."
-                    return self._send(400, "application/json", '{"error":"' + message.replace('"', "") + '"}')
-                return self._send(200, "application/vnd.ms-excel.sheet.macroEnabled.12", payload)
-            return super().do_GET()
 
     handler = partial(Handler, directory=str(HERE))
     server = ThreadingHTTPServer(("127.0.0.1", args.port), handler)
