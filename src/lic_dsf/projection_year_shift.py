@@ -1,11 +1,15 @@
 """Read baked projection years and workbook year labels as one axis.
 
 Generated formulas still iterate the template's year labels. Workbook inputs
-are already labelled with the shifted years. While a calculation is active, a lookup of the formula's current year adds
-or subtracts that one offset when the caller and the series are on different
-labels. Other year numbers stay as written. Offset 0 leaves every lookup
-unchanged. A series whose years are not the baked labels or those labels
-plus the offset is left unchanged, and the original lookup can still raise.
+are already labelled with the shifted years. While a calculation is active, a
+lookup of the formula's current year adds or subtracts that one offset when
+the caller and the series are on different labels. An issuance-year label
+used as the time component is the template projection year for that vintage,
+so it moves onto the series by the series offset. A time label that is the
+neighbor of the formula's current year stays on the series. Other year
+numbers stay as written. Offset 0 leaves every lookup unchanged. A series
+whose years are not the baked labels or those labels plus the offset is left
+unchanged, and the original lookup can still raise.
 """
 from __future__ import annotations
 
@@ -15,9 +19,11 @@ from contextvars import ContextVar
 _DELTA = ContextVar('projection_year_delta', default=0)
 _CALLER = ContextVar('projection_year_caller', default=None)
 _YEAR = ContextVar('projection_year_key', default=None)
+_ISSUANCE = ContextVar('projection_year_issuance', default=None)
 _BAKED_BY_ID = {}
 _BAKED_KEYS = None
 _SNAPSHOT = None
+_ISSUANCE_KEYS = None
 _INSTALLED = False
 
 
@@ -143,11 +149,13 @@ def _translate_reader(original, self, key):
     space = _space_of_domain(self.domain, self._series_id)
     if caller is not None and space is not None and space != caller:
         key = _shifted_key(key, self, self._series_id, force=True)
-    caller_token = _CALLER.set(space)
+    caller_token = _CALLER.set(_caller_space(self.domain, space))
     year_token = _YEAR.set(_coordinate_year(key, self.domain))
+    issuance_token = _ISSUANCE.set(_axis_value(key, self.domain, 'ISSUANCE_YEAR'))
     try:
         return original(self, key)
     finally:
+        _ISSUANCE.reset(issuance_token)
         _YEAR.reset(year_token)
         _CALLER.reset(caller_token)
 
@@ -159,18 +167,21 @@ def _translate_evaluate(original):
             return original(formula, domain)
         from lic_dsf_2025_08_12.excel import XlError
         space = _space_of_domain(domain)
+        caller_space = _caller_space(domain, space)
 
         def generate():
-            caller_token = _CALLER.set(space)
+            caller_token = _CALLER.set(caller_space)
             try:
                 for coordinate in domain:
                     year_token = _YEAR.set(_coordinate_year(coordinate, domain))
+                    issuance_token = _ISSUANCE.set(_axis_value(coordinate, domain, 'ISSUANCE_YEAR'))
                     try:
                         try:
                             yield coordinate, formula(*coordinate)
                         except XlError as error:
                             yield coordinate, error.code
                     finally:
+                        _ISSUANCE.reset(issuance_token)
                         _YEAR.reset(year_token)
             finally:
                 _CALLER.reset(caller_token)
@@ -183,21 +194,85 @@ def _translate_evaluate(original):
 def _shifted_key(key, values, series_id, force=False):
     caller = _CALLER.get()
     space = _space_of_domain(values.domain, series_id)
-    if caller is None or space is None or space == caller:
+    if caller is None or space is None:
         return key
     coordinate = key if isinstance(key, tuple) else (key,)
     index = _year_index(values.domain)
     if index is None or index >= len(coordinate) or type(coordinate[index]) is not int:
         return key
-    # A formula's own year follows the caller. Other year numbers are baked
-    # labels and stay on the series being read.
-    current = _YEAR.get()
-    if not force and current is not None and coordinate[index] != current:
+    year = coordinate[index]
+    if space != caller and _follows_caller(year, force):
+        return _replace_year(key, coordinate, index, year + (space - caller))
+    vintage = _vintage_time(year, coordinate, values.domain, space)
+    if vintage is None:
         return key
+    return _replace_year(key, coordinate, index, vintage)
+
+
+def _follows_caller(year, force):
+    """Shift the formula year, a direct read, or a reader coordinate."""
+    if force:
+        return True
+    current = _YEAR.get()
+    if current is None:
+        return _ISSUANCE.get() is None
+    return year == current
+
+
+def _vintage_time(year, coordinate, domain, space):
+    """Map a template issuance label onto this series, or return None."""
+    if type(year) is not int or year not in _issuance_keys():
+        return None
+    local = _axis_value(coordinate, domain, 'ISSUANCE_YEAR')
+    single_time = _year_index(domain) == 0 and len(getattr(domain, 'axes', ())) == 1
+    if local != year and not (local is None and single_time and _ISSUANCE.get() == year):
+        return None
+    if _adjacent_year(year, domain):
+        return None
+    return year + space
+
+
+def _adjacent_year(year, domain):
+    current = _YEAR.get()
+    keys = _domain_time_keys(domain)
+    if type(current) is not int or not keys or year not in keys or current not in keys:
+        return False
+    return abs(keys.index(year) - keys.index(current)) == 1
+
+
+def _replace_year(key, coordinate, index, year):
     updated = list(coordinate)
-    updated[index] = coordinate[index] + (space - caller)
+    updated[index] = year
     shifted = tuple(updated)
     return shifted if isinstance(key, tuple) else shifted[0]
+
+
+def _caller_space(domain, space):
+    if space is not None:
+        return space
+    if _has_axis(domain, 'ISSUANCE_YEAR'):
+        return 0
+    return None
+
+
+def _has_axis(domain, name):
+    return any(getattr(axis, 'name', None) == name for axis in getattr(domain, 'axes', ()))
+
+
+def _axis_value(key, domain, name):
+    coordinate = key if isinstance(key, tuple) else (key,)
+    for index, axis in enumerate(getattr(domain, 'axes', ())):
+        if getattr(axis, 'name', None) == name and index < len(coordinate):
+            return coordinate[index]
+    return None
+
+
+def _issuance_keys():
+    global _ISSUANCE_KEYS
+    if _ISSUANCE_KEYS is None:
+        from lic_dsf_2025_08_12 import data
+        _ISSUANCE_KEYS = frozenset(data.ISSUANCE_YEAR_AXIS.keys)
+    return _ISSUANCE_KEYS
 
 
 def _coordinate_year(key, domain):
