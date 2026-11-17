@@ -125,6 +125,26 @@ def _retarget_keys(values, axis_name, keys):
     return keys
 
 
+def _relabel_template_series(series):
+    """Move a baked year axis onto the workbook calendar, once."""
+    import lic_dsf_2025_08_12.tensor as tensor
+    from lic_dsf_2025_08_12.tensor import Axis
+
+    shift = _SHIFT.get()
+    if not shift or not isinstance(series, tensor.Series):
+        return series
+    indexes = _template_ids.get(id(series.domain))
+    if not indexes:
+        return series
+    replacements = {}
+    for index in indexes:
+        axis = series.domain.axes[index]
+        replacements[axis.name] = Axis(
+            axis.name, tuple(year + shift for year in axis.keys), int
+        )
+    return tensor.relabel_series(series, **replacements)
+
+
 def _align_kwargs(kwargs):
     import lic_dsf_2025_08_12.tensor as tensor
     from lic_dsf_2025_08_12.tensor import Axis, AxisTemplate, SchemaTemplate
@@ -154,16 +174,10 @@ def _align_kwargs(kwargs):
                             )
                 if replacements:
                     current = tensor.relabel_series(current, **replacements)
-            out[key] = current
+            out[key] = _relabel_template_series(current)
             continue
-        if shift and isinstance(value, tensor.Series) and id(value.domain) in _template_ids:
-            replacements = {}
-            for index in _template_ids[id(value.domain)]:
-                axis = value.domain.axes[index]
-                replacements[axis.name] = Axis(
-                    axis.name, tuple(year + shift for year in axis.keys), int
-                )
-            out[key] = tensor.relabel_series(value, **replacements)
+        if isinstance(value, tensor.Series):
+            out[key] = _relabel_template_series(value)
     return out
 
 

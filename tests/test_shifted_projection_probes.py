@@ -1,10 +1,11 @@
 """A shifted projection year must match Excel on every sampled probe.
 
 The workbook is the Excel-recalculated public converter output. It is
-gitignored. A local copy is used when one is already present. Otherwise the
-test downloads PUBLIC_REPRO_DRIVE_LINK into tests/fixtures. Without that
-variable the test is skipped. A present workbook that disagrees with Excel
-still fails at the locked tolerance.
+gitignored. DSF_SHIFTED_WORKBOOK selects the file when a run must compare
+against that workbook. Otherwise a local copy is used when one is already
+present, or the test downloads PUBLIC_REPRO_DRIVE_LINK into tests/fixtures.
+Without a workbook and without that link the test is skipped. A present
+workbook that disagrees with Excel still fails at the locked tolerance.
 """
 import os
 import re
@@ -89,6 +90,9 @@ def _download_drive(url, dest):
 
 
 def _workbook():
+    override = os.environ.get('DSF_SHIFTED_WORKBOOK', '').strip()
+    if override:
+        return Path(override)
     found = _local_workbook()
     if found is not None:
         return found
@@ -109,6 +113,10 @@ class ShiftedProjectionProbes(unittest.TestCase):
             self.skipTest(
                 f'{LINK_VARIABLE} is not set, and the public repro workbook is not available'
             )
+        self.assertTrue(
+            _present(path),
+            f'Excel-recalculated workbook is required: {path}',
+        )
         evidence = calculate(path)['evidence']
         self.assertEqual(evidence['cache_total'], 76)
         mismatches = evidence['cache_mismatch_probes']
