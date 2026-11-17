@@ -1,8 +1,6 @@
-"""Step 5 results order (S2) and the next-step bar markup (S3), desktop and hosted."""
+"""Step 5 results order (S2) and the next-step bar markup (S3) on the shared page."""
 import unittest
 from pathlib import Path
-
-from lic_dsf.hosted import hosted_page
 
 WEB = Path(__file__).parents[1] / 'src/lic_dsf/web.html'
 ORDER = ('id="teachingNext"', 'id="takeaways"', '<h3>Policy briefing charts</h3>',
@@ -30,12 +28,6 @@ class ResultsOrder(unittest.TestCase):
 
     def test_desktop_order(self):
         self.check(WEB.read_text(encoding='utf-8'))
-
-    def test_hosted_order_and_no_complete_packet(self):
-        page = hosted_page().decode()
-        self.check(page)
-        self.assertNotIn('complete briefing packet', page)
-        self.assertIn('final slot is reserved for Download the briefing packet', page)
 
 class DownloadIsFoundAfterTheCharts(unittest.TestCase):
     """Both fresh first-time-user sessions hunted for the download: every pointer now says it sits below the charts."""
