@@ -29,6 +29,7 @@ The workflow keeps your source workbook and separate scenario assumptions togeth
 | Understand what the tool does and its limits | [Methods and evidence](user-guide/methodology.qmd) |
 | Read and reuse exported charts and data | [Read a briefing packet](user-guide/reading-briefing.qmd) |
 | Understand local data handling and installation | [Information for IT departments](user-guide/it-review.qmd) |
+| Forward why browser calculation can keep a workbook local | [Local calculation for ministries and IT](user-guide/browser-local-calculation.qmd) |
 | Save work or share scenario assumptions | [Exchange and recovery](user-guide/exchange-recovery.qmd) |
 | Inspect verification and its limits | [Reproduce the checks](user-guide/verification.qmd) |
 | Review our DPG assessment | [Evidence and remaining work](user-guide/dpg-evidence.qmd) |

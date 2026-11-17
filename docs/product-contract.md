@@ -70,6 +70,7 @@ This optional learning route supplements own-workbook intake. Generic sensitivit
 
 The in-browser application is a supported path at `https://d3iptw2fvdc3fp.cloudfront.net/`. The five-step workspace runs in the visitor's browser. The site supplies the page, scripts, wheels, fonts, and the checked official template from a private S3 bucket. Saved work stays in the browser profile for that address. The desktop local server remains available. The separate illustrative hosted server keeps its own visit limits and no-upload boundary. This address does not extend the 9 November Excel receipt.
 
+Before production use, a ministry-facing page must link a Privacy Policy and Terms of Service on the same origin or an agreed institutional host. [Local calculation for ministries and IT](browser-local-calculation.md) states what those documents must cover. Publishing that note does not select a delivery architecture or supply the legal text.
 
 ## Visible save and export prerequisites
 

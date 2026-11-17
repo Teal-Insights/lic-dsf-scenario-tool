@@ -11,6 +11,7 @@ Explore how alternative macroeconomic and financing assumptions change debt indi
 - [Releases: Windows and Mac downloads](https://github.com/Teal-Insights/lic-dsf-scenario-tool/releases)
 - [Installation guide](docs/installation.md) and [first scenario walkthrough](docs/tutorial.md)
 - [Information you can forward to IT](docs/it-review.md)
+- [Local calculation for ministries and IT](docs/browser-local-calculation.md)
 - [Methods and limits](docs/methodology.md), [verification and reproducible checks](docs/verification.md)
 
 Use the assets attached to the alpha release page; if no downloads are listed, the preview is not yet available. Desktop packages include Python and dependencies. The initial packages target Windows x64 and Apple Silicon/macOS 14+. The Mac wrapper is unsigned and unnotarized. See [platform evidence](docs/accessibility-platforms.md) for the distinction between earlier tests and final-package acceptance. Technical users can also [install from source](docs/source-installation.md).

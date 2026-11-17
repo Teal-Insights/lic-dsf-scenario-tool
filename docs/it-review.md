@@ -21,6 +21,8 @@ For this version, forward this page or use your browser's print-to-PDF function.
 
 The [installation guide](installation.md) gives extraction, startup, stopping and removal instructions. Technical users can inspect or install the [source](source-installation.md). This page is designed to be forwarded directly; IT consultation is not an extra application onboarding step for every user.
 
+[Local calculation for ministries and IT](browser-local-calculation.md) is the forwardable note on workbook confidentiality for the browser-based calculator. It separates that claim from the question of whether software at a public address can change after review. It also states what a Privacy Policy and Terms of Service must cover before production use. It does not replace the package, signing, or network statements on this page, and it does not select a delivery architecture.
+
 ## Data flow and storage
 
 ![A workbook is copied into a local workspace. A local browser talks to the application, which runs a bounded calculation worker and creates local exports. The analyst separately reviews and chooses whether to share them.](../assets/local-data-flow.svg)

@@ -16,6 +16,7 @@ Start with the built-in tutorial to compare three illustrative investment cases 
 | Set an outward chart heading | [Chart labels](chart-context.md) |
 | Share a briefing, reuse scenario inputs or recover saved work | [Exchange and recovery](exchange-recovery.md) |
 | Understand local retention and privacy | [Local data and privacy](privacy-recovery.md) |
+| Forward the browser-calculation confidentiality note | [Local calculation for ministries and IT](browser-local-calculation.md) |
 
 ## Inspect or improve the software
 
@@ -27,7 +28,7 @@ Start with the built-in tutorial to compare three illustrative investment cases 
 | Understand accepted product requirements | [Product contract](product-contract.md), [decisions](decisions.md), [chart requirements](chart-views.md) |
 | Contribute or report a problem | [Contributing](../CONTRIBUTING.md), [security](../SECURITY.md) |
 | Review measured coverage and release gaps | [Platform/accessibility status](accessibility-platforms.md), [readiness](readiness.md), [DPG evidence](dpg-evidence.md) |
-| Review software and external-asset rights | [MIT license](../LICENSE), [third-party notices](../THIRD_PARTY.md), [publication boundary](privacy-and-publication.md) |
+| Review software and external-asset rights | [MIT license](../LICENSE), [third-party notices](../THIRD_PARTY.md), [publication boundary](privacy-and-publication.md), [local-calculation note](browser-local-calculation.md) |
 
 The input editor covers every year of the 21-year horizon. Results cover six selected years. A newly created or imported scenario needs saving and calculation. A scenario file carries one case’s inputs and shared explanations for the exact same workbook; comparison JSON carries results and cannot be imported. A later save that changes only its name, legend label or shared explanation can keep an already-current calculation. A successful calculation is not fresh Excel verification. Keep these distinctions when using any guide.
 

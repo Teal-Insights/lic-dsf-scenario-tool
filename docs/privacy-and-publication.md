@@ -19,3 +19,7 @@ The [release-control procedure](release-controls.md) distinguishes source admiss
 The local preview has no public feed or automated content moderation. Project maintainers still need reporting and removal arrangements for public contributor/support surfaces. Any future hosted content feature must define operator responsibilities, retention and safe handling before launch. See the [DPG evidence register](dpg-evidence.md) and [security policy](../SECURITY.md).
 
 The public in-browser application at `https://d3iptw2fvdc3fp.cloudfront.net/` serves the application files and the checked official template from a private S3 bucket. Analyst workbooks, scenarios and notes remain in the visitor's browser profile for that address. Publishing the address does not publish a visitor's workbook. The template object is not part of the source repository.
+
+## Ministry-facing legal notices
+
+Before production use, a ministry-facing page must link a Privacy Policy and Terms of Service on the same origin or an agreed institutional host. [Local calculation for ministries and IT](browser-local-calculation.md) lists what those documents must cover, who drafts and reviews them, and where the canonical URLs will be recorded. The legal text is not in this repository until a counsel-approved copy is linked from the drafting task. This requirement does not select a delivery architecture and is not a security certification.
