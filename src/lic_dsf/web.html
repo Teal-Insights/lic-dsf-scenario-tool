@@ -60,7 +60,7 @@ async function request(path,data,raw=false){const headers={'X-DSF-Token':boot?.t
 async function attempt(fn){try{await fn();}catch(e){status(e.message,true);if(e.input?.isConnected&&!e.input.disabled)revealInvalidInput(e.input);}finally{updateWorkflow();}}
 // Workspace recovery: validate replacement reads before changing the current view.
 let pendingWorkspaceRetry=null;
-function recoveryError(message,httpStatus=0){const error=Error(message);error.httpStatus=httpStatus;return error;}
+function recoveryError(message){return Error(message);}
 async function recoveryJSON(path,options,label){
  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),30000);
  try{
@@ -69,8 +69,8 @@ async function recoveryJSON(path,options,label){
   catch{throw recoveryError(label+' could not be reached. Check your connection and retry.');}
   let data;
   try{data=await response.json();}
-  catch{throw recoveryError(label+' returned an unreadable response. Retry when the service is available.',response.status);}
-  if(!response.ok||response.status!==200)throw recoveryError(typeof data?.error==='string'?data.error:label+' could not be loaded. Retry when the service is available.',response.status);
+  catch{throw recoveryError(label+' returned an unreadable response. Retry when the service is available.');}
+  if(!response.ok||response.status!==200)throw recoveryError(typeof data?.error==='string'?data.error:label+' could not be loaded. Retry when the service is available.');
   return data;
  }finally{clearTimeout(timer);}
 }

@@ -26,9 +26,8 @@ function setup(){
   URL:{createObjectURL(value){const url='blob:packet-'+(++sequence);created.push({url,blob:value});return url},revokeObjectURL:url=>revoked.push(url)},
   document:{querySelectorAll:()=>[],createElement:()=>({click(){downloads.push({url:this.href,name:this.download})}})},
   window:{addEventListener:(name,fn)=>{listeners[name]=fn}},
-  setTimeout:(fn,ms)=>{timers.push({fn,ms});return timers.length},clearTimeout:()=>{},AbortController,Response,Blob,crypto:{randomUUID:()=> 'neutral-request'},
-  request:async(route,data)=>{requests.push({route,data});if(s.onRequest)await s.onRequest();if(s.error)throw s.error;return {blob:async()=>blob}},
-  fetch:async(route,options)=>{requests.push({route,body:options.body});if(route==='/api/export-jobs')return Response.json({job_id:'job'});if(route.startsWith('/api/export-status'))return Response.json({status:'ready'});if(route.startsWith('/api/export-result'))return new Response(blob);if(route==='/api/export-cancel')return Response.json({cancelled:true});throw Error(route)}
+  setTimeout:(fn,ms)=>{timers.push({fn,ms});return timers.length},clearTimeout:()=>{},Blob,
+  request:async(route,data)=>{requests.push({route,data});if(s.onRequest)await s.onRequest();if(s.error)throw s.error;return {blob:async()=>blob}}
  };
   vm.createContext(s);vm.runInContext(generations+'\n'+exp+'\n'+workflow+'\n'+invalidation+'\n'+bindings,s);
  function save(){let prevented=false;const a=s.$('preparedPacketSave');a.onclick({preventDefault(){prevented=true}});if(!prevented)downloads.push({url:a.href,name:a.download});return prevented;}
@@ -58,7 +57,7 @@ function setup(){
  ]){
   const t=setup();await t.s.exportFile('zip');change(t.s);t.s.updateWorkflow();assert.equal(t.s.$('preparedPacketSave').href,undefined,label);assert.equal(t.s.$('preparedPacketRecovery').classList.contains('hidden'),true,label);assert.deepEqual(t.revoked,[t.created[0].url],label);assert.equal(t.save(),true,label);assert.equal(t.downloads.length,1,label);
  }
- // When previews fail or the preview quota is reached, the complete packet stays the primary action.
+ // When previews fail, the complete packet stays the primary action.
  const noCharts=setup();noCharts.s.chartsReady=false;noCharts.s.chartError=true;noCharts.s.updateWorkflow();assert.equal(noCharts.s.$('packet').classList.contains('primary'),true);
  // One compared case means every difference is zero; the next step says so instead of pointing at the download.
  // With one compared case the guidance, its link, the current step and the packet button all point back to step 3.

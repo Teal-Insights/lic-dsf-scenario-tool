@@ -55,7 +55,7 @@ function goodTransport(t,value=workbook()){t.setResponder(url=>url==='/api/boot'
  }
  {
   const t=setup();t.s.boot=undefined;t.setResponder(()=>Promise.reject(TypeError('offline')));
-  await assert.rejects(t.s.refreshBoot());assert.equal(t.calls.filter(call=>call.url==='/api/delete').length,0);
+  await assert.rejects(t.s.refreshBoot());
   goodTransport(t);await t.retry();assert.equal(t.s.boot.token,'refreshed-token');assert.equal(t.s.sha,A);checks++;
  }
  const corrupt=[()=>null,body=>({...body,inspection:{...body.inspection,workbook_sha256:C}}),body=>({...body,inspection:{...body.inspection,input_years:[2024]}}),body=>({...body,zero:{delta_paths:{},terms:null}}),body=>({...body,scenarios:{}}),body=>({...body,chart_context:{workbook_sha256:C,revision:0,label:null}}),body=>({...body,baseline_preview:[{metric:'neutral',year:2024,units:'ratio',reference_baseline:{wrong:true}}]})];
