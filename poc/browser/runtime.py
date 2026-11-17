@@ -9,7 +9,7 @@ import json
 from importlib.metadata import distribution
 from pathlib import Path
 
-LIBRARY_COMMIT = "05d7f03862348df18d2b45a5d4a86152836edda4"
+LIBRARY_COMMIT = "aac3f523d84f5a5b0836d4cca409a1e56ec9cdb5"
 LIBRARY_URL = "https://github.com/Teal-Insights/lic-dsf-2025-08-12"
 
 

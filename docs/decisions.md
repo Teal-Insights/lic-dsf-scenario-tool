@@ -265,3 +265,13 @@ This supersedes the EC2 origin in the public in-browser address decision above. 
 `/` and `/app` are rewritten to the stored five-step page. `/index.html` remains the smaller calculation page. The checked official template is stored with the site files. A publish uploads the new objects and then invalidates `/*`. On 16 November 2026, invalidation `I2M9LGL2DFGAL4T84WS7OZZBWO` completed after the origin change. `/` was a miss and the following request was a hit. `/` and `/app` were 165,590 bytes. `/index.html` was 9,501 bytes. The template object was 5,504,930 bytes and its SHA-256 remained `3a0a0b80c7cbc95ac953f25ecae0b437129d669ceb8aeefb54ab86dc8727ea86`.
 
 The bucket, access-control, and route-function identifiers are kept in the ignored `.env` file. They are not part of the public source. The template object is not part of the source either.
+
+## 17 November 2026: calculation library revision aac3f52
+
+The pinned `lic-dsf-2025-08-12` revision is now `aac3f523d84f5a5b0836d4cca409a1e56ec9cdb5`. That generated package records excel-grapher 24.1.19. The package version remains 0.1.0. This identity change invalidates saved current-run matches. The official-example regression fixture was not rewritten, that regression was not rerun, and fresh Excel verification was not run. The 9 November Excel receipt stays on `05d7f03862348df18d2b45a5d4a86152836edda4`.
+
+This supersedes the library-pin sentences in the 9 November in-browser section and the 16 November sections. The result contract, probe addresses, evidence labels and absolute tolerance `1e-6` stay in place. The checks for a negative growth adjustment, a projection year carried by cached formula headers, and financing terms typed over Customized Scenario-External C21, C23 and C24 passed, at tolerance `1e-6`.
+
+On the public library fixture, moving the cached year headers and the first projection year from 2024 to 2025 puts the current-account axis on 2012–2045. `macro_debt_none` evaluates. The baked U.S. deflator is relabelled from 2018–2022 onto 2019–2023.
+
+The 16 November converter-output workbook has the same geometry: first projection year 2025, current-account years 2012–2045, and old-debt-service years 2025–2069. Intake reports it supported. `macro_debt_none` evaluates. Chart sampling then raises `CoordinateError` for `('IMF', 2024)`, because `ext_debt_old_mlt_debt_service` still walks the template years 2023–2068. `calculate()` wraps that exception as `calculation_failed_private_details_available`. That failure is an unresolved library defect and is not a product requirement.
