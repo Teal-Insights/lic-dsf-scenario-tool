@@ -68,6 +68,16 @@ python -m unittest tests.test_shifted_projection -v
 test_projection_year_2025_matches_official_offset ... ok
 ```
 
+`tests/test_shifted_projection_probes.py` compares all 76 probes with an Excel-recalculated workbook. The workbook is not in the repository. `DSF_SHIFTED_WORKBOOK` selects the file when the comparison should run against a specific workbook. Otherwise the test uses a local copy, or downloads `PUBLIC_REPRO_DRIVE_LINK`. With neither a workbook nor that link, the check is skipped. On 17 November 2026 the public converter output matched every probe at `1e-6`. The command and the result were:
+
+```sh
+DSF_SHIFTED_WORKBOOK=<excel-recalculated workbook> python -m unittest tests.test_shifted_projection_probes -v
+```
+
+```text
+test_every_probe_matches_excel ... ok
+```
+
 The JavaScript suites check interface handlers with neutral synthetic data. They do not launch a browser or calculate a real workbook. The initial lint gate targets implementation errors. Installation, actual browser interaction, package downloads and independent numerical checks remain separate evidence.
 
 The [CI workflow](https://github.com/Teal-Insights/lic-dsf-scenario-tool/actions/workflows/checks.yml) runs these checks on Linux, Windows and Mac hosted runners. A workflow file is not proof that a run passed. Release notes must link the actual runs for the published candidate and distinguish source checks from downloadable desktop-package acceptance.

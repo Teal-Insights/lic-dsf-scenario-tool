@@ -12,6 +12,7 @@ import tempfile
 import threading
 from datetime import datetime, timezone
 
+from .baked_rows import workbook_rows
 from .contracts import CONTRACT_VERSION
 from .ida21 import PUBLIC, EXTERNAL, DELTA_ROWS, TERMS, METRICS, OFFSETS, probes, cell
 from .compare import compare_one
@@ -163,7 +164,7 @@ def _calculate(path, scenario=None, expected_sha256=None):
             if definition is not None:
                 scenario_path = _scenario_workbook(path, definition)
                 scenario_model = load_model(scenario_path)
-            with projection_axis(info['first_projection_year']):
+            with workbook_rows(path), projection_axis(info['first_projection_year']):
                 supplied = _sample(model, info['first_projection_year'])
                 if scenario_model is not None:
                     computed = _sample(scenario_model, info['first_projection_year'])
