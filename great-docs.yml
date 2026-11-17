@@ -68,6 +68,7 @@ user_guide:
 - section: Review and contribute
   contents:
   - it-review.qmd
+  - browser-local-calculation.qmd
   - feedback.qmd
   - contributing.qmd
   - conduct.qmd

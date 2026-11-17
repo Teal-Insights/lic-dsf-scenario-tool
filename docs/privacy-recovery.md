@@ -54,6 +54,8 @@ Shared per-input explanations are intentionally included in PDF annexes and comp
 
 ## Network and future hosted use
 
+A forwardable ministry and IT note states the local-calculation claim, its limits, and the Privacy Policy and Terms of Service required before production use: [Local calculation for ministries and IT](browser-local-calculation.md). That note does not select a delivery architecture.
+
 The inspected local server uses a local HTML interface and loopback requests. Dependency installation and obtaining the official template can require external network access. No complete measured offline/network audit is claimed. Cloud-sync software, browser extensions and operating-system backups can create additional copies outside the application's control.
 
 A future online calculator will process visitor assumptions on its server. Its retention period, deletion behavior, operator access, infrastructure logs and privacy notice must be specified and tested before launch. Local storage assurances do not describe a hosted deployment. Keep confidential workbooks and assumptions out of an unreviewed online service.

@@ -24,4 +24,4 @@ Review intentionally shared labels, assumptions and explanations before sending 
 
 ## Get help or help improve it
 
-Use the expandable help beside inputs and evidence labels, consult [verification](verification.md), or [send feedback](feedback.md). If an IT team needs technical information, share [Information for IT departments](it-review.md).
+Use the expandable help beside inputs and evidence labels, consult [verification](verification.md), or [send feedback](feedback.md). If an IT team needs technical information, share [Information for IT departments](it-review.md). For the browser calculator’s confidentiality claim and its limits, share [Local calculation for ministries and IT](browser-local-calculation.md).

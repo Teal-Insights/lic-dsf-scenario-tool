@@ -277,3 +277,11 @@ The library also bakes the template's classification, CPIA, remittance and GDP r
 The calculation identity changes because the application source changed. Saved current-run matches from the previous identity are no longer current. The official-example regression fixture was not rewritten.
 
 On 17 November 2026 this revision was published to the public in-browser application. The page, scripts, manifest, fonts and official template object were already the bytes on this branch, so they were left in place. The application wheel was replaced. It is 728,729 bytes and its SHA-256 is `327a5046810af030e84be429eaef9270a22754b358e7600e3dc5598f0e8164b7`. Invalidation `IB8S47MRCYM4E8GQP583D96J1E` completed. The next request for the wheel was a miss and the following request was a hit. `exact_excel` stays pending.
+
+## 17 November 2026: local-calculation note for ministries and IT
+
+[Local calculation for ministries and IT](browser-local-calculation.md) is the forwardable note for issue 20. Calculation in the browser-based calculator runs on the analyst’s computer. Teal Insights does not receive the workbook or results by default. That statement is data confidentiality. It is not a security certification, a completed network audit, or a choice of delivery architecture. A live address remains a separate integrity question for the companion delivery note. This repository does not yet contain that companion note. The current public address reuses paths, so replacing files there changes what a later visit runs.
+
+Before production use, a ministry-facing page must link a Terms of Service and a Privacy Policy on the same origin or an agreed institutional host. The note states what those documents must cover. It does not contain their legal text. Teal Insights drafts them. A maintainer reviews the draft against the note. Counsel reviews them when Teal Insights’ counsel requires that review. Canonical URLs are not yet assigned. The drafting task is issue 22; the counsel-approved copy will be linked or attached there.
+
+Numerical coverage, the Excel receipt, the absolute tolerance `1e-6`, and the illustrative hosted pilot’s server boundary are unchanged.
