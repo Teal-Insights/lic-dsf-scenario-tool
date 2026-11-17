@@ -77,29 +77,35 @@ def _plain(value):
 def load_model(path):
     """Bind workbook input cells through the generated library."""
     from lic_dsf_2025_08_12 import Model
+    from .projection_year_shift import install
+    install()
     return Model.from_workbook(path)
 
 
 def _at(series, year, scenario):
     # The workbook's projection year, not the library snapshot's 2024 column.
-    if scenario is None:
-        return series.sel(TIME_PERIOD=year)
-    return series.sel(SCENARIO=scenario, TIME_PERIOD=year)
+    from .projection_year_shift import workbook_caller
+    with workbook_caller():
+        if scenario is None:
+            return series.sel(TIME_PERIOD=year)
+        return series.sel(SCENARIO=scenario, TIME_PERIOD=year)
 
 
 def _sample(model, first_projection_year):
-    result = {}
-    for metric, _title, _units, _sheet, _base, _custom, _col, _header in METRICS:
-        baseline_attr, baseline_scenario, custom_attr, custom_scenario = _SERIES[metric]
-        baseline = getattr(model, baseline_attr)
-        custom = getattr(model, custom_attr)
-        for offset in OFFSETS:
-            year = first_projection_year + offset
-            result[f'{metric}:{offset}:reference_baseline'] = _plain(_at(baseline, year, baseline_scenario))
-            result[f'{metric}:{offset}:customized'] = _plain(_at(custom, year, custom_scenario))
-    for name, attr in _SENTINELS.items():
-        result[f'sentinel:{name}'] = _plain(getattr(model, attr))
-    return result
+    from .projection_year_shift import projection_years
+    with projection_years(model):
+        result = {}
+        for metric, _title, _units, _sheet, _base, _custom, _col, _header in METRICS:
+            baseline_attr, baseline_scenario, custom_attr, custom_scenario = _SERIES[metric]
+            baseline = getattr(model, baseline_attr)
+            custom = getattr(model, custom_attr)
+            for offset in OFFSETS:
+                year = first_projection_year + offset
+                result[f'{metric}:{offset}:reference_baseline'] = _plain(_at(baseline, year, baseline_scenario))
+                result[f'{metric}:{offset}:customized'] = _plain(_at(custom, year, custom_scenario))
+        for name, attr in _SENTINELS.items():
+            result[f'sentinel:{name}'] = _plain(getattr(model, attr))
+        return result
 
 
 def _scenario_edits(definition):
