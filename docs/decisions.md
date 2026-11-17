@@ -248,7 +248,7 @@ This supersedes the 9 November 2026 label "proof of concept" for the in-browser 
 
 ## 16 November 2026: public in-browser address
 
-The supported public address of the in-browser application is `https://d3iptw2fvdc3fp.cloudfront.net/`. `/` is the five-step workspace. The desktop application remains available through the local server. This address is the static in-browser application. The illustrative hosted server described in `docs/hosted-pilot.md` is a separate service.
+The supported public address of the in-browser application is `https://d3iptw2fvdc3fp.cloudfront.net/`. `/` is the five-step workspace. The desktop application remains available through the local server. This address is the static in-browser application. A separate illustrative hosted server was still in the source at this date. The 17 November 2026 removal decision below withdraws it.
 
 CloudFront terminates HTTPS for that hostname. The distribution ID is `E17B33HD6XO4KP`. Its first origin was the instance public DNS name over HTTP on port 80. The private S3 origin below supersedes that origin.
 
@@ -277,3 +277,15 @@ The library also bakes the template's classification, CPIA, remittance and GDP r
 The calculation identity changes because the application source changed. Saved current-run matches from the previous identity are no longer current. The official-example regression fixture was not rewritten.
 
 On 17 November 2026 this revision was published to the public in-browser application. The page, scripts, manifest, fonts and official template object were already the bytes on this branch, so they were left in place. The application wheel was replaced. It is 728,729 bytes and its SHA-256 is `327a5046810af030e84be429eaef9270a22754b358e7600e3dc5598f0e8164b7`. Invalidation `IB8S47MRCYM4E8GQP583D96J1E` completed. The next request for the wheel was a miss and the following request was a hit. `exact_excel` stays pending.
+
+## 17 November 2026: remove the illustrative hosted pilot
+
+This supersedes the boundary that kept a separate Waitress and Caddy illustrative server beside the desktop application and the public in-browser application.
+
+That pilot is removed from the source. The removed pieces are `hosted_server.py`, `hosted.py`, `hosted_wait.js`, the hosted cache, queue, export and worker modules, the deploy image and Caddy files, `.dockerignore`, `docs/hosted-pilot.md`, and the pilot verification scripts and tests. Waitress was never a package dependency.
+
+The desktop application and the in-browser application remain. Both still start from `web.html` and the shared calculation modules. The shared page no longer includes the visit-deletion control. A failed workbook or boot read still keeps the current screen and offers **Retry loading**.
+
+Visit limits, the one-hour visit lifetime, and the hosted no-upload boundary are no longer product behavior. Earlier decision entries that describe that pilot record the service as it was. They do not keep it in the tree.
+
+The calculation identity, the absolute tolerance `1e-6`, the 9 November Excel receipt, and the CloudFront private-S3 origin are unchanged.

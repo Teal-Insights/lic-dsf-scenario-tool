@@ -27,7 +27,7 @@ h2{font-family:'IBM Plex Serif',Georgia,serif;font-weight:600;font-size:27px;let
 <p id="editionNote" class="notice hidden"></p>
 <div class="mini-flow" aria-label="How assumptions become a briefing"><div><strong>1. Your workbook</strong><span>Keep its reference baseline</span></div><div><strong>2. Alternative assumptions</strong><span>Adjust the Customized Scenario inputs</span></div><div><strong>3. Debt outcomes</strong><span>Compare cases and explain your choices</span></div></div><nav class="steps" aria-label="Analysis steps"><a id="step1" href="#upload" data-hint="Start here: load the workbook that every later step reads from."><span>1 Upload</span><small>Start here</small></a><a id="step2" href="#baseline" data-hint="Check the starting debt ratios the tool read from the file, before you change anything."><span>2 Check baseline</span><small>Waiting for workbook</small></a><a id="step3" href="#scenario" data-hint="Build your alternative cases: change assumptions, save each case, then calculate it."><span>3 Create scenarios</span><small>Not started</small></a><a id="step4" href="#compare" data-hint="Pick calculated cases to compare and the case that differences are measured against."><span>4 Compare</span><small>Needs calculated cases</small></a><a id="step5" href="#briefing" data-hint="Check both chart views, adjust chart labels, then download the briefing packet."><span>5 Export briefing</span><small>Needs comparison</small></a></nav><div class="workflow-next" aria-live="polite"><p id="nextStepText">Start by uploading your workbook or trying the illustrative example.</p><a id="nextStepLink" href="#upload" data-hint="Jumps to the step to do next. The sentence beside this link says what to do there.">Go to upload</a></div></header>
 <main><div id="status" role="status" aria-live="polite"></div>
-<div id="workspaceRecovery" class="notice hidden" role="status" aria-live="polite"><p id="workspaceRecoveryText"></p><button id="retryWorkspaceLoad" type="button">Retry loading</button><a id="visitRecoveryEntry" class="hidden" href="/">Return to entry</a></div>
+<div id="workspaceRecovery" class="notice hidden" role="status" aria-live="polite"><p id="workspaceRecoveryText"></p><button id="retryWorkspaceLoad" type="button">Retry loading</button></div>
 <section id="upload" class="card"><h2>1. Choose your workbook</h2><p class="step-purpose">Load the DSA workbook that every later step reads from.</p><p>Choose your completed copy of the supported <a href="https://thedocs.worldbank.org/en/doc/f0ade6bcf85b6f98dbeb2c39a2b7770c-0360012025/new-lic-dsf-template" target="_blank" rel="noopener noreferrer" data-hint="Opens the World Bank page for the LIC-DSF template (IDA21, 08-12-2025) in a new tab.">World Bank LIC-DSF template</a>. <a href="https://thedocs.worldbank.org/en/doc/f0ade6bcf85b6f98dbeb2c39a2b7770c-0360012025/original/LIC-DSF-IDA21-Template-08-12-2025-vf.xlsm">Download the supported template</a> (file version 08-12-2025, called IDA21). Other template versions are not supported by this release.</p><p class="small">Your original workbook is preserved. Scenarios are saved separately on this computer.</p>
 <div class="row"><div class="field"><label for="file">Excel workbook (.xlsm or .xlsx, up to 25 MB)</label><input id="file" type="file" accept=".xlsm,.xlsx"></div><button id="uploadButton" class="primary">Upload and check</button></div>
 <div class="toolbar"><button id="exampleButton" class="hidden" data-hint="Opens the Macronia example. Next: look over its baseline in step 2, then load a teaching case in step 3.">Try the official illustrative example</button><span id="exampleDisclosure" class="small hidden">Illustrative IMF and World Bank LIC-DSF template data for Macronia, which represents no actual country.</span></div><p id="exampleDownloadHelp" class="small hidden">First use downloads the official example from the World Bank. After loading it, this copy works offline. No workbook is uploaded to us. If the download fails, check your internet connection and try again, or choose a separately downloaded official workbook.</p>
@@ -59,8 +59,8 @@ function status(text,error=false){const el=$('status'),cls=error?'error':'';if(e
 async function request(path,data,raw=false){const headers={'X-DSF-Token':boot?.token||''};if(data!==undefined)headers['Content-Type']='application/json';const r=await fetch(path,{method:data===undefined?'GET':'POST',headers,body:data===undefined?undefined:JSON.stringify(data)});if(!r.ok){let x=await r.json();throw Error(x.error||'Operation failed');}return raw?r:await r.json();}
 async function attempt(fn){try{await fn();}catch(e){status(e.message,true);if(e.input?.isConnected&&!e.input.disabled)revealInvalidInput(e.input);}finally{updateWorkflow();}}
 // Workspace recovery: validate replacement reads before changing the current view.
-let pendingWorkspaceRetry=null,deletingVisit=false;
-function recoveryError(message,httpStatus=0){const error=Error(message);error.httpStatus=httpStatus;return error;}
+let pendingWorkspaceRetry=null;
+function recoveryError(message){return Error(message);}
 async function recoveryJSON(path,options,label){
  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),30000);
  try{
@@ -69,8 +69,8 @@ async function recoveryJSON(path,options,label){
   catch{throw recoveryError(label+' could not be reached. Check your connection and retry.');}
   let data;
   try{data=await response.json();}
-  catch{throw recoveryError(label+' returned an unreadable response. Retry when the service is available.',response.status);}
-  if(!response.ok||response.status!==200)throw recoveryError(typeof data?.error==='string'?data.error:label+' could not be loaded. Retry when the service is available.',response.status);
+  catch{throw recoveryError(label+' returned an unreadable response. Retry when the service is available.');}
+  if(!response.ok||response.status!==200)throw recoveryError(typeof data?.error==='string'?data.error:label+' could not be loaded. Retry when the service is available.');
   return data;
  }finally{clearTimeout(timer);}
 }
@@ -100,10 +100,8 @@ function validWorkbook(value,expectedSha){
 function clearWorkspaceRecovery(){pendingWorkspaceRetry=null;$('workspaceRecovery').classList.add('hidden');}
 function showWorkspaceRecovery(error,workbookSha=null){
  pendingWorkspaceRetry={sha:workbookSha};
- const unavailable=!!document.getElementById('deleteVisit')&&error.httpStatus===401;
- $('workspaceRecoveryText').textContent=unavailable?'This visit is unavailable or has expired. Its server work cannot be recovered here. Files already downloaded remain on your device. Return to entry to start a visit.':error.message+' Your current screen has been kept. Retry loading when the service is available.';
- $('retryWorkspaceLoad').classList.toggle('hidden',unavailable);
- $('visitRecoveryEntry').classList.toggle('hidden',!unavailable);
+ $('workspaceRecoveryText').textContent=error.message+' Your current screen has been kept. Retry loading when the service is available.';
+ $('retryWorkspaceLoad').classList.remove('hidden');
  $('workspaceRecovery').classList.remove('hidden');
 }
 async function retryWorkspaceLoad(){
@@ -114,21 +112,6 @@ async function retryWorkspaceLoad(){
  try{await refreshBoot();}catch(error){showWorkspaceRecovery(error,retry.sha);throw error;}
  if(retry.sha){if(!await loadWorkbook(retry.sha))return;status('Workbook loaded. Saved scenarios are available.');}
  else status('Visit information loaded. Your current workspace is unchanged.');
-}
-async function deleteHostedVisit(){
- if(deletingVisit)return;
- if(!boot?.token){const error=recoveryError('Visit information is not ready. Retry loading before deleting.');showWorkspaceRecovery(error);status(error.message,true);return;}
- if(!confirm('Delete this visit and its saved scenarios? Downloaded files remain on your device.'))return;
- deletingVisit=true;let deleted=false;const button=$('deleteVisit');button.disabled=true;
- status('Deleting this visit…');
- try{
-  const result=await recoveryJSON('/api/delete',{method:'POST',headers:{'Content-Type':'application/json','X-DSF-Token':boot.token},body:'{}'},'Delete visit');
-  if(!result||typeof result!=='object'||Array.isArray(result)||Object.keys(result).join(',')!=='deleted'||result.deleted!==true)throw recoveryError('The service did not confirm deletion.');
-  deleted=true;location.href='/?deleted=1';
- }catch(error){
-  if(error.httpStatus===401){showWorkspaceRecovery(error);status('This visit is already unavailable or has expired. Deletion was not confirmed. Files already downloaded remain on your device.',true);}
-  else status('Deletion was not confirmed. '+error.message+' The server may already have deleted this visit. Retry Delete this visit to check; files already downloaded remain on your device.',true);
- }finally{if(!deleted){deletingVisit=false;button.disabled=false;}}
 }
 // End workspace recovery helpers.
 

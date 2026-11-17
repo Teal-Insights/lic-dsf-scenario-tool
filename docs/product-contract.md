@@ -46,7 +46,7 @@ The interface uses locally bundled IBM Plex Serif and Inter under the SIL Open F
 
 Download briefing packet (.zip) produces both PDF reports, twelve individual PNG and twelve vector SVG charts, five CSV tables, an Excel workbook with the same tables, full-precision comparison JSON and a SHA-256 file manifest. Tables include results, annual macro adjustments, financing terms, shared explanations and evidence. They carry the workbook identity and verification status. CSV/JSON numbers are not presentation-rounded; Excel retains its native numeric precision. Blank observations stay missing and calculation error strings remain text. CSV user text beginning with a formula character receives a protective apostrophe; the JSON preserves original text.
 
-The browser retains at most one prepared packet and exposes a visible save link to the same bytes. Retrying that link does not call the export service or consume another export slot. The link is bound to the saved comparison, source, context revision, selection and comparator. Existing input/source/comparison invalidation, pending chart text, calculation and page termination clear and revoke it. This browser copy does not extend a hosted visit or prove that a file was downloaded.
+The browser retains at most one prepared packet and exposes a visible save link to the same bytes. Retrying that link does not call the export service again. The link is bound to the saved comparison, source, context revision, selection and comparator. Existing input/source/comparison invalidation, pending chart text, calculation and page termination clear and revoke it. This browser copy does not prove that a file was downloaded.
 
 The packet is built from one current saved comparison, using the same export field selection as existing JSON. It excludes the original workbook, private journal and internal workspace names. Shared explanations can contain sensitive information: inspect the packet before sharing. It is not a backup or an importable scenario file.
 
@@ -68,13 +68,11 @@ This optional learning route supplements own-workbook intake. Generic sensitivit
 
 ## Public in-browser application
 
-The in-browser application is a supported path at `https://d3iptw2fvdc3fp.cloudfront.net/`. The five-step workspace runs in the visitor's browser. The site supplies the page, scripts, wheels, fonts, and the checked official template from a private S3 bucket. Saved work stays in the browser profile for that address. The desktop local server remains available. The separate illustrative hosted server keeps its own visit limits and no-upload boundary. This address does not extend the 9 November Excel receipt.
+The in-browser application is a supported path at `https://d3iptw2fvdc3fp.cloudfront.net/`. The five-step workspace runs in the visitor's browser. The site supplies the page, scripts, wheels, fonts, and the checked official template from a private S3 bucket. Saved work stays in the browser profile for that address. The desktop local server remains available. This address does not extend the 9 November Excel receipt.
 
 
 ## Visible save and export prerequisites
 
 Saving a new draft creates a separate case; saving an existing case updates it. Renaming keeps the selected case identity. Start a new scenario or Duplicate this scenario creates the alternative draft, with a distinct workspace name and legend label before saving.
 
-The editor and briefing section explain the current next action: save or discard a draft, calculate changed numerical inputs, wait for calculation, review findings, select current calculated cases, compare them, or apply/discard chart text. Existing calculation, comparison and export gates remain authoritative. Status help updates only when its message changes. Both chart views and their text-editing/reuse behavior retain the existing contract.
-
-The illustrative hosted path retains its no-upload boundary, one-hour lifetime and configured12/provisional25visit limits. This frontend guidance does not establish live-browser, capacity, Linux, numerical or fresh Excel acceptance.
+The editor and briefing section explain the current next action: save or discard a draft, calculate changed numerical inputs, wait for calculation, review findings, select current calculated cases, compare them, or apply/discard chart text. Existing calculation, comparison and export gates remain authoritative. Status help updates only when its message changes. Both chart views and their text-editing/reuse behavior retain the existing contract. This frontend guidance does not establish live-browser, capacity, Linux, numerical or fresh Excel acceptance.

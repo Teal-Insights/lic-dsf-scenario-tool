@@ -2,7 +2,6 @@
 // No server, workbook, numerical engine, browser or deployed-image acceptance.
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),assert=require('node:assert/strict');
 const root=path.join(__dirname,'..'),html=fs.readFileSync(path.join(root,'src/lic_dsf/web.html'),'utf8');
-const hosted=fs.readFileSync(path.join(root,'src/lic_dsf/hosted.py'),'utf8');
 function section(start,end){const a=html.indexOf(start),b=html.indexOf(end,a);assert(a>=0&&b>a);return html.slice(a,b);}
 function line(name){const found=html.split('\n').find(value=>value.startsWith('function '+name+'(')||value.startsWith('async function '+name+'('));assert(found,'Missing actual function '+name);return found;}
 const functions=section('// Workspace recovery:','// End workspace recovery helpers.')+'\n'+
@@ -18,21 +17,21 @@ function workbook(sha=B){const definition={delta_paths:Object.fromEntries(rows.m
 const response=(body,status=200)=>({ok:status>=200&&status<300,status,json:async()=>body});
 const nonJSON=status=>({ok:status>=200&&status<300,status,json:async()=>{throw SyntaxError('not JSON');}});
 function deferred(){let resolve,reject;const promise=new Promise((yes,no)=>{resolve=yes;reject=no;});return {promise,resolve,reject};}
-function setup(hostedVisit=true){
- const elements={},calls=[],messages=[],timers=new Set();let responder=()=>response({error:'Unexpected request'},500),confirms=0,consent=true;
+function setup(){
+ const elements={},calls=[],messages=[],timers=new Set();let responder=()=>response({error:'Unexpected request'},500);
  function element(id){return elements[id]??={value:'',textContent:'',innerHTML:'',disabled:false,classes:new Set(),classList:{add(name){element(id).classes.add(name);},remove(name){element(id).classes.delete(name);},toggle(name,on){if(on)element(id).classes.add(name);else element(id).classes.delete(name);}},querySelector:()=>({focus(){}}),scrollIntoView(){}};}
  const $=element,s={JSON,Array,Object,Set,Map,Number,Error,AbortController,structuredClone,encodeURIComponent,$,
   boot:bootData(),ctx:workbook(A),sha:A,active:{id:'saved',revision:1},draft:{neutral:'old draft'},dirty:false,journalDirty:false,contextDirty:false,uiBusy:false,calculating:false,
   selection:new Set(['saved']),comparison:{neutral:'old valid result'},knownRuns:new Map([['saved',{revision:1,current:true}]]),currentRun:true,editorReference:{neutral:'old reference'},contextRecord:{workbook_sha256:A,revision:1,label:'Saved heading'},sourceGeneration:7,baselineAcknowledged:true,sharedNotes:{neutral:'saved note'},
-  document:{title:'Old title',getElementById:id=>id==='deleteVisit'&&!hostedVisit?null:element(id)},location:{href:'/app'},
+  document:{title:'Old title',getElementById:id=>element(id)},location:{href:'/app'},
   esc:value=>String(value??''),status:(text,error=false)=>messages.push({text,error}),updateWorkflow(){},
   clearComparison(){s.comparison=null;},renderBuiltinInvestment(){},renderEditor(){},renderCases(){},showBaseline(){},renderContext(){},updatePeriodUnits(){},
   setTimeout(callback){const timer={callback};timers.add(timer);return timer;},clearTimeout(timer){timers.delete(timer);},
-  confirm(){confirms++;return consent;},fetch:async(url,options)=>{calls.push({url,options});return responder(url,options);}
+  fetch:async(url,options)=>{calls.push({url,options});return responder(url,options);}
  };
- $('title').textContent='Old title';$('workbookSelect').value=A;$('workbookSelect').innerHTML='OLD SAVED OPTIONS';$('workspaceRecovery').classes.add('hidden');$('visitRecoveryEntry').classes.add('hidden');
+ $('title').textContent='Old title';$('workbookSelect').value=A;$('workbookSelect').innerHTML='OLD SAVED OPTIONS';$('workspaceRecovery').classes.add('hidden');
  vm.createContext(s);vm.runInContext(functions,s);
- return {s,$,calls,messages,timers,setResponder:fn=>{responder=fn;},confirms:()=>confirms,setConsent:value=>{consent=value;},retry:()=>s.retryWorkspaceLoad(),pending:()=>vm.runInContext('pendingWorkspaceRetry',s)};
+ return {s,$,calls,messages,timers,setResponder:fn=>{responder=fn;},retry:()=>s.retryWorkspaceLoad(),pending:()=>vm.runInContext('pendingWorkspaceRetry',s)};
 }
 function retained(t){return {boot:t.s.boot,ctx:t.s.ctx,sha:t.s.sha,active:t.s.active,draft:t.s.draft,comparison:t.s.comparison,knownRuns:t.s.knownRuns,selection:t.s.selection,editorReference:t.s.editorReference,contextRecord:t.s.contextRecord,currentRun:t.s.currentRun,baselineAcknowledged:t.s.baselineAcknowledged,sharedNotes:t.s.sharedNotes};}
 function preserved(t,before){for(const [key,value] of Object.entries(before))assert.strictEqual(t.s[key],value,key+' must remain unchanged');}
@@ -43,8 +42,8 @@ function goodTransport(t,value=workbook()){t.setResponder(url=>url==='/api/boot'
   const t=setup(),before=retained(t);t.setResponder(()=>response({error:'Neutral HTTP refusal'},status));
   await assert.rejects(t.s.refreshBoot(),/Neutral HTTP refusal/);preserved(t,before);
   assert.equal(t.$('title').textContent,'Old title');assert.equal(t.$('workbookSelect').innerHTML,'OLD SAVED OPTIONS');assert.equal(t.timers.size,0);
-  assert.equal(t.$('visitRecoveryEntry').classes.has('hidden'),status!==401);
-  assert.equal(t.$('retryWorkspaceLoad').classes.has('hidden'),status===401);
+  assert.equal(t.$('retryWorkspaceLoad').classes.has('hidden'),false);
+  assert.match(t.$('workspaceRecoveryText').textContent,/current screen has been kept/);
   assert(t.calls.every(call=>call.options.method==='GET'));checks++;
  }
  const badBoots=[null,{}, {...bootData(),token:null},{...bootData(),token:''},{...bootData(),title:null},{...bootData(),note:null},{...bootData(),example_available:'true'},{...bootData(),example_requires_download:0},{...bootData(),illustrative_example:null},{...bootData(),example_label:null},{...bootData(),workbooks:{}},{...bootData(),workbooks:[{sha:'wrong',label:'Saved'}]},{...bootData(),workbooks:[{sha:A,label:null}]}];
@@ -56,7 +55,7 @@ function goodTransport(t,value=workbook()){t.setResponder(url=>url==='/api/boot'
  }
  {
   const t=setup();t.s.boot=undefined;t.setResponder(()=>Promise.reject(TypeError('offline')));
-  await assert.rejects(t.s.refreshBoot());await t.s.deleteHostedVisit();assert.equal(t.calls.filter(call=>call.url==='/api/delete').length,0);
+  await assert.rejects(t.s.refreshBoot());
   goodTransport(t);await t.retry();assert.equal(t.s.boot.token,'refreshed-token');assert.equal(t.s.sha,A);checks++;
  }
  const corrupt=[()=>null,body=>({...body,inspection:{...body.inspection,workbook_sha256:C}}),body=>({...body,inspection:{...body.inspection,input_years:[2024]}}),body=>({...body,zero:{delta_paths:{},terms:null}}),body=>({...body,scenarios:{}}),body=>({...body,chart_context:{workbook_sha256:C,revision:0,label:null}}),body=>({...body,baseline_preview:[{metric:'neutral',year:2024,units:'ratio',reference_baseline:{wrong:true}}]})];
@@ -110,27 +109,11 @@ function goodTransport(t,value=workbook()){t.setResponder(url=>url==='/api/boot'
  {
   const t=setup();t.setResponder(()=>response({error:'unavailable'},503));await assert.rejects(t.s.loadWorkbook(B));t.s.dirty=true;const n=t.calls.length;await t.retry();assert.equal(t.calls.length,n);assert.equal(t.s.sha,A);assert.equal(t.pending().sha,B);checks++;
  }
- for(const mode of ['HTTP','transport','nonJSON','malformed','contradictory','pendingStatus']){
-  const t=setup(),before=retained(t);t.setResponder(()=>mode==='HTTP'?response({error:'Delete refused'},503):mode==='transport'?Promise.reject(TypeError('lost response')):mode==='nonJSON'?nonJSON(200):mode==='contradictory'?response({deleted:true,error:'not confirmed'}):mode==='pendingStatus'?response({deleted:true},202):response({deleted:false}));
-  await t.s.deleteHostedVisit();preserved(t,before);assert.equal(t.s.location.href,'/app');assert.equal(t.$('deleteVisit').disabled,false);assert.match(t.messages.at(-1).text,/Deletion was not confirmed/);assert.equal(t.timers.size,0);checks++;
- }
- {
-  const t=setup(),before=retained(t),pending=deferred();t.setResponder(()=>pending.promise);
-  const deleting=t.s.deleteHostedVisit();await t.s.deleteHostedVisit();assert.equal(t.confirms(),1);assert.equal(t.calls.length,1);assert.equal(t.calls[0].options.method,'POST');assert.equal(t.calls[0].options.headers['X-DSF-Token'],'valid-token');assert.equal(t.$('deleteVisit').disabled,true);preserved(t,before);
-  pending.resolve(response({deleted:true}));await deleting;assert.equal(t.s.location.href,'/?deleted=1');assert.equal(t.$('deleteVisit').disabled,true);await t.s.deleteHostedVisit();assert.equal(t.calls.length,1);checks++;
- }
- {
-  const t=setup(),before=retained(t);let deleted=false;t.setResponder(()=>{if(!deleted){deleted=true;throw TypeError('response lost after server delete');}return response({error:'Visit expired or unavailable'},401);});
-  await t.s.deleteHostedVisit();preserved(t,before);assert.equal(t.s.location.href,'/app');await t.s.deleteHostedVisit();assert.equal(t.s.location.href,'/app');assert.equal(t.$('visitRecoveryEntry').classes.has('hidden'),false);assert.match(t.messages.at(-1).text,/already unavailable or has expired/);assert.match(t.messages.at(-1).text,/Deletion was not confirmed/);assert.equal(t.calls.length,2);checks++;
- }
- {
-  const t=setup();t.setConsent(false);await t.s.deleteHostedVisit();assert.equal(t.calls.length,0);assert.equal(t.s.location.href,'/app');checks++;
- }
  {
   const t=setup(),before=retained(t);t.setResponder((url,options)=>new Promise((yes,no)=>options.signal.addEventListener('abort',()=>no(Error('deadline')),{once:true})));
   const loading=t.s.loadWorkbook(B);assert.equal(t.timers.size,1);[...t.timers][0].callback();await assert.rejects(loading,/could not be reached/);preserved(t,before);assert.equal(t.timers.size,0);assert.equal(t.s.sourceGeneration,8);checks++;
  }
- assert(hosted.includes("document.getElementById('deleteVisit').onclick=deleteHostedVisit;"));
+ assert(!html.includes('deleteHostedVisit')&&!html.includes('id="deleteVisit"')&&!html.includes('visitRecoveryEntry'));
  assert(html.includes("$('retryWorkspaceLoad').onclick=()=>attempt(retryWorkspaceLoad);"));
  console.log('PASS '+checks+' workspace recovery behavior cases; neutral VM transport/DOM only, not browser, numerical or deployment acceptance.');
 })().catch(error=>{console.error(error);process.exitCode=1;});

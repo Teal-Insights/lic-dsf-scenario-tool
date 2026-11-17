@@ -14,7 +14,7 @@ Evidence from earlier tested builds supports only the behavior and environments 
 
 When the official example is missing locally, the built-in example makes an external download request after the user selects the download action. It obtains the pinned official World Bank workbook; the request sends no analytical workbook, scenario inputs, results or notes. The publisher receives ordinary connection metadata such as an IP address. Prepared case definitions are bundled with the app, and a verified local workbook copy is retained for reuse. Source checks and a successful example download are distinct from observing all outbound traffic during normal use, failures and diagnostics. Representative offline operation and connected outbound observation remain separate evidence work.
 
-A future hosted illustrative calculator needs its own assessment. A static documentation website is not that calculator, and neither establishes that confidential workbooks can be processed safely on a server. The public in-browser application at `https://d3iptw2fvdc3fp.cloudfront.net/` serves the application files through CloudFront from a private S3 bucket, and calculation runs in the visitor's browser. That address is separate from a hosted illustrative calculator.
+The Waitress and Caddy illustrative pilot has been removed. A future server-side calculator needs its own assessment. A static documentation website is not that calculator, and neither establishes that confidential workbooks can be processed safely on a server. The public in-browser application at `https://d3iptw2fvdc3fp.cloudfront.net/` serves the application files through CloudFront from a private S3 bucket, and calculation runs in the visitor's browser.
 
 ## Mapping the tool to the indicators
 
@@ -50,6 +50,6 @@ Open assessment rows are not automatically release blockers. Real confidentialit
 
 Scenario exchange must continue to select only deliberately shared fields, identify its format, years and workbook, and treat imported text and evidence as untrusted. Import creates inputs to review and calculate; it must never confer verified-result status. Existing private journals must not silently become shared explanations.
 
-Before offering hosted calculations, separately verify server-enforced input restrictions, visitor isolation, bounded work queues, retention/deletion and logs. The initial hosted scope is the official illustrative workbook only, with a clear notice that entered assumptions are processed on the server. Do not infer these protections from the local application's tests.
+The illustrative hosted pilot has been removed. A future server-side calculator must be specified and tested on its own before launch, including server-enforced input restrictions, visitor isolation, bounded work, retention and deletion, and logs. Do not infer those protections from the local application's tests.
 
 The release maintainer assembles the exact source, documentation, dependency and artifact evidence; a separate reviewer evaluates it. Teal Insights owns the project assessment and any eventual nomination. Confidential workbooks, internal paths and private review records stay out of public evidence. [Feedback](feedback.md) can help us improve this mapping and identify practical needs we have missed.

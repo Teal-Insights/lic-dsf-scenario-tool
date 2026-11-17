@@ -1,4 +1,4 @@
-"""The hosted demo never names the country whose labels the template's sample data carry.
+"""User-facing pages and disclosures never name the country whose labels the template's sample data carry.
 
 The banned words are stored only as SHA-256 hashes (name, demonym, ISO code, capital, currency),
 so this file does not spell them either. Every word on each user-facing surface is hashed and checked.
@@ -45,11 +45,9 @@ def official(comparison):
 class NoCountryName(unittest.TestCase):
     def test_served_pages_and_disclosures(self):
         from lic_dsf import charts
-        from lic_dsf.hosted import DISCLOSURE, hosted_page, landing
         root = Path(__file__).resolve().parents[1] / 'src' / 'lic_dsf'
-        surfaces = {'landing': landing().decode(), 'hosted page': hosted_page().decode(), 'hosted disclosure': DISCLOSURE,
-                    'chart disclosure': charts.ILLUSTRATIVE_DISCLOSURE, 'web.html': (root / 'web.html').read_text(encoding='utf-8'),
-                    'hosted_wait.js': (root / 'hosted_wait.js').read_text(encoding='utf-8')}
+        surfaces = {'chart disclosure': charts.ILLUSTRATIVE_DISCLOSURE,
+                    'web.html': (root / 'web.html').read_text(encoding='utf-8')}
         for name, text in surfaces.items():
             self.assertEqual(named(text), [], name)
         self.assertIn('Macronia', charts.ILLUSTRATIVE_DISCLOSURE)
