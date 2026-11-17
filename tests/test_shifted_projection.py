@@ -10,21 +10,16 @@ import os
 from pathlib import Path
 import tempfile
 import unittest
-import urllib.request
 
 from openpyxl import load_workbook
 
 from lic_dsf.compare import ATOL, compare_one
 from lic_dsf.engine import calculate
 from lic_dsf.ida21 import METRICS, cell
+from lic_dsf.official_example import download_official_example
 from lic_dsf.workbook_cells import apply_number_cells, refresh_cached_numbers
 from lic_dsf.workbooks import IntakeError, inspect_workbook
 
-OFFICIAL_URL = (
-    "https://thedocs.worldbank.org/en/doc/"
-    "f0ade6bcf85b6f98dbeb2c39a2b7770c-0360012025/original/"
-    "LIC-DSF-IDA21-Template-08-12-2025-vf.xlsm"
-)
 OFFICIAL_SHA256 = "3a0a0b80c7cbc95ac953f25ecae0b437129d669ceb8aeefb54ab86dc8727ea86"
 FIRST_YEAR = 2025
 TEMPLATE_YEAR = 2024
@@ -39,7 +34,7 @@ def _official():
     else:
         path = Path(tempfile.gettempdir()) / f"lic-dsf-official-{OFFICIAL_SHA256[:12]}.xlsm"
         if not path.is_file():
-            urllib.request.urlretrieve(OFFICIAL_URL, path)
+            path.write_bytes(download_official_example())
     digest = hashlib.sha256(path.read_bytes()).hexdigest()
     if digest != OFFICIAL_SHA256:
         raise AssertionError(f"official workbook sha256 {digest} != {OFFICIAL_SHA256}")
