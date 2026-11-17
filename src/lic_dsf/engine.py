@@ -157,13 +157,18 @@ def _calculate(path, scenario=None, expected_sha256=None):
             _CACHE[key] = model
             while len(_CACHE) > 2:
                 del _CACHE[next(iter(_CACHE))]
+        from .projection_axis import projection_axis
+        scenario_model = None
         try:
-            supplied = _sample(model, info['first_projection_year'])
             if definition is not None:
                 scenario_path = _scenario_workbook(path, definition)
-                computed = _sample(load_model(scenario_path), info['first_projection_year'])
-            else:
-                computed = dict(supplied)
+                scenario_model = load_model(scenario_path)
+            with projection_axis(info['first_projection_year']):
+                supplied = _sample(model, info['first_projection_year'])
+                if scenario_model is not None:
+                    computed = _sample(scenario_model, info['first_projection_year'])
+                else:
+                    computed = dict(supplied)
         finally:
             if scenario_path is not None:
                 Path(scenario_path).unlink(missing_ok=True)

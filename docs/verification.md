@@ -56,7 +56,17 @@ python -m pip install ruff==0.16.7
 python -m ruff check src tests scripts
 ```
 
-The Python tests cover component behavior, including validation, saved-state and export contracts. On the pinned revision, the generated-library checks passed for a negative growth delta, a projection year carried by cached formula headers, and import of financing terms typed over Customized Scenario-External C21, C23 and C24. The JavaScript suites check interface handlers with neutral synthetic data. They do not launch a browser or calculate a real workbook. The initial lint gate targets implementation errors. Installation, actual browser interaction, package downloads and independent numerical checks remain separate evidence.
+The Python tests cover component behavior, including validation, saved-state and export contracts. On the pinned revision, the generated-library checks passed for a negative growth delta, a projection year carried by cached formula headers, and import of financing terms typed over Customized Scenario-External C21, C23 and C24.
+
+`tests/test_shifted_projection.py` downloads the official illustrative workbook, checks SHA-256 `3a0a0b80c7cbc95ac953f25ecae0b437129d669ceb8aeefb54ab86dc8727ea86`, and calculates it. It then moves every cached year header one year later, sets the first projection year to 2025, and calculates that copy. On 17 November 2026 both runs were `computed_unverified` and matched the saved cache on every probe. All 72 chart points (six metrics, six offsets, reference baseline and as-supplied customized) agreed between the 2024 axis and the 2025 axis at the same offset. The largest absolute difference was 0, inside `1e-6`. Baseline PV of PPG external debt-to-GDP at offset 0 was `44.88462374681342` in both results. The external rating, overall rating and selected shock stayed `High`, `High` and `Exports`. This is not a fresh Excel recalculation, and `exact_excel` stays pending. The command and the result were:
+
+```sh
+python -m unittest tests.test_shifted_projection -v
+```
+
+```text
+test_projection_year_2025_matches_official_offset ... ok
+``` The JavaScript suites check interface handlers with neutral synthetic data. They do not launch a browser or calculate a real workbook. The initial lint gate targets implementation errors. Installation, actual browser interaction, package downloads and independent numerical checks remain separate evidence.
 
 The [CI workflow](https://github.com/Teal-Insights/lic-dsf-scenario-tool/actions/workflows/checks.yml) runs these checks on Linux, Windows and Mac hosted runners. A workflow file is not proof that a run passed. Release notes must link the actual runs for the published candidate and distinguish source checks from downloadable desktop-package acceptance.
 
