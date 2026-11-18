@@ -34,6 +34,7 @@ The diagram includes the optional external example-download route and the local 
 | `illustrative.py` and `illustrative_cases/` | Load integrity-checked teaching inputs only for the exact official workbook and years |
 | `scenarios.py` | Normalize complete customized inputs and financing terms |
 | `engine.py` | Calculate selected outputs with the generated library and attach explicit evidence |
+| `calculation_detail.py` | Keep a failed calculation's stable code, and name the engine message and worksheet cell when that text is safe to show |
 | `store.py` | Preserve revisions and reasoning, migrate the known schema, save per-workbook outward context, validate identities and refuse stale runs |
 | `chart_context.py` | Validate explicit outward text and its full source/revision binding |
 | `app.py` and `web.html` | Local interaction, request checks, immutable upload copies and selected export fields |
@@ -41,7 +42,7 @@ The diagram includes the optional external example-download route and the local 
 | `poc/browser/` | In-browser application, including the public address `https://d3iptw2fvdc3fp.cloudfront.net/`. Pyodide runs the same page and `calculate` function in the tab. The static server does not receive the analyst's workbook |
 | `charts.py` | Two presentation views over the same saved numerical record; no recalculation |
 
-The original source workbook is not overwritten. Runtime data and diagnostic records belong outside source and package directories. A saved revision binds its workbook and complete inputs; a worker completing after an edit cannot attach its result to the new revision. Chart view and saved context-label changes do not change calculations. Comparison/export reads the saved context and numerical records from the same database snapshot and checks the client’s expected source and context revision. No label is inferred from an internal filename or journal.
+The original source workbook is not overwritten. Runtime data and diagnostic records belong outside source and package directories. A calculation that fails in the local or in-browser workspace keeps its stable error code and can also show the engine message and the worksheet cell for the rejected input. That diagnostic can contain a workbook value. It is not part of a briefing export. The illustrative hosted server does not return it. A saved revision binds its workbook and complete inputs; a worker completing after an edit cannot attach its result to the new revision. Chart view and saved context-label changes do not change calculations. Comparison/export reads the saved context and numerical records from the same database snapshot and checks the client’s expected source and context revision. No label is inferred from an internal filename or journal.
 
 Chart text (legend labels plus heading) is saved through one store transaction so that a refused heading or a concurrent change cannot leave a partially applied set of labels. The parent application serializes calculation requests and enforces a deadline. The worker adds its own lifetime checks. These controls have a bounded foreground-worker scope; they are not a general process supervisor or a guarantee against an uninterruptible operating-system failure. Windows behaviour requires separate execution tests.
 

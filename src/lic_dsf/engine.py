@@ -130,7 +130,12 @@ def calculate(path, scenario=None, expected_sha256=None):
     except (IntakeError, InputError):
         raise
     except Exception as exc:
-        raise IntakeError('calculation_failed_private_details_available') from exc
+        from .calculation_detail import failure_detail
+        failed = IntakeError('calculation_failed_private_details_available')
+        detail = failure_detail(exc)
+        if detail:
+            failed.detail = detail
+        raise failed from exc
 
 
 def _calculate(path, scenario=None, expected_sha256=None):
