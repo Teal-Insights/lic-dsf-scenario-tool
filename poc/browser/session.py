@@ -349,10 +349,8 @@ class BrowserSession:
             run_id = self.workspace.store.record_run(scenario_id, result, expected_revision=revision)
             finished = {"status": "complete", "run_id": run_id, "scenario_id": scenario_id, "evidence": result["evidence"]}
         except Exception as exc:
-            message = (str(exc) if isinstance(exc, (ValueError, StaleResult)) and len(str(exc)) < 400
-                       and "/" not in str(exc) and "\\" not in str(exc)
-                       else "Calculation could not finish. The saved scenario is retained.")
-            finished = {"status": "failed", "message": message, "scenario_id": scenario_id}
+            from lic_dsf.calculation_detail import failure_job
+            finished = failure_job(exc, scenario_id)
         with self.workspace.job_lock:
             self.workspace.jobs[job_id] = finished
 

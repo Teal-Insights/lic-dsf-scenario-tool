@@ -217,15 +217,19 @@ class Workspace:
                             raise ValueError("The calculation exceeded its time limit. Saved inputs are retained.")
                     if child.returncode != 0:
                         error_file = job_directory / "error.json"
-                        code = json.loads(error_file.read_text(encoding="utf-8")).get("code") if error_file.is_file() else None
-                        raise ValueError("Calculation could not finish" + (": " + code if code else ". Saved inputs are retained."))
+                        loaded = json.loads(error_file.read_text(encoding="utf-8")) if error_file.is_file() else {}
+                        code = loaded.get("code") if isinstance(loaded, dict) else None
+                        failed = ValueError("Calculation could not finish" + (": " + code if code else ". Saved inputs are retained."))
+                        if isinstance(loaded, dict):
+                            failed.detail = loaded.get("detail")
+                        raise failed
                     result = json.loads((job_directory / "result.json").read_text(encoding="utf-8"))
                 run_id = self.store.record_run(scenario_id, result, expected_revision=case["revision"])
                 finished = {"status": "complete", "run_id": run_id, "scenario_id": scenario_id, "evidence": result["evidence"]}
             except Exception as exc:
-                # Only stable application messages leave this boundary; no traceback/file paths.
-                message = str(exc) if isinstance(exc, (ValueError, StaleResult)) and len(str(exc)) < 400 and "/" not in str(exc) else "Calculation could not finish. The saved scenario is retained."
-                finished = {"status": "failed", "message": message, "scenario_id": scenario_id}
+                # The stable sentence stays path-free. A separate detail may name the engine message and cell.
+                from .calculation_detail import failure_job
+                finished = failure_job(exc, scenario_id)
             with self.job_lock:
                 self.jobs[job_id] = finished
         self.executor.submit(execute)

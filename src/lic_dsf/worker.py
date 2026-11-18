@@ -81,10 +81,15 @@ def main(request_path):
         write_result(request_path.parent / "result.json", result)
         return 0
     except Exception as exc:
+        from .calculation_detail import failure_detail
         code = str(exc)
         if not code or len(code) > 200 or any(c not in "abcdefghijklmnopqrstuvwxyz0123456789_" for c in code):
             code = "calculation_failed"
-        write_result(request_path.parent / "error.json", {"code": code})
+        payload = {"code": code}
+        detail = failure_detail(exc)
+        if detail:
+            payload["detail"] = detail
+        write_result(request_path.parent / "error.json", payload)
         return 1
     finally:
         if stopped is not None:
