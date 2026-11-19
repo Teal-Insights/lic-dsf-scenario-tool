@@ -68,7 +68,7 @@ This optional learning route supplements own-workbook intake. Generic sensitivit
 
 ## Public in-browser application
 
-The in-browser application is a supported path at `https://d3iptw2fvdc3fp.cloudfront.net/`. The five-step workspace runs in the visitor's browser. The site supplies the page, scripts, wheels, fonts, and the checked official template from a private S3 bucket. Saved work stays in the browser profile for that address. The desktop local server remains available. The separate illustrative hosted server keeps its own visit limits and no-upload boundary. This address does not extend the 9 November Excel receipt.
+The in-browser application is a supported path at `https://d3iptw2fvdc3fp.cloudfront.net/`. The five-step workspace runs in the visitor's browser. The site supplies the page, scripts, wheels, fonts, the pinned Pyodide 314.0.7 runtime, and the checked official template from a private S3 bucket. Saved work stays in the browser profile for that address. The desktop local server remains available. The separate illustrative hosted server keeps its own visit limits and no-upload boundary. This address does not extend the 9 November Excel receipt.
 
 
 ## Visible save and export prerequisites

@@ -19,6 +19,7 @@ LIBRARY = (
     "lic-dsf-2025-08-12@05d7f03862348df18d2b45a5d4a86152836edda4"
 )
 LIBRARY_COMMIT = "05d7f03862348df18d2b45a5d4a86152836edda4"
+PYODIDE_INDEX = "/pyodide/v314.0.7/full/"
 PROVENANCE = {
     "url": "https://github.com/Teal-Insights/lic-dsf-2025-08-12",
     "vcs_info": {
@@ -69,7 +70,7 @@ def build() -> list[str]:
     _inject_provenance(library)
     names = sorted(path.name for path in DEST.glob("*.whl"))
     manifest = {
-        "pyodide": "https://cdn.jsdelivr.net/pyodide/v314.0.7/full/",
+        "pyodide": PYODIDE_INDEX,
         "pyodide_packages": ["micropip", "numpy", "pyyaml"],
         "wheels": [f"wheels/{name}" for name in names],
         "library_commit": LIBRARY_COMMIT,
