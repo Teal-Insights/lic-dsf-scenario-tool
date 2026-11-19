@@ -10,6 +10,8 @@ The official World Bank IDA21 template is downloaded separately from the publish
 
 Before release, retain a versioned inventory of exact runtime archives and wheels, publisher provenance, hashes, bundled license files and any redistribution conditions. Record unresolved asset rights as a release gap rather than assuming that availability for download grants redistribution rights.
 
+The public in-browser application loads unmodified Pyodide 314.0.7 from `/pyodide/v314.0.7/full/` on that site. Those files are not in this source repository. Pyodide is Mozilla Public License 2.0, separate from this application's MIT license. The served tree includes the upstream license file. The source release is the Pyodide 314.0.7 archive recorded in the decision record.
+
 ## Evidence required for each distribution
 
 | Component | Evidence available in the assessed build | Release requirement |

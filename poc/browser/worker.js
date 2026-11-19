@@ -1,4 +1,4 @@
-import { loadPyodide } from "https://cdn.jsdelivr.net/pyodide/v314.0.7/full/pyodide.mjs";
+import { loadPyodide } from "/pyodide/v314.0.7/full/pyodide.mjs";
 
 const base = new URL(".", self.location.href);
 let pyodide;
@@ -25,7 +25,8 @@ function writeWorkbook(buffer) {
 async function boot() {
   say("Loading the Python runtime.");
   const manifest = await (await fetch(new URL("manifest.json", base))).json();
-  pyodide = await loadPyodide({ indexURL: manifest.pyodide });
+  const pyodideIndex = new URL(manifest.pyodide, self.location.href).href;
+  pyodide = await loadPyodide({ indexURL: pyodideIndex, packageBaseUrl: pyodideIndex });
   say("Loading the calculation library.");
   await pyodide.loadPackage(manifest.pyodide_packages);
   const wheels = manifest.wheels.map((name) => new URL(name, base).href);
